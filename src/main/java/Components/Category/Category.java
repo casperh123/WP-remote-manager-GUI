@@ -1,7 +1,7 @@
 package Components.Category;
 
 import Components.AbstractComponent;
-import Components.Image;
+import Components.WPImage;
 import com.jsoniter.annotation.JsonCreator;
 import com.jsoniter.annotation.JsonProperty;
 
@@ -11,7 +11,7 @@ public class Category extends AbstractComponent {
     private String slug;
     private String description;
     private String display;
-    private Image image;
+    private WPImage image;
 
     @JsonProperty("menu_order")
     private int menuOrder;

@@ -1,7 +1,7 @@
 package Components.Product;
 
 import Components.AbstractComponent;
-import Components.Image;
+import Components.WPImage;
 import Components.Product.ProductComponents.*;
 import Components.Product.RegularProduct.RegularProduct;
 import com.jsoniter.annotation.JsonCreator;
@@ -120,7 +120,7 @@ public abstract class AbstractProduct extends AbstractComponent {
     @JsonProperty("shipping_note")
     protected String shippingNote;
 
-    protected List<Image> images;
+    protected List<WPImage> images;
     @JsonProperty("upsell_ids")
     protected List<Integer> upsellIds;
     @JsonProperty("cross_sell_ids")
@@ -217,5 +217,9 @@ public abstract class AbstractProduct extends AbstractComponent {
                 ", id=" + id +
                 ", name='" + name + '\'' +
                 '}';
+    }
+
+    public List<WPImage> getImages() {
+        return images;
     }
 }

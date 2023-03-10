@@ -3,7 +3,7 @@ package Components;
 import com.jsoniter.annotation.JsonCreator;
 import com.jsoniter.annotation.JsonProperty;
 
-public class Image extends AbstractComponent {
+public class WPImage extends AbstractComponent {
 
     private String alt;
 
@@ -26,17 +26,17 @@ public class Image extends AbstractComponent {
     private String dateModifiedGmt;
 
     @JsonCreator
-    public Image() {
+    public WPImage() {
     }
 
-    public Image(int id,
-                 String name,
-                 String alt,
-                 String src,
-                 String dateCreated,
-                 String dateCreatedGmt,
-                 String dateModified,
-                 String dateModifiedGmt) {
+    public WPImage(int id,
+                   String name,
+                   String alt,
+                   String src,
+                   String dateCreated,
+                   String dateCreatedGmt,
+                   String dateModified,
+                   String dateModifiedGmt) {
         this.id = id;
         this.name = name;
         this.alt = alt;
