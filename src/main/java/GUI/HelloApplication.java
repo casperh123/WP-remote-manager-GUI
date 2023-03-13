@@ -1,6 +1,7 @@
 package GUI;
 
 import javafx.application.Application;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
@@ -15,6 +16,7 @@ public class HelloApplication extends Application {
     public void start(Stage stage) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(new File("src/main/resources/GUI/GUI/hello-view.fxml").toURI().toURL());
         Scene scene = new Scene(fxmlLoader.load(), 320, 240);
+        System.out.println(scene.getStylesheets());
         stage.setTitle("Hello!");
         stage.setScene(scene);
         stage.show();

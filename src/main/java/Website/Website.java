@@ -2,6 +2,7 @@ package Website;
 
 import Components.Category.Category;
 import Exceptions.BadHTTPResponseException;
+import Lists.PaginatedQueryList;
 import Lists.QueryList;
 import Lists.UnpaginatedQueryList;
 import Components.Product.RegularProduct.RegularProduct;
@@ -36,7 +37,7 @@ public class Website {
         //TODO ExceptionHandling
         CompletableFuture<QueryList<RegularProduct>> produtListFuture = CompletableFuture.supplyAsync(() -> {
             try {
-                return new UnpaginatedQueryList<>(connection, RESTEndpoints.getProductsEndpoint(), RegularProduct.class) {
+                return new PaginatedQueryList<>(connection, RESTEndpoints.getProductsEndpoint(), RegularProduct.class) {
                 };
             } catch (BadHTTPResponseException e) {
                 System.out.println("Fuck");
@@ -44,20 +45,20 @@ public class Website {
             }
         });
 
-        //TODO Exception Handling
+        /*//TODO Exception Handling
         CompletableFuture<QueryList<Category>> categoryListFuture = CompletableFuture.supplyAsync(()-> {
             try {
-                return new UnpaginatedQueryList<>(connection, RESTEndpoints.getProductCategoriesEndpoint(), Category.class);
+                return new PaginatedQueryList<>(connection, RESTEndpoints.getProductCategoriesEndpoint(), Category.class);
             } catch (BadHTTPResponseException e) {
                 System.out.println("Fuck");
                 return null;
             }
-        });
+        });*/
 
         //TODO Exception Handling
         try {
             this.productList = produtListFuture.get();
-            this.categoryList = categoryListFuture.get();
+            //this.categoryList = categoryListFuture.get();
         } catch (InterruptedException | ExecutionException e) {
             throw new RuntimeException(e);
         }
