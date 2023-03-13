@@ -1,11 +1,10 @@
 package Website;
 
 import Components.Category.Category;
+import Components.Product.Product;
 import Exceptions.BadHTTPResponseException;
 import Lists.PaginatedQueryList;
 import Lists.QueryList;
-import Lists.UnpaginatedQueryList;
-import Components.Product.RegularProduct.RegularProduct;
 import REST.RESTConnection;
 import REST.RESTEndpoints;
 
@@ -16,7 +15,7 @@ import java.util.concurrent.ExecutionException;
 public class Website {
     private String name;
     private String stringUrl;
-    private QueryList<RegularProduct> productList;
+    private PaginatedQueryList<Product> productList;
     private QueryList<Category> categoryList;
     private User user;
     private RESTConnection connection;
@@ -35,9 +34,9 @@ public class Website {
         this.connection = new RESTConnection(stringUrl, user);
 
         //TODO ExceptionHandling
-        CompletableFuture<QueryList<RegularProduct>> produtListFuture = CompletableFuture.supplyAsync(() -> {
+        CompletableFuture<PaginatedQueryList<Product>> produtListFuture = CompletableFuture.supplyAsync(() -> {
             try {
-                return new PaginatedQueryList<>(connection, RESTEndpoints.getProductsEndpoint(), RegularProduct.class) {
+                return new PaginatedQueryList<>(connection, RESTEndpoints.getProductsEndpoint(), Product.class) {
                 };
             } catch (BadHTTPResponseException e) {
                 System.out.println("Fuck");
@@ -71,7 +70,7 @@ public class Website {
     public String getUrl() {
         return stringUrl;
     }
-    public QueryList<RegularProduct> getProducts() {
+    public PaginatedQueryList<Product> getProducts() {
         return productList;
     }
     public QueryList<Category> getCategories() {

@@ -3,13 +3,12 @@ package Components.Product;
 import Components.AbstractComponent;
 import Components.WPImage;
 import Components.Product.ProductComponents.*;
-import Components.Product.RegularProduct.RegularProduct;
 import com.jsoniter.annotation.JsonCreator;
 import com.jsoniter.annotation.JsonProperty;
 
 import java.util.List;
 
-public abstract class AbstractProduct extends AbstractComponent {
+public class Product extends AbstractComponent {
 
 
     @JsonProperty("stock_quantity")
@@ -140,7 +139,7 @@ public abstract class AbstractProduct extends AbstractComponent {
     protected Dimensions dimensions;
 
     @JsonCreator
-    public AbstractProduct() {}
+    public Product() {}
 
     public boolean equals(Object o) {
 
@@ -148,7 +147,7 @@ public abstract class AbstractProduct extends AbstractComponent {
             return true;
         }
 
-        if(!(o instanceof RegularProduct product)) {
+        if(!(o instanceof Product product)) {
             return false;
         }
 

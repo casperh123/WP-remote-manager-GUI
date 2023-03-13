@@ -21,10 +21,7 @@
         </ScrollPane>
     </left>
     <center>
-        <ScrollPane>
-            <VBox fx:id="mainBox">
-
-            </VBox>
+        <ScrollPane fx:id="listWrapper">
         </ScrollPane>
     </center>
 </BorderPane>

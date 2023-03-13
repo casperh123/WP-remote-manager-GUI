@@ -3,6 +3,11 @@ package Components;
 import com.jsoniter.annotation.JsonCreator;
 import com.jsoniter.annotation.JsonProperty;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.net.URL;
+
 public class WPImage extends AbstractComponent {
 
     private String alt;

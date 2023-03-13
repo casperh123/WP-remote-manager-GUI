@@ -12,10 +12,12 @@ import com.jsoniter.any.Any;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 public class PaginatedQueryList<E> extends QueryList<E> {
 
-    List<E> auxillaryList;
+    CompletableFuture<List<E>> primerList = null;
     int currentPage;
 
     public PaginatedQueryList(RESTConnection connection, String restEndpoint, Class<E> containedClass) throws BadHTTPResponseException {
@@ -43,7 +45,7 @@ public class PaginatedQueryList<E> extends QueryList<E> {
 
         this.clear();
 
-        byte[] getResponse = connection.GETRequest(restEndpoint, "&per_page10&page=" + currentPage);
+        byte[] getResponse = connection.GETRequest(restEndpoint, "&per_page=30&page=" + currentPage);
 
         Any json = JsonIterator.deserialize(getResponse);
 
@@ -70,22 +72,59 @@ public class PaginatedQueryList<E> extends QueryList<E> {
 
     public void primeUpdatedList(int page) throws BadHTTPResponseException {
 
-        auxillaryList = new ArrayList<>();
+        CompletableFuture<List<E>> newElements = CompletableFuture.supplyAsync(() -> {
 
-        byte[] getResponse = connection.GETRequest(restEndpoint, "&per_page=10&page=" + page);
+            List<E> elements = new ArrayList<>();
 
-        Any json = JsonIterator.deserialize(getResponse);
+            byte[] getResponse = new byte[0];
 
-        json.forEach(item -> auxillaryList.add(item.as(containedClass)));
+            try {
+                getResponse = connection.GETRequest(restEndpoint, "&per_page=10&page=" + page);
+            } catch (BadHTTPResponseException e) {
+                throw new RuntimeException(e);
+            }
+
+            Any json = JsonIterator.deserialize(getResponse);
+
+            List<CompletableFuture<E>> products = new ArrayList<>();
+
+            for(Any elementJson : json) {
+                products.add(
+                        CompletableFuture.supplyAsync(() -> {
+                            return elementJson.as(containedClass);
+                        }));
+            }
+
+            for(CompletableFuture<E> element : products) {
+                try {//TODO Exception Handling
+                    elements.add(element.get());
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                } catch (ExecutionException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+
+            return elements;
+        });
+        System.out.println("Primed");
     }
 
-    public void swapUpdatedList() {
-        internalList = auxillaryList;
+    public boolean swapUpdatedList() {
+        if(primerList != null) {
+            try {
+                internalList = primerList.get();
+                return true;
+            } catch (InterruptedException | ExecutionException e) {
+                return false;
+            }
+        }
+        return false;
     }
 
     public void loadIds(List<Integer> ids) throws BadHTTPResponseException {
 
-        auxillaryList = new ArrayList<>();
+        List<E> newElements = new ArrayList<>();
 
         StringBuilder parameters = new StringBuilder().append("include=[");
 
@@ -103,22 +142,22 @@ public class PaginatedQueryList<E> extends QueryList<E> {
 
         Any json = JsonIterator.deserialize(getResponse);
 
-        json.forEach(item -> auxillaryList.add(item.as(containedClass)));
+        json.forEach(item -> newElements.add(item.as(containedClass)));
 
-        swapUpdatedList();
+        internalList = newElements;
     }
 
     public void loadElementById(String endpoint, int id) throws BadHTTPResponseException {
 
-        auxillaryList = new ArrayList<>();
+        List<E> newElements = new ArrayList<>();
 
         byte[] getResponse = connection.GETRequest(endpoint, "");
 
         Any json = JsonIterator.deserialize(getResponse);
 
-        json.forEach(item -> auxillaryList.add(item.as(containedClass)));
+        json.forEach(item -> newElements.add(item.as(containedClass)));
 
-        swapUpdatedList();
+        internalList = newElements;
     }
 
     public ID getElementById(int id) throws ElementNotInArrayException {

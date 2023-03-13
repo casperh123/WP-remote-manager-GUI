@@ -6,6 +6,7 @@ module GUI {
     requires okhttp3;
     requires org.jetbrains.annotations;
     requires kotlin.stdlib;
+    requires java.desktop;
 
     opens GUI to javafx.fxml;
     opens Components.Product.ProductComponents;
@@ -14,7 +15,6 @@ module GUI {
     opens Components.Category;
     opens Components.Coupon;
     opens Components.Customer;
-    opens Components.Product.RegularProduct;
     opens Components.ProductAttribute;
     opens Components.Order;
     opens Components.Order.OrderComponents;
@@ -29,7 +29,6 @@ module GUI {
     exports Components.Product;
     exports Components.Coupon;
     exports Components.Customer;
-    exports Components.Product.RegularProduct;
 
 
 }

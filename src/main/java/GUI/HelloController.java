@@ -1,106 +1,105 @@
 package GUI;
 
-import Components.WPImage;
-import Components.Product.AbstractProduct;
-import javafx.css.Size;
-import javafx.css.SizeUnits;
+import Components.Product.Product;
+import Exceptions.BadHTTPResponseException;
+import GUI.Products.ProductListPane;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import Website.Website;
 import Website.User;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
-import javafx.scene.shape.Box;
-import javafx.scene.shape.Circle;
-import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
-import java.io.File;
+import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.ResourceBundle;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Executors;
+import java.util.*;
 
 public class HelloController implements Initializable {
 
-    Website skadedyrsexperten;
+    Stack<Pane> paneStack;
+    Map<String, Website> websites;
+    Map<String, Node> currentPanes;
+    Website activeWebsite;
 
     public HelloController() throws URISyntaxException {
 
         User casper = new User("Casper", "ck_1a62e360c9cfdfe4d4438f35155c6816e872b558", "cs_ac785b31f21fe1835e2dd6adb3e0c6a474d56357");
-        skadedyrsexperten = new Website("Skadedyrsexperten", "https://staging-skadedyrsexpertendk-test.kinsta.cloud", casper);
+        Website skadedyrsexperten = new Website("Skadedyrsexperten", "https://staging-skadedyrsexpertendk-test.kinsta.cloud", casper);
+
+        User trekantensCasper = new User("Casper", "ck_01f48076048289976cd89f0a3324d5c418c068be", "cs_cc7f2290c7ca39b2fd5abfe21fd34e6cdccf0dd0");
+        Website trekantens = new Website("Trekantens-Trailercenter", "https://www.trekantens-trailercenter.dk", trekantensCasper);
+
+        paneStack = new Stack<>();
+
+        this.websites = new HashMap<>();
+        this.currentPanes = new HashMap<>();
+
+        websites.put(skadedyrsexperten.getName(), skadedyrsexperten);
+        websites.put(trekantens.getName(), trekantens);
+
+        this.activeWebsite = websites.get(skadedyrsexperten.getName());
 
     }
 
     @FXML
-    private Pane mainBox;
-
+    private ScrollPane listWrapper;
     @FXML
-    private Pane mainWrapper;
-    @FXML
-    private ScrollPane websitePanelWrapper;
+    private HBox websitePanel;
 
 
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        try {
-            renderProducts();
-        } catch (ExecutionException e) {
-            throw new RuntimeException(e);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
+
+        listWrapper.setContent(new ProductListPane(activeWebsite, paneStack));
+        loadWebsites();
+
     }
 
-    private void renderProducts() throws ExecutionException, InterruptedException {
-
-        List<CompletableFuture<Pane>> productCards = new ArrayList<>();
-
-        for(AbstractProduct product : skadedyrsexperten.getProducts()) {
-            productCards.add(
-                    CompletableFuture.supplyAsync(() -> {
-                        System.out.println("Send");
-                        return productCard(product);
-                    })
-            );
+    private void loadWebsites() {
+        for(String websiteName : websites.keySet()) {
+            websitePanel.getChildren().add(websiteCard(websites.get(websiteName)));
         }
-
-        for(CompletableFuture<Pane> productCard : productCards) {
-            System.out.println("Return");
-            mainBox.getChildren().add(productCard.get());
-        }
+        websitePanel.getChildren().add(new Text());
     }
 
-    private Pane productCard(AbstractProduct product) {
+    private Pane websiteCard(Website website) {
+        HBox websiteCard = new HBox();
+        Label websiteNameLabel = new Label(website.getName());
 
-        Pane productCard = new HBox();
-        ImageView productImage = new ImageView(new Image(product.getImages().get(0).getImageUrl()));
-        Label productTitle = new Label(product.getName());
+        websiteCard.setPadding(new Insets(20));
+        websiteCard.setBackground(new Background(new BackgroundFill(Color.rgb(0, 0, 0, 0.1), new CornerRadii(5), new Insets(5))));
 
-        productCard.setPadding(new Insets(10));
-        productCard.setBackground(new Background(new BackgroundFill(Color.rgb(0, 0, 0, 0.1), new CornerRadii(10), new Insets(10))));
+        websiteCard.getChildren().add(websiteNameLabel);
 
-        productTitle.setFont(new Font(18));
-        productTitle.setPadding(new Insets(0, 0, 0, 10));
+        websiteCard.setOnMouseClicked(e -> {
 
-        productImage.setFitHeight(100);
-        productImage.setFitWidth(100);
+            currentPanes.put(activeWebsite.getName(), listWrapper.getContent());
 
-        productCard.getChildren().add(productImage);
-        productCard.getChildren().add(productTitle);
+            String websiteName = website.getName();
 
-        return productCard;
+            if(websites.containsKey(websiteName)) {
+                if(currentPanes.containsKey(websiteName)) {
+                    listWrapper.setContent(currentPanes.get(websiteName));
+                    activeWebsite = websites.get(websiteName);
+                } else {
+
+                    activeWebsite = websites.get(websiteName);
+
+                    ProductListPane newPane = new ProductListPane(activeWebsite, paneStack);
+
+                    currentPanes.put(websiteName, newPane);
+                    listWrapper.setContent(newPane);
+                }
+            }
+        });
+
+        return websiteCard;
     }
 }
