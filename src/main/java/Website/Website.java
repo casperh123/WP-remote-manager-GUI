@@ -5,17 +5,19 @@ import Components.Product.Product;
 import Exceptions.BadHTTPResponseException;
 import Lists.PaginatedQueryList;
 import Lists.QueryList;
+import Lists.UnpaginatedQueryList;
 import REST.RESTConnection;
 import REST.RESTEndpoints;
 
 import java.net.URISyntaxException;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
 public class Website {
     private String name;
     private String stringUrl;
-    private PaginatedQueryList<Product> productList;
+    private QueryList<Product> productList;
     private QueryList<Category> categoryList;
     private User user;
     private RESTConnection connection;
@@ -70,7 +72,7 @@ public class Website {
     public String getUrl() {
         return stringUrl;
     }
-    public PaginatedQueryList<Product> getProducts() {
+    public QueryList<Product> getProducts() {
         return productList;
     }
     public QueryList<Category> getCategories() {

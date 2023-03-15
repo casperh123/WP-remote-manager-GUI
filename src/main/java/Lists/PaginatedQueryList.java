@@ -45,7 +45,7 @@ public class PaginatedQueryList<E> extends QueryList<E> {
 
         this.clear();
 
-        byte[] getResponse = connection.GETRequest(restEndpoint, "&per_page=30&page=" + currentPage);
+        byte[] getResponse = connection.GETRequest(restEndpoint, "&per_page=100&page=" + currentPage);
 
         Any json = JsonIterator.deserialize(getResponse);
 

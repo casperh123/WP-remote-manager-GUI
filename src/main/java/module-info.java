@@ -19,10 +19,12 @@ module GUI {
     opens Components.Order;
     opens Components.Order.OrderComponents;
     opens Components.Order.RefundComponents;
+    opens GUI.Utility;
     exports Components.Order.RefundComponents;
     exports Components.Order;
     exports Components.ProductAttribute;
     exports GUI;
+    exports GUI.Utility;
     exports Components.Product.ProductComponents;
     exports Components;
     exports Components.Category;

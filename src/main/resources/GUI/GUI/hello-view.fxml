@@ -8,10 +8,13 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.text.Text?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.control.Button?>
 <BorderPane fx:id="mainWrapper" xmlns:fx="http://javafx.com/fxml" stylesheets="@styles.css"
             fx:controller="GUI.HelloController" >
     <top>
-        <Text>MEGET SEJT PROGRAM</Text>
+        <HBox fx:id="topBar">
+
+        </HBox>
     </top>
     <left>
         <ScrollPane fx:id="websitePanelWrapper" >
