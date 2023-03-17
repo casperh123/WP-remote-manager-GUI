@@ -6,23 +6,25 @@ import okhttp3.*;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
-public class RESTConnection {
+public class RESTConnection implements Serializable {
+
     private String websiteRootUrl;
     private String authentication;
-    private OkHttpClient client;
     private Headers latestHeaders;
 
     public RESTConnection(String websiteRootUrl, User user) {
         this.websiteRootUrl = websiteRootUrl;
         this.authentication = "consumer_key=" + user.getApiKey() + "&consumer_secret=" + user.getApiSecret();
-        this.client = new OkHttpClient();
     }
 
     public byte[] GETRequest(String endpoint, String parameters) throws BadHTTPResponseException {
+
+        OkHttpClient client = new OkHttpClient();
 
         Request request = new Request.Builder()
                 .url(websiteRootUrl + endpoint + authentication + parameters)
@@ -39,6 +41,7 @@ public class RESTConnection {
 
     public List<byte[]> GETRequest(String endpoint, List<String> parameters) throws BadHTTPResponseException {
 
+        OkHttpClient client = new OkHttpClient();
         List<byte[]> responseBodies = new ArrayList<>();
         CountDownLatch countDownLatch = new CountDownLatch(parameters.size());
 
@@ -72,6 +75,7 @@ public class RESTConnection {
 
     public Headers GETRequestHead(String endpoint, String parameters) throws BadHTTPResponseException {
 
+        OkHttpClient client = new OkHttpClient();
         Request request = new Request.Builder()
                 .url(websiteRootUrl + endpoint + authentication + parameters)
                 .build();

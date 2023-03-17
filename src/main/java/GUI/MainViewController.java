@@ -9,10 +9,12 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.*;
 import Website.Website;
 import Website.User;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.io.File;
@@ -26,7 +28,6 @@ public class MainViewController implements Initializable {
     Stack<Node> backPaneStack;
     Stack<Node> forwardPaneStack;
 
-    Map<String, Website> websiteMap;
     Map<String, Node> currentPanes;
 
     Website activeWebsite;
@@ -35,16 +36,12 @@ public class MainViewController implements Initializable {
 
 
     public MainViewController() throws URISyntaxException {
-
-        /*User casper = new User("Casper", "ck_1a62e360c9cfdfe4d4438f35155c6816e872b558", "cs_ac785b31f21fe1835e2dd6adb3e0c6a474d56357");
-        Website skadedyrsexperten = new Website("Skadedyrsexperten", "https://staging-skadedyrsexpertendk-test.kinsta.cloud", casper);
-
+        /*
         User trekantensCasper = new User("Casper", "ck_01f48076048289976cd89f0a3324d5c418c068be", "cs_cc7f2290c7ca39b2fd5abfe21fd34e6cdccf0dd0");
         Website trekantens = new Website("Trekantens-Trailercenter", "https://www.trekantens-trailercenter.dk", trekantensCasper);
-*/
+        */
         this.backPaneStack = new Stack<>();
         this.forwardPaneStack = new Stack<>();
-        this.websiteMap = new HashMap<>();
         this.currentPanes = new HashMap<>();
 
         File websiteFile = new File("src/main/resources/Websites/website.obj");
@@ -58,13 +55,13 @@ public class MainViewController implements Initializable {
         } else {
             this.websites = new ArrayList<>();
         }
-/*
-        websiteMap.put(skadedyrsexperten.getName(), skadedyrsexperten);
-        websiteMap.put(trekantens.getName(), trekantens);
-*/
+
+        System.out.println("Mannes");
 
     }
 
+    @FXML
+    private BorderPane mainWrapper;
     @FXML
     private ScrollPane listWrapper;
     @FXML
@@ -83,9 +80,16 @@ public class MainViewController implements Initializable {
             addWebsite(websites);
         } else {
             this.activeWebsite = websites.get(0);
-            listWrapper.setContent(new ProductListPane(activeWebsite));
             loadWebsites();
         }
+
+        Button addNewButton = new Button("Add");
+
+        addNewButton.setOnMouseClicked(e -> {
+            addWebsite(websites);
+        });
+
+        websitePanel.getChildren().add(addNewButton);
 
         addStateButtons();
 
@@ -93,10 +97,12 @@ public class MainViewController implements Initializable {
 
     public void addWebsite(List<Website> websites) {
         Stage loginStage = new Stage();
-        Scene loginScene = new Scene(new AddWebsiteView(websites), 500, 300);
+        Scene loginScene = new Scene(new AddWebsiteView(websites, loginStage), 500, 300);
         loginStage.setScene(loginScene);
         loginStage.setAlwaysOnTop(true);
-        loginStage.setOnCloseRequest(e -> loadWebsites());
+        loginStage.setOnHidden(e -> loadWebsites());
+        loginStage.setTitle("Add Website");
+        loginStage.initModality(Modality.APPLICATION_MODAL);
         loginStage.show();
     }
 
@@ -111,34 +117,49 @@ public class MainViewController implements Initializable {
     }
 
     private void loadWebsites() {
-        for(Website website : websites) {
 
-            WebsiteCard addedWebsite = new WebsiteCard(websiteMap.get(website.getName()));
+        if (websites.size() != 0) {
 
-            websitePanel.getChildren().add(addedWebsite);
+            activeWebsite = websites.get(0);
 
-            addedWebsite.setOnMouseClicked(e -> {
-
-                currentPanes.put(activeWebsite.getName(), listWrapper.getContent());
-                backPaneStack.push(listWrapper.getContent());
-                backButton.setBackGroundActive();
-
-                if(websiteMap.containsKey(website.getName())) {
-                    if(currentPanes.containsKey(website.getName())) {
-                        listWrapper.setContent(currentPanes.get(website.getName()));
-                        activeWebsite = websiteMap.get(website.getName());
-                    } else {
-
-                        activeWebsite = websiteMap.get(website.getName());
-
-                        ProductListPane newPane = new ProductListPane(activeWebsite);
-
-                        currentPanes.put(website.getName(), newPane);
-                        listWrapper.setContent(newPane);
-                    }
-                }
-            });
+            for (Website website : websites) {
+                generateWebsiteCard(website);
+            }
         }
+
+        listWrapper.setContent(new ProductListPane(activeWebsite));
+
     }
 
+    private void generateWebsiteCard(Website website) {
+
+        WebsiteCard addedCard = new WebsiteCard(website);
+
+        websitePanel.getChildren().add(addedCard);
+
+        addedCard.setOnMouseClicked(e -> {
+
+            Website containedWebsite = addedCard.getWebsite();
+
+            currentPanes.put(activeWebsite.getName(), listWrapper.getContent());
+            backPaneStack.push(listWrapper.getContent());
+            backButton.setBackGroundActive();
+
+            if(currentPanes.containsKey(containedWebsite.getName())) {
+                listWrapper.setContent(currentPanes.get(containedWebsite.getName()));
+                activeWebsite = containedWebsite;
+            } else {
+
+                activeWebsite = containedWebsite;
+
+                ProductListPane newPane = new ProductListPane(activeWebsite);
+
+                currentPanes.put(activeWebsite.getName(), newPane);
+                listWrapper.setContent(newPane);
+            }
+        });
+    }
 }
+
+
+

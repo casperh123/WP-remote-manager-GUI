@@ -9,17 +9,16 @@ import Lists.UnpaginatedQueryList;
 import REST.RESTConnection;
 import REST.RESTEndpoints;
 
+import java.io.Serializable;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
-public class Website {
+public class Website implements Serializable {
+
     private String name;
     private String stringUrl;
-    private QueryList<Product> productList;
-    private QueryList<Category> categoryList;
-    private User user;
     private RESTConnection connection;
 
 
@@ -32,37 +31,8 @@ public class Website {
         }
 
         this.name = name;
-        this.user = user;
         this.connection = new RESTConnection(stringUrl, user);
 
-        //TODO ExceptionHandling
-        CompletableFuture<PaginatedQueryList<Product>> produtListFuture = CompletableFuture.supplyAsync(() -> {
-            try {
-                return new PaginatedQueryList<>(connection, RESTEndpoints.getProductsEndpoint(), Product.class) {
-                };
-            } catch (BadHTTPResponseException e) {
-                System.out.println("Fuck");
-                return null;
-            }
-        });
-
-        /*//TODO Exception Handling
-        CompletableFuture<QueryList<Category>> categoryListFuture = CompletableFuture.supplyAsync(()-> {
-            try {
-                return new PaginatedQueryList<>(connection, RESTEndpoints.getProductCategoriesEndpoint(), Category.class);
-            } catch (BadHTTPResponseException e) {
-                System.out.println("Fuck");
-                return null;
-            }
-        });*/
-
-        //TODO Exception Handling
-        try {
-            this.productList = produtListFuture.get();
-            //this.categoryList = categoryListFuture.get();
-        } catch (InterruptedException | ExecutionException e) {
-            throw new RuntimeException(e);
-        }
         System.out.println("done");
     }
 
@@ -73,10 +43,25 @@ public class Website {
         return stringUrl;
     }
     public QueryList<Product> getProducts() {
-        return productList;
-    }
-    public QueryList<Category> getCategories() {
-        return categoryList;
+
+        CompletableFuture<PaginatedQueryList<Product>> produtListFuture = CompletableFuture.supplyAsync(() -> {
+            try {
+                return new PaginatedQueryList<>(connection, RESTEndpoints.getProductsEndpoint(), Product.class) {
+                };
+            } catch (BadHTTPResponseException e) {
+                System.out.println("Fuck");
+                return null;
+            }
+        });
+
+        //TODO FIX
+        try {
+            return produtListFuture.get();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        } catch (ExecutionException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }

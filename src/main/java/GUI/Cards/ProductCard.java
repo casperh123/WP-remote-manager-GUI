@@ -54,22 +54,7 @@ public class ProductCard extends HBox{
 
     private ImageView generateImageView(String imageUrl) {
 
-        ImageView imageView = new ImageView(new Image(imageUrl, true));
-
-        CompletableFuture.runAsync(() -> {
-            try {
-                wait(3000);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-            if(productImage.getImage() == null || productImage.getImage().isError()) {
-                try {
-                    productImage.setImage(new Image(new FileInputStream("src/main/resources/Images/placeholder.jpg")));
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-        });
+        ImageView imageView = new ImageView(new Image(imageUrl, 200, 200, true, true, true));
 
         return imageView;
     }

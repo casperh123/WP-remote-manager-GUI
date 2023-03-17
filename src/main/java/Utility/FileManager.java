@@ -19,7 +19,7 @@ public class FileManager {
             out.writeObject(object);
         } catch (IOException e) {
             //TODO Debug-statement
-            System.out.println("File could not be saved");
+            System.out.println(e.getMessage());
         }
     }
 
