@@ -9,8 +9,8 @@
 <?import javafx.scene.text.Text?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.control.Button?>
-<BorderPane fx:id="mainWrapper" xmlns:fx="http://javafx.com/fxml" stylesheets="@styles.css"
-            fx:controller="GUI.HelloController" >
+<BorderPane fx:id="mainWrapper" xmlns:fx="http://javafx.com/fxml"
+            fx:controller="GUI.MainViewController" >
     <top>
         <HBox fx:id="topBar">
 
