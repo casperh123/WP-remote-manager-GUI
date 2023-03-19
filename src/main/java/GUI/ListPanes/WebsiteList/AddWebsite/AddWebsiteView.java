@@ -1,4 +1,4 @@
-package GUI.AddWebsite;
+package GUI.ListPanes.WebsiteList.AddWebsite;
 
 import Utility.FileManager;
 import Website.Website;
@@ -6,10 +6,8 @@ import Website.User;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import org.w3c.dom.Text;
 
 import java.net.URISyntaxException;
 import java.util.List;

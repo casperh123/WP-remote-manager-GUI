@@ -8,7 +8,6 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.CornerRadii;
-import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 
 import java.util.Stack;
@@ -86,5 +85,9 @@ public class StateButton extends Button {
 
     public void setBackGroundInactive() {
         this.setBackground(inactiveBackGround);
+    }
+
+    public void push(Node node) {
+        popStack.push(node);
     }
 }

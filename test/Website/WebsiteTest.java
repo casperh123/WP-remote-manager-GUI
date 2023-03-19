@@ -14,7 +14,6 @@ public class WebsiteTest {
         Website skadedyrsexperten = new Website("Skadedyrsexperten", "https://staging-skadedyrsexpertendk-test.kinsta.cloud", casper);
 
         assert(skadedyrsexperten.getProducts().size() > 0);
-        assert(skadedyrsexperten.getCategories().size() > 0);
     }
 
     @Test

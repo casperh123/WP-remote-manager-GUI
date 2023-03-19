@@ -1,4 +1,4 @@
-package GUI.AddWebsite;
+package GUI.ListPanes.WebsiteList.AddWebsite;
 
 import java.util.List;
 import java.util.Map;

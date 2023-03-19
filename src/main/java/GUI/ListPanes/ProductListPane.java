@@ -4,7 +4,6 @@ import Components.Product.Product;
 import GUI.Cards.ProductCard;
 import Website.Website;
 import Lists.QueryList;
-import javafx.scene.Node;
 import javafx.scene.layout.*;
 
 public class ProductListPane extends VBox {

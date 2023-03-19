@@ -8,6 +8,7 @@ import Lists.QueryList;
 import Lists.UnpaginatedQueryList;
 import REST.RESTConnection;
 import REST.RESTEndpoints;
+import okhttp3.Connection;
 
 import java.io.Serializable;
 import java.net.URISyntaxException;
@@ -19,7 +20,7 @@ public class Website implements Serializable {
 
     private String name;
     private String stringUrl;
-    private RESTConnection connection;
+    private User user;
 
 
     public Website(String name, String url, User user) throws URISyntaxException {
@@ -31,7 +32,7 @@ public class Website implements Serializable {
         }
 
         this.name = name;
-        this.connection = new RESTConnection(stringUrl, user);
+        this.user = user;
 
         System.out.println("done");
     }
@@ -43,6 +44,8 @@ public class Website implements Serializable {
         return stringUrl;
     }
     public QueryList<Product> getProducts() {
+
+        RESTConnection connection = new RESTConnection(stringUrl, user);
 
         CompletableFuture<PaginatedQueryList<Product>> produtListFuture = CompletableFuture.supplyAsync(() -> {
             try {

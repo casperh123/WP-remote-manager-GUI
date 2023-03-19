@@ -1,14 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.layout.VBox?>
-
-<?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.text.Text?>
 <?import javafx.scene.layout.HBox?>
-<?import javafx.scene.control.Button?>
+
 <BorderPane fx:id="mainWrapper" xmlns:fx="http://javafx.com/fxml"
             fx:controller="GUI.MainViewController" >
     <top>
@@ -16,15 +11,8 @@
 
         </HBox>
     </top>
-    <left>
-        <ScrollPane fx:id="websitePanelWrapper" >
-            <HBox fx:id="websitePanel">
-
-            </HBox>
-        </ScrollPane>
-    </left>
     <center>
-        <ScrollPane fx:id="listWrapper">
+        <ScrollPane fx:id="mainContent">
         </ScrollPane>
     </center>
 </BorderPane>
