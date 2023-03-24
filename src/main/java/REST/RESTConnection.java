@@ -1,6 +1,7 @@
 package REST;
 
 import Exceptions.BadHTTPResponseException;
+import Utility.HTTPClient;
 import Website.User;
 import okhttp3.*;
 import org.jetbrains.annotations.NotNull;
@@ -24,7 +25,7 @@ public class RESTConnection implements Serializable {
 
     public byte[] GETRequest(String endpoint, String parameters) throws BadHTTPResponseException {
 
-        OkHttpClient client = new OkHttpClient();
+        OkHttpClient client = HTTPClient.getHTTPClient();
 
         Request request = new Request.Builder()
                 .url(websiteRootUrl + endpoint + authentication + parameters)
@@ -41,7 +42,7 @@ public class RESTConnection implements Serializable {
 
     public List<byte[]> GETRequest(String endpoint, List<String> parameters) throws BadHTTPResponseException {
 
-        OkHttpClient client = new OkHttpClient();
+        OkHttpClient client = HTTPClient.getHTTPClient();
         List<byte[]> responseBodies = new ArrayList<>();
         CountDownLatch countDownLatch = new CountDownLatch(parameters.size());
 
@@ -75,7 +76,7 @@ public class RESTConnection implements Serializable {
 
     public Headers GETRequestHead(String endpoint, String parameters) throws BadHTTPResponseException {
 
-        OkHttpClient client = new OkHttpClient();
+        OkHttpClient client = HTTPClient.getHTTPClient();
         Request request = new Request.Builder()
                 .url(websiteRootUrl + endpoint + authentication + parameters)
                 .build();

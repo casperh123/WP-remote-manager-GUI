@@ -1,6 +1,7 @@
 package GUI.ListPanes;
 
 import Components.Product.Product;
+import Exceptions.FetchException;
 import GUI.Cards.ProductCard;
 import Website.Website;
 import Lists.QueryList;
@@ -11,7 +12,11 @@ public class ProductListPane extends VBox {
     private QueryList<Product> products;
 
     public ProductListPane(Website website) {
-        this.products = website.getProducts();
+        try{
+            this.products = website.getProducts();
+        } catch (FetchException e) {
+            System.out.println(e.getMessage());
+        }
         renderProducts();
     }
 

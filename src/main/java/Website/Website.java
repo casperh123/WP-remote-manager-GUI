@@ -1,8 +1,16 @@
 package Website;
 
 import Components.Category.Category;
+import Components.Coupon.Coupon;
+import Components.Customer.Customer;
+import Components.Order.Order;
+import Components.Order.OrderNote;
+import Components.Order.Refund;
 import Components.Product.Product;
+import Components.ProductAttribute.ProductAttribute;
+import Components.ProductAttribute.ProductAttributeTerm;
 import Exceptions.BadHTTPResponseException;
+import Exceptions.FetchException;
 import Lists.PaginatedQueryList;
 import Lists.QueryList;
 import Lists.UnpaginatedQueryList;
@@ -43,11 +51,12 @@ public class Website implements Serializable {
     public String getUrl() {
         return stringUrl;
     }
-    public QueryList<Product> getProducts() {
+
+    public QueryList<Product> getProducts() throws FetchException {
 
         RESTConnection connection = new RESTConnection(stringUrl, user);
 
-        CompletableFuture<PaginatedQueryList<Product>> produtListFuture = CompletableFuture.supplyAsync(() -> {
+        CompletableFuture<PaginatedQueryList<Product>> listFuture = CompletableFuture.supplyAsync(() -> {
             try {
                 return new PaginatedQueryList<>(connection, RESTEndpoints.getProductsEndpoint(), Product.class) {
                 };
@@ -57,14 +66,136 @@ public class Website implements Serializable {
             }
         });
 
-        //TODO FIX
         try {
-            return produtListFuture.get();
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        } catch (ExecutionException e) {
-            throw new RuntimeException(e);
+            if(listFuture.get() == null) {
+                throw new FetchException("Could not complete request");
+            }
+            return listFuture.get();
+        } catch (InterruptedException | ExecutionException e) {
+            throw new FetchException(e.getMessage());
         }
     }
 
+    public QueryList<Coupon> getCoupons() throws FetchException {
+
+        RESTConnection connection = new RESTConnection(stringUrl, user);
+
+        CompletableFuture<PaginatedQueryList<Coupon>> listFuture = CompletableFuture.supplyAsync(() -> {
+            try {
+                return new PaginatedQueryList<>(connection, RESTEndpoints.getCouponsEndpoint(), Coupon.class) {
+                };
+            } catch (BadHTTPResponseException e) {
+                System.out.println("Fuck");
+                return null;
+            }
+        });
+
+
+        try {
+            if(listFuture.get() == null) {
+                throw new FetchException("Could not complete request");
+            }
+            return listFuture.get();
+        } catch (InterruptedException | ExecutionException e) {
+            throw new FetchException(e.getMessage());
+        }
+    }
+
+    public QueryList<Customer> getCustomers() throws FetchException {
+
+        RESTConnection connection = new RESTConnection(stringUrl, user);
+
+        CompletableFuture<PaginatedQueryList<Customer>> listFuture = CompletableFuture.supplyAsync(() -> {
+            try {
+                return new PaginatedQueryList<>(connection, RESTEndpoints.getCustomersEndpoint(), Customer.class) {
+                };
+            } catch (BadHTTPResponseException e) {
+                System.out.println("Fuck");
+                return null;
+            }
+        });
+
+        try {
+            if(listFuture.get() == null) {
+                throw new FetchException("Could not complete request");
+            }
+            return listFuture.get();
+        } catch (InterruptedException | ExecutionException e) {
+            throw new FetchException(e.getMessage());
+        }
+    }
+
+    public QueryList<Order> getOrders() throws FetchException {
+
+        RESTConnection connection = new RESTConnection(stringUrl, user);
+
+        CompletableFuture<PaginatedQueryList<Order>> listFuture = CompletableFuture.supplyAsync(() -> {
+            try {
+                return new PaginatedQueryList<>(connection, RESTEndpoints.getOrdersEndpoint(), Order.class) {
+                };
+            } catch (BadHTTPResponseException e) {
+                System.out.println("Fuck");
+                return null;
+            }
+        });
+
+        try {
+            if(listFuture.get() == null) {
+                throw new FetchException("Could not complete request");
+            }
+            return listFuture.get();
+        } catch (InterruptedException | ExecutionException e) {
+            throw new FetchException(e.getMessage());
+        }
+    }
+
+    public QueryList<ProductAttribute> getProductAttributes() throws FetchException {
+
+        RESTConnection connection = new RESTConnection(stringUrl, user);
+
+        CompletableFuture<PaginatedQueryList<ProductAttribute>> listFuture = CompletableFuture.supplyAsync(() -> {
+            try {
+                return new PaginatedQueryList<>(connection, RESTEndpoints.getProductAttributesEndpoint(), ProductAttribute.class) {
+                };
+            } catch (BadHTTPResponseException e) {
+                System.out.println("Fuck");
+                return null;
+            }
+        });
+
+        try {
+            if(listFuture.get() == null) {
+                throw new FetchException("Could not complete request");
+            }
+            return listFuture.get();
+        } catch (InterruptedException | ExecutionException e) {
+            throw new FetchException(e.getMessage());
+        }
+    }
+
+    //TODO implement endpoint
+/*
+    public QueryList<ProductAttributeTerm> getProductAttributeTerm() throws FetchException {
+
+        RESTConnection connection = new RESTConnection(stringUrl, user);
+
+        CompletableFuture<PaginatedQueryList<ProductAttributeTerm>> listFuture = CompletableFuture.supplyAsync(() -> {
+            try {
+                return new PaginatedQueryList<>(connection, RESTEndpoints.getProdu(), ProductAttributeTerm.class) {
+                };
+            } catch (BadHTTPResponseException e) {
+                System.out.println("Fuck");
+                return null;
+            }
+        });
+
+        try {
+            if(listFuture.get() == null) {
+                throw new FetchException("Could not complete request");
+            }
+            return listFuture.get();
+        } catch (InterruptedException | ExecutionException e) {
+            throw new FetchException(e.getMessage());
+        }
+    }*/
 }
