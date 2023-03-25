@@ -15,12 +15,12 @@ import java.util.concurrent.CountDownLatch;
 public class RESTConnection implements Serializable {
 
     private String websiteRootUrl;
-    private String authentication;
+    private String credentials;
     private Headers latestHeaders;
 
     public RESTConnection(String websiteRootUrl, User user) {
         this.websiteRootUrl = websiteRootUrl;
-        this.authentication = "consumer_key=" + user.getApiKey() + "&consumer_secret=" + user.getApiSecret();
+        this.credentials = Credentials.basic(user.getApiKey(), user.getApiSecret());
     }
 
     public byte[] GETRequest(String endpoint, String parameters) throws BadHTTPResponseException {
@@ -28,7 +28,8 @@ public class RESTConnection implements Serializable {
         OkHttpClient client = HTTPClient.getHTTPClient();
 
         Request request = new Request.Builder()
-                .url(websiteRootUrl + endpoint + authentication + parameters)
+                .url(websiteRootUrl + endpoint + parameters)
+                .header("Authorization", credentials)
                 .build();
 
         try (Response response = client.newCall(request).execute()) {
@@ -46,24 +47,27 @@ public class RESTConnection implements Serializable {
         List<byte[]> responseBodies = new ArrayList<>();
         CountDownLatch countDownLatch = new CountDownLatch(parameters.size());
 
+
         for(String parameter : parameters) {
             client.newCall(new Request.Builder()
-                    .url(websiteRootUrl + endpoint + authentication + parameter)
-                    .build())
+                            .url(websiteRootUrl + endpoint + parameter)
+                            .header("Authorization", credentials)
+                            .build())
                     .enqueue(new Callback() {
-                public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                    if(!response.isSuccessful()) throw new BadHTTPResponseException(response.code());
-                    try (ResponseBody responseBody = response.body()) {
-                        responseBodies.add(responseBody.bytes());
-                    }
-                    countDownLatch.countDown();
-                }
+                        public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                            if(!response.isSuccessful()) throw new BadHTTPResponseException(response.code());
+                            try (ResponseBody responseBody = response.body()) {
+                                responseBodies.add(responseBody.bytes());
+                            }
+                            countDownLatch.countDown();
+                        }
 
-                @Override
-                public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                    System.out.println("Fuck");
-                }
-            });
+                        @Override
+                        public void onFailure(Call call, IOException e) {
+                            System.out.println("Request failed: " + e.getMessage());
+                            countDownLatch.countDown();
+                        }
+                    });
         }
 
         try {
@@ -78,7 +82,8 @@ public class RESTConnection implements Serializable {
 
         OkHttpClient client = HTTPClient.getHTTPClient();
         Request request = new Request.Builder()
-                .url(websiteRootUrl + endpoint + authentication + parameters)
+                .url(websiteRootUrl + endpoint + parameters)
+                .header("Authorization", credentials)
                 .build();
 
         try (Response response = client.newCall(request).execute()) {

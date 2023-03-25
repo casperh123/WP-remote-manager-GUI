@@ -36,7 +36,7 @@
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-            <version>25.1-android</version>
+            <version>31.1-android</version>
         </dependency>
         <dependency>
             <groupId>org.realityforge.org.jetbrains.annotations</groupId>
@@ -52,6 +52,17 @@
             <groupId>com.jsoniter</groupId>
             <artifactId>jsoniter</artifactId>
             <version>0.9.23</version>
+        </dependency>
+        <dependency>
+            <groupId>com.squareup.okhttp3</groupId>
+            <artifactId>okhttp-brotli</artifactId>
+            <version>4.10.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.net.cronet</groupId>
+            <artifactId>cronet-okhttp</artifactId>
+            <version>0.1.0</version>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 
@@ -90,4 +101,11 @@
             </plugin>
         </plugins>
     </build>
+    <repositories>
+        <repository>
+            <id>gmaven</id>
+            <name>Google Maven</name>
+            <url>https://maven.google.com/</url>
+        </repository>
+    </repositories>
 </project>

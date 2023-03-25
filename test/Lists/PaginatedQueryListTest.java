@@ -27,7 +27,7 @@ public class PaginatedQueryListTest {
 
         products.updateList();
 
-        assert(products.size() == 30);
+        assert(products.size() == 100);
         assert(products.getCurrentPage() == 1);
     }
 
@@ -38,7 +38,7 @@ public class PaginatedQueryListTest {
 
         products.getPreviousPage();
 
-        assert(products.size() == 30);
+        assert(products.size() == 100);
         assert(products.getCurrentPage() == 3);
     }
 
@@ -47,7 +47,7 @@ public class PaginatedQueryListTest {
 
         products.getNextPage();
 
-        assert(products.size() == 30);
+        assert(products.size() == 100);
         assert(products.getCurrentPage() == 2);
     }
 }

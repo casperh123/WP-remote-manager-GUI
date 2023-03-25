@@ -27,6 +27,7 @@ public class PaginatedQueryList<E> extends QueryList<E> {
         updateList();
 
         Map<String, List<String>> httpHeaders = connection.getLatestHeaders().toMultimap();
+        System.out.println(httpHeaders);
 
         if(httpHeaders.containsKey("x-wp-total")) {
             this.totalItems = Integer.parseInt(httpHeaders.get("x-wp-total").get(0));

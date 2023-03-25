@@ -36,6 +36,7 @@ class RESTConnectionTest {
 
         try {
             connectionResponse = connection.GETRequest(RESTEndpoints.getProductsEndpoint(), "&per_page=100");
+            long end = System.nanoTime();
         } catch (IOException e) {
             fail(e.getMessage());
             connectionResponse = new byte[0];

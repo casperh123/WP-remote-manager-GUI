@@ -5,6 +5,8 @@ import Exceptions.BadHTTPResponseException;
 import REST.RESTConnection;
 import REST.RESTEndpoints;
 import Website.User;
+import okhttp3.Call;
+import okhttp3.OkHttpClient;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.fail;
 
@@ -27,5 +29,6 @@ public class CustomerListTest {
         customers.forEach(customer -> System.out.println(customer.getShipping()));
 
         assert(customers.size() != 0);
+
     }
 }
