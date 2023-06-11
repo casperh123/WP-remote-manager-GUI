@@ -1,14 +1,10 @@
 package Website;
 
-import Components.Category.Category;
 import Components.Coupon.Coupon;
 import Components.Customer.Customer;
 import Components.Order.Order;
-import Components.Order.OrderNote;
-import Components.Order.Refund;
 import Components.Product.Product;
 import Components.ProductAttribute.ProductAttribute;
-import Components.ProductAttribute.ProductAttributeTerm;
 import Exceptions.BadHTTPResponseException;
 import Exceptions.FetchException;
 import Lists.PaginatedQueryList;
@@ -16,11 +12,9 @@ import Lists.QueryList;
 import Lists.UnpaginatedQueryList;
 import REST.RESTConnection;
 import REST.RESTEndpoints;
-import okhttp3.Connection;
 
 import java.io.Serializable;
 import java.net.URISyntaxException;
-import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
@@ -52,13 +46,37 @@ public class Website implements Serializable {
         return stringUrl;
     }
 
-    public QueryList<Product> getProducts() throws FetchException {
+    public PaginatedQueryList<Product> getProducts() throws FetchException {
 
         RESTConnection connection = new RESTConnection(stringUrl, user);
 
         CompletableFuture<PaginatedQueryList<Product>> listFuture = CompletableFuture.supplyAsync(() -> {
             try {
                 return new PaginatedQueryList<>(connection, RESTEndpoints.getProductsEndpoint(), Product.class) {
+                };
+            } catch (BadHTTPResponseException e) {
+                System.out.println("Fuck");
+                return null;
+            }
+        });
+
+        try {
+            if(listFuture.get() == null) {
+                throw new FetchException("Could not complete request");
+            }
+            return listFuture.get();
+        } catch (InterruptedException | ExecutionException e) {
+            throw new FetchException(e.getMessage());
+        }
+    }
+
+    public QueryList<Product> getAllProducts() throws FetchException {
+
+        RESTConnection connection = new RESTConnection(stringUrl, user);
+
+        CompletableFuture<UnpaginatedQueryList<Product>> listFuture = CompletableFuture.supplyAsync(() -> {
+            try {
+                return new UnpaginatedQueryList<>(connection, RESTEndpoints.getProductsEndpoint(), Product.class) {
                 };
             } catch (BadHTTPResponseException e) {
                 System.out.println("Fuck");

@@ -5,6 +5,7 @@ import Components.WPImage;
 import Components.Product.ProductComponents.*;
 import com.jsoniter.annotation.JsonCreator;
 import com.jsoniter.annotation.JsonProperty;
+import com.jsoniter.fuzzy.MaybeStringIntDecoder;
 
 import java.util.List;
 
@@ -15,8 +16,8 @@ public class Product extends AbstractComponent {
     protected Integer stockQuantity;
 
     //Read-Only
-    @JsonProperty("total_sales")
-    protected int totalSales;
+    @JsonProperty(decoder = MaybeStringIntDecoder.class)
+    protected int total_sales;
 
     //Read-only
     @JsonProperty("rating_count")
@@ -141,6 +142,12 @@ public class Product extends AbstractComponent {
     @JsonCreator
     public Product() {}
 
+    @Override
+    public int hashCode() {
+        return sku.hashCode();
+    }
+
+    @Override
     public boolean equals(Object o) {
 
         if(o == this) {
@@ -158,7 +165,7 @@ public class Product extends AbstractComponent {
     public String toString() {
         return "AbstractProduct{" +
                 "stockQuantity=" + stockQuantity +
-                ", totalSales=" + totalSales +
+                ", totalSales=" + total_sales +
                 ", ratingCount=" + ratingCount +
                 ", parentId=" + parentId +
                 ", menuOrder=" + menuOrder +
@@ -221,4 +228,24 @@ public class Product extends AbstractComponent {
     public List<WPImage> getImages() {
         return images;
     }
+
+    public String getUrl() {
+        return permalink;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getSku() {
+        return sku;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public String getDescription() { return description; }
+
+    public String getShortDescription() { return shortDescription; }
 }

@@ -30,8 +30,8 @@ public class StateButton extends Button {
         this.popStack = popStack;
         this.pushStack = pushStack;
         this.contentPane = contentPane;
-        this.activeBackground = new Background(new BackgroundFill(Color.rgb(0, 0, 0, 0.1), new CornerRadii(5), new Insets(5)));
-        this.inactiveBackGround = new Background(new BackgroundFill(Color.rgb(0, 0, 0, 0.02), new CornerRadii(5), new Insets(5)));
+        this.activeBackground = new Background(new BackgroundFill(Color.rgb(0, 0, 0, 0.2), new CornerRadii(5), new Insets(0)));
+        this.inactiveBackGround = new Background(new BackgroundFill(Color.rgb(0, 0, 0, 0.05), new CornerRadii(5), new Insets(0)));
         this.setBackground(inactiveBackGround);
         this.initialize();
     }

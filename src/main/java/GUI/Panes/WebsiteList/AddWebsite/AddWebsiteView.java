@@ -1,4 +1,4 @@
-package GUI.ListPanes.WebsiteList.AddWebsite;
+package GUI.Panes.WebsiteList.AddWebsite;
 
 import Utility.FileManager;
 import Website.Website;

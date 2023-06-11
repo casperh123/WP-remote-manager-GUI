@@ -1,29 +1,30 @@
-package GUI.ListPanes.WebsiteList;
+package GUI.Panes.WebsiteList;
 
 import GUI.Cards.WebsiteCard;
-import GUI.ListPanes.ProductListPane;
-import GUI.ListPanes.WebsiteList.AddWebsite.AddWebsiteView;
+import GUI.Components.PrimaryButton;
+import GUI.Panes.ProductListPane;
+import GUI.Panes.WebsiteList.AddWebsite.AddWebsiteView;
 import GUI.Utility.StateButton;
 import Utility.FileManager;
 import Website.Website;
-import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
-public class WebsiteListPane extends VBox {
+public class WebsiteList extends VBox {
 
     Map<String, Node> cachedPanes;
     private List<Website> websites;
@@ -31,13 +32,13 @@ public class WebsiteListPane extends VBox {
 
     private ScrollPane mainContent;
     private StateButton backButton;
-    private Pane topContent;
+    private HBox topContent;
     private VBox websiteList;
 
-    public WebsiteListPane(ScrollPane mainContent, StateButton backButton) {
+    public WebsiteList(ScrollPane mainContent, StateButton backButton, Map<String, Node> cachedPanes) {
 
+        this.cachedPanes = cachedPanes;
         this.mainContent = mainContent;
-        this.cachedPanes = new HashMap<>();
         this.backButton = backButton;
         this.topContent = new HBox();
 
@@ -67,6 +68,10 @@ public class WebsiteListPane extends VBox {
         return activeWebsite;
     }
 
+    public List<Website> getWebsites() {
+        return websites;
+    }
+
     private void addWebsite() {
         Stage loginStage = new Stage();
         Scene loginScene = new Scene(new AddWebsiteView(websites, loginStage), 500, 300);
@@ -80,7 +85,7 @@ public class WebsiteListPane extends VBox {
 
     private void renderBasicLayout() {
 
-        Button addNewButton = new Button("Add");
+        Button addNewButton = new PrimaryButton("Add");
 
         addNewButton.setOnMouseClicked(e -> {
             addWebsite();
@@ -88,8 +93,12 @@ public class WebsiteListPane extends VBox {
 
         topContent.getChildren().add(new Label("Websites"));
         topContent.getChildren().add(addNewButton);
+        topContent.setSpacing(10.0);
+        topContent.setPadding(new Insets(5));
 
         websiteList = new VBox();
+        websiteList.setSpacing(10.0);
+        websiteList.setPadding(new Insets(5));
 
         this.getChildren().add(topContent);
         this.getChildren().add(new ScrollPane(websiteList));
@@ -107,9 +116,6 @@ public class WebsiteListPane extends VBox {
                 generateWebsiteCard(website);
             }
         }
-
-        mainContent.setContent(new ProductListPane(activeWebsite));
-
     }
 
     private void generateWebsiteCard(Website website) {
@@ -126,10 +132,10 @@ public class WebsiteListPane extends VBox {
             backButton.push(mainContent.getContent());
             backButton.setBackGroundActive();
 
-            if(cachedPanes.containsKey(containedWebsite.getName())) {
+            /*if(cachedPanes.containsKey(containedWebsite.getName())) {
                 mainContent.setContent(cachedPanes.get(containedWebsite.getName()));
                 activeWebsite = containedWebsite;
-            } else {
+            } else {*/
 
                 activeWebsite = containedWebsite;
 
@@ -137,7 +143,7 @@ public class WebsiteListPane extends VBox {
 
                 cachedPanes.put(activeWebsite.getName(), newPane);
                 mainContent.setContent(newPane);
-            }
+            /*}*/
         });
     }
 }

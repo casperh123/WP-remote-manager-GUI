@@ -12,12 +12,10 @@ import com.jsoniter.any.Any;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 
 public class PaginatedQueryList<E> extends QueryList<E> {
 
-    CompletableFuture<List<E>> primerList = null;
+    List<E> primerList = null;
     int currentPage;
 
     public PaginatedQueryList(RESTConnection connection, String restEndpoint, Class<E> containedClass) throws BadHTTPResponseException {
@@ -73,52 +71,20 @@ public class PaginatedQueryList<E> extends QueryList<E> {
 
     public void primeUpdatedList(int page) throws BadHTTPResponseException {
 
-        CompletableFuture<List<E>> newElements = CompletableFuture.supplyAsync(() -> {
+        primerList = new ArrayList<>();
 
-            List<E> elements = new ArrayList<>();
+        byte[] getResponse = connection.GETRequest(restEndpoint, "&per_page=100&page=" + page);
 
-            byte[] getResponse = new byte[0];
+        Any json = JsonIterator.deserialize(getResponse);
 
-            try {
-                getResponse = connection.GETRequest(restEndpoint, "&per_page=10&page=" + page);
-            } catch (BadHTTPResponseException e) {
-                throw new RuntimeException(e);
-            }
+        json.forEach(item -> primerList.add(item.as(containedClass)));
 
-            Any json = JsonIterator.deserialize(getResponse);
-
-            List<CompletableFuture<E>> products = new ArrayList<>();
-
-            for(Any elementJson : json) {
-                products.add(
-                        CompletableFuture.supplyAsync(() -> {
-                            return elementJson.as(containedClass);
-                        }));
-            }
-
-            for(CompletableFuture<E> element : products) {
-                try {//TODO Exception Handling
-                    elements.add(element.get());
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                } catch (ExecutionException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-
-            return elements;
-        });
         System.out.println("Primed");
     }
 
     public boolean swapUpdatedList() {
         if(primerList != null) {
-            try {
-                internalList = primerList.get();
-                return true;
-            } catch (InterruptedException | ExecutionException e) {
-                return false;
-            }
+            internalList = primerList;
         }
         return false;
     }

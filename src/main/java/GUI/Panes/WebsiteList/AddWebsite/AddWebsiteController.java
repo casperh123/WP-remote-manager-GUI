@@ -1,9 +1,8 @@
-package GUI.ListPanes.WebsiteList.AddWebsite;
+package GUI.Panes.WebsiteList.AddWebsite;
 
 import java.util.List;
-import java.util.Map;
+
 import Website.Website;
-import javafx.scene.layout.Pane;
 
 public class AddWebsiteController {
 
