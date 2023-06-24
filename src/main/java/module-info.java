@@ -8,7 +8,6 @@ module GUI {
     requires kotlin.stdlib;
     requires java.desktop;
 
-    opens GUI to javafx.fxml;
     opens Components.Product.ProductComponents;
     opens Components;
     opens Components.Product;
@@ -19,18 +18,21 @@ module GUI {
     opens Components.Order;
     opens Components.Order.OrderComponents;
     opens Components.Order.RefundComponents;
-    opens GUI.Utility;
     exports Components.Order.RefundComponents;
     exports Components.Order;
     exports Components.ProductAttribute;
     exports GUI;
-    exports GUI.Utility;
     exports Components.Product.ProductComponents;
     exports Components;
     exports Components.Category;
     exports Components.Product;
     exports Components.Coupon;
     exports Components.Customer;
+    opens GUI;
+    exports GUI.PaneHistory;
+    opens GUI.PaneHistory;
+    exports GUI.PaneHistory.StateButton;
+    opens GUI.PaneHistory.StateButton;
 
 
 }

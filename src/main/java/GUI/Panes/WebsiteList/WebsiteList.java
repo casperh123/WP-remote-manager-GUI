@@ -2,9 +2,9 @@ package GUI.Panes.WebsiteList;
 
 import GUI.Cards.WebsiteCard;
 import GUI.Components.PrimaryButton;
+import GUI.PaneHistory.PaneHistory;
 import GUI.Panes.ProductListPane;
 import GUI.Panes.WebsiteList.AddWebsite.AddWebsiteView;
-import GUI.Utility.StateButton;
 import Utility.FileManager;
 import Website.Website;
 import javafx.geometry.Insets;
@@ -31,16 +31,16 @@ public class WebsiteList extends VBox {
     private Website activeWebsite;
 
     private ScrollPane mainContent;
-    private StateButton backButton;
     private HBox topContent;
     private VBox websiteList;
+    private PaneHistory paneHistory;
 
-    public WebsiteList(ScrollPane mainContent, StateButton backButton, Map<String, Node> cachedPanes) {
+    public WebsiteList(ScrollPane mainContent, Map<String, Node> cachedPanes) {
 
         this.cachedPanes = cachedPanes;
         this.mainContent = mainContent;
-        this.backButton = backButton;
         this.topContent = new HBox();
+        this.paneHistory = PaneHistory.getInstance();
 
         renderBasicLayout();
 
@@ -129,20 +129,19 @@ public class WebsiteList extends VBox {
             Website containedWebsite = addedCard.getWebsite();
 
             cachedPanes.put(activeWebsite.getName(), mainContent.getContent());
-            backButton.push(mainContent.getContent());
-            backButton.setBackGroundActive();
 
             /*if(cachedPanes.containsKey(containedWebsite.getName())) {
                 mainContent.setContent(cachedPanes.get(containedWebsite.getName()));
                 activeWebsite = containedWebsite;
             } else {*/
 
-                activeWebsite = containedWebsite;
+            activeWebsite = containedWebsite;
 
-                ProductListPane newPane = new ProductListPane(activeWebsite);
+            ProductListPane newPane = new ProductListPane(activeWebsite);
 
-                cachedPanes.put(activeWebsite.getName(), newPane);
-                mainContent.setContent(newPane);
+            cachedPanes.put(activeWebsite.getName(), newPane);
+            mainContent.setContent(newPane);
+            paneHistory.addPane(mainContent.getContent());
             /*}*/
         });
     }
