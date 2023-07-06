@@ -46,52 +46,18 @@ public class Website implements Serializable {
         return stringUrl;
     }
 
-    public PaginatedQueryList<Product> getProducts() throws FetchException {
+    public PaginatedQueryList<Product> getProducts() throws FetchException, BadHTTPResponseException {
 
         RESTConnection connection = new RESTConnection(stringUrl, user);
 
-        CompletableFuture<PaginatedQueryList<Product>> listFuture = CompletableFuture.supplyAsync(() -> {
-            try {
-                return new PaginatedQueryList<>(connection, RESTEndpoints.getProductsEndpoint(), Product.class) {
-                };
-            } catch (BadHTTPResponseException e) {
-                System.out.println("Fuck");
-                return null;
-            }
-        });
-
-        try {
-            if(listFuture.get() == null) {
-                throw new FetchException("Could not complete request");
-            }
-            return listFuture.get();
-        } catch (InterruptedException | ExecutionException e) {
-            throw new FetchException(e.getMessage());
-        }
+        return new PaginatedQueryList<>(connection, RESTEndpoints.getProductsEndpoint(), Product.class);
     }
 
-    public QueryList<Product> getAllProducts() throws FetchException {
+    public QueryList<Product> getAllProducts() throws FetchException, BadHTTPResponseException {
 
         RESTConnection connection = new RESTConnection(stringUrl, user);
 
-        CompletableFuture<UnpaginatedQueryList<Product>> listFuture = CompletableFuture.supplyAsync(() -> {
-            try {
-                return new UnpaginatedQueryList<>(connection, RESTEndpoints.getProductsEndpoint(), Product.class) {
-                };
-            } catch (BadHTTPResponseException e) {
-                System.out.println("Fuck");
-                return null;
-            }
-        });
-
-        try {
-            if(listFuture.get() == null) {
-                throw new FetchException("Could not complete request");
-            }
-            return listFuture.get();
-        } catch (InterruptedException | ExecutionException e) {
-            throw new FetchException(e.getMessage());
-        }
+        return new UnpaginatedQueryList<>(connection, RESTEndpoints.getProductsEndpoint(), Product.class);
     }
 
     public QueryList<Coupon> getCoupons() throws FetchException {

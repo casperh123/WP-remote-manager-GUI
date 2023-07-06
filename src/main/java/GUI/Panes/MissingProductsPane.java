@@ -1,6 +1,7 @@
 package GUI.Panes;
 
 import Components.Product.Product;
+import Exceptions.BadHTTPResponseException;
 import Exceptions.FetchException;
 import GUI.Components.PrimaryButton;
 import Website.Website;
@@ -46,6 +47,8 @@ public class MissingProductsPane extends DualWebsiteSelect {
             mainProducts = new HashSet<>(mainWebsite.getAllProducts());
             comparingProducts = new HashSet<>(comparingWebsite.getAllProducts());
         } catch (FetchException e) {
+            throw new RuntimeException(e);
+        } catch (BadHTTPResponseException e) {
             throw new RuntimeException(e);
         }
 

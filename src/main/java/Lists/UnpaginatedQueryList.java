@@ -1,6 +1,10 @@
 package Lists;
 
+import Components.AbstractComponent;
+import Components.Interfaces.ID;
 import Exceptions.BadHTTPResponseException;
+import Exceptions.FirstPageException;
+import Exceptions.LastPageException;
 import REST.RESTConnection;
 import com.jsoniter.JsonIterator;
 import com.jsoniter.any.Any;
@@ -9,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class UnpaginatedQueryList<E> extends QueryList<E> {
+public class UnpaginatedQueryList<E extends ID> extends QueryList<E> {
 
     public UnpaginatedQueryList(RESTConnection connection, String restEndpoint, Class<E> containedClass) throws BadHTTPResponseException {
 
@@ -34,6 +38,26 @@ public class UnpaginatedQueryList<E> extends QueryList<E> {
         } else {
             this.internalList = new ArrayList<>();
         }
+    }
+
+    @Override
+    public void getNextPage() throws LastPageException, BadHTTPResponseException {
+
+    }
+
+    @Override
+    public void getPreviousPage() throws FirstPageException, BadHTTPResponseException {
+
+    }
+
+    @Override
+    public int getCurrentPage() {
+        return 0;
+    }
+
+    @Override
+    public int getPagesAmount() {
+        return 0;
     }
 
     @Override

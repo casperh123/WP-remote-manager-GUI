@@ -11,16 +11,19 @@ public class PaneHistory {
 
     private Stack<Node> backStack;
     private Stack<Node> forwardStack;
+    private Node nodeBuffer;
     private StateButton backButton;
     private StateButton forwardButton;
     private ScrollPane content;
     private static PaneHistory paneHistory;
 
     private PaneHistory() {
+
         this.backStack = new Stack<>();
         this.forwardStack = new Stack<>();
         this.backButton = new StateButton("Back");
         this.forwardButton = new StateButton("Forward");
+        this.nodeBuffer = null;
 
         setEventHandlers();
     }
@@ -28,52 +31,61 @@ public class PaneHistory {
 
     public void addPane(Node pane) {
 
-        if(forwardStack.size() > 1) {
+        if(nodeBuffer == null) {
+            nodeBuffer = pane;
+        } else {
+            backStack.push(nodeBuffer);
+            backButton.setActive();
+            nodeBuffer = pane;
+        }
+
+        if(forwardStack.size() > 0) {
             forwardButton.setInactive();
             forwardStack.clear();
         }
-
-        backStack.push(pane);
-        backButton.setActive();
     }
 
     private void setEventHandlers() {
         backButton.setOnMouseClicked(e -> {
-            getPreviousPane();
             if(backStack.size() == 1) {
                 backButton.setInactive();
+            } else if(backStack.size() == 0) {
+                return;
             }
+
+            getPreviousPane();
         });
 
         forwardButton.setOnMouseClicked(e -> {
-            getNextPane();
             if(forwardStack.size() == 1) {
                 forwardButton.setInactive();
+            } else if(forwardStack.size() == 0) {
+                return;
             }
+
+            getNextPane();
         });
     }
 
     private void getPreviousPane() {
-        if(backStack.size() == 1) {
-            return;
-        }
 
-        forwardStack.push(content.getContent());
+        forwardStack.push(nodeBuffer);
         forwardButton.setActive();
 
-        content.setContent(backStack.pop());
+        nodeBuffer = backStack.pop();
+
+        content.setContent(nodeBuffer);
 
     }
 
     private void getNextPane() {
-        if(forwardStack.size() == 1) {
-            return;
-        }
 
-        backStack.push(content.getContent());
+        backStack.push(nodeBuffer);
         backButton.setActive();
 
-        content.setContent(forwardStack.pop());
+        nodeBuffer = forwardStack.pop();
+
+        content.setContent(nodeBuffer);
     }
 
 

@@ -1,5 +1,6 @@
 package Lists;
 
+import Components.AbstractComponent;
 import Components.Interfaces.ID;
 import Exceptions.BadHTTPResponseException;
 import Exceptions.ElementNotInArrayException;
@@ -13,14 +14,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class PaginatedQueryList<E> extends QueryList<E> {
+public class PaginatedQueryList<E extends ID> extends QueryList<E> {
 
-    List<E> primerList = null;
-    int currentPage;
+    private List<E> primerList = null;
+    private int perPage;
+    private int currentPage;
 
     public PaginatedQueryList(RESTConnection connection, String restEndpoint, Class<E> containedClass) throws BadHTTPResponseException {
         super(connection, restEndpoint, containedClass);
         this.currentPage = 1;
+        this.perPage = 100;
 
         updateList();
 
@@ -44,7 +47,7 @@ public class PaginatedQueryList<E> extends QueryList<E> {
 
         this.clear();
 
-        byte[] getResponse = connection.GETRequest(restEndpoint, "&per_page=100&page=" + currentPage);
+        byte[] getResponse = connection.GETRequest(restEndpoint, "&per_page= + " + perPage + "&page=" + currentPage);
 
         Any json = JsonIterator.deserialize(getResponse);
 
@@ -130,12 +133,8 @@ public class PaginatedQueryList<E> extends QueryList<E> {
     public ID getElementById(int id) throws ElementNotInArrayException {
 
         for(E element : this) {
-            if(!(element instanceof ID)) {
-                continue;
-            }
-            ID idElement = (ID) element;
-            if(idElement.getId() == id) {
-                return idElement;
+            if(element.getId() == id) {
+                return element;
             }
         }
         throw new ElementNotInArrayException(String.valueOf(id));
@@ -143,6 +142,11 @@ public class PaginatedQueryList<E> extends QueryList<E> {
 
     public int getCurrentPage() {
         return currentPage;
+    }
+
+    @Override
+    public int getPagesAmount() {
+        return totalPages;
     }
 
     public void setCurrentPage(int page) {

@@ -35,17 +35,14 @@ public abstract class DualWebsiteSelect extends VBox {
         this.getChildren().add(this.title);
         this.getChildren().add(mainWebsiteNotice);
         this.getChildren().add(comparingWebsiteNotice);
-        generateWebsiteCards();
         this.getChildren().add(clearButton);
-        this.setSpacing(10.0);
-        this.setPadding(new Insets(10));
 
-        this.title.setFont(Font.font(20));
-
+        generateWebsiteCards();
         setEventHandlers();
+        setStyle();
     }
 
-    public void generateWebsiteCards() {
+    private void generateWebsiteCards() {
         for(Website website : websites) {
 
             WebsiteCard websiteCard = new WebsiteCard(website);
@@ -63,6 +60,12 @@ public abstract class DualWebsiteSelect extends VBox {
 
             this.getChildren().add(websiteCard);
         }
+    }
+
+    private void setStyle() {
+        this.setSpacing(10.0);
+        this.setPadding(new Insets(10));
+        this.title.setFont(Font.font(20));
     }
 
     private void setEventHandlers() {

@@ -4,12 +4,20 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.layout.VBox?>
 <BorderPane fx:id="mainWrapper" xmlns:fx="http://javafx.com/fxml"
             fx:controller="GUI.MainViewController" >
     <top>
-        <HBox fx:id="topBar">
+        <VBox>
+            <MenuBar fx:id="toolBar">
 
-        </HBox>
+            </MenuBar>
+
+            <HBox fx:id="topBar">
+
+            </HBox>
+        </VBox>
     </top>
     <center>
         <ScrollPane fx:id="mainContent">

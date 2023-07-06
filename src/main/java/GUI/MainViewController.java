@@ -9,8 +9,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
-import javafx.scene.control.Button;
-import javafx.scene.control.ScrollPane;
+import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 
@@ -23,15 +22,11 @@ import java.util.ResourceBundle;
 public class MainViewController implements Initializable {
 
     public MainViewController() throws URISyntaxException {
-        /*
-        User trekantensCasper = new User("Casper", "ck_01f48076048289976cd89f0a3324d5c418c068be", "cs_cc7f2290c7ca39b2fd5abfe21fd34e6cdccf0dd0");
-        Website trekantens = new Website("Trekantens-Trailercenter", "https://www.trekantens-trailercenter.dk", trekantensCasper);
-        */
-
 
         System.out.println("Mannes");
 
     }
+
 
     @FXML
     private ScrollPane mainContent;
@@ -39,12 +34,10 @@ public class MainViewController implements Initializable {
     private HBox topBar;
     @FXML
     private BorderPane mainWrapper;
+    public MenuBar toolBar;
 
     private Button backButton;
     private Button forwardButton;
-
-    private PrimaryButton missingProductsButton;
-    private PrimaryButton missingDescriptionButton;
     private Map<String, Node> cachedPanes;
     private WebsiteList websiteList;
     private PaneHistory paneHistory;
@@ -60,33 +53,47 @@ public class MainViewController implements Initializable {
         forwardButton = paneHistory.getForwardButton();
         paneHistory.setContent(mainContent);
 
-        topBar.setSpacing(10.0);
-        topBar.setPadding(new Insets(5));
-
-        missingProductsButton = new PrimaryButton("Missing Products");
-        missingDescriptionButton = new PrimaryButton("Missing Descriptions");
-
         setEventHandlers();
+        setStyle();
+        initializeToolBar();
 
         topBar.getChildren().add(backButton);
         topBar.getChildren().add(forwardButton);
-        topBar.getChildren().add(missingProductsButton);
-        topBar.getChildren().add(missingDescriptionButton);
 
         mainWrapper.setLeft(websiteList);
 
     }
 
-    public void setEventHandlers() {
-        missingProductsButton.setOnMouseClicked(e -> {
+    public void initializeToolBar() {
+
+        Menu toolDropdown = new Menu("Tools");
+
+        MenuItem missingProductsTool = new MenuItem("Missing Products");
+        MenuItem missingDescriptionsTool = new MenuItem("Missing Descriptions");
+
+        toolDropdown.getItems().add(missingProductsTool);
+        toolDropdown.getItems().add(missingDescriptionsTool);
+
+        toolBar.getMenus().add(toolDropdown);
+
+        missingProductsTool.setOnAction(e -> {
             mainContent.setContent(new MissingProductsPane(websiteList.getWebsites()));
             paneHistory.addPane(mainContent.getContent());
         });
 
-        missingDescriptionButton.setOnMouseClicked(e -> {
+        missingDescriptionsTool.setOnAction(e -> {
             mainContent.setContent(new MissingDescriptionPane(websiteList.getWebsites()));
             paneHistory.addPane(mainContent.getContent());
         });
+
+    }
+
+    public void setStyle() {
+        topBar.setSpacing(10.0);
+        topBar.setPadding(new Insets(5));
+    }
+
+    public void setEventHandlers() {
     }
 }
 
