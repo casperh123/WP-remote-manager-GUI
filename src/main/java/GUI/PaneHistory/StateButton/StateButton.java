@@ -1,11 +1,16 @@
 package GUI.PaneHistory.StateButton;
 
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.paint.Color;
+
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 public class StateButton extends Button {
 
@@ -29,5 +34,25 @@ public class StateButton extends Button {
 
     public void setActive() {
         this.setBackground(activeBackground);
+    }
+
+    public void setLoading() {
+        this.setBackground(new Background(new BackgroundFill(Color.rgb(0, 0, 0, 0.13), new CornerRadii(5), new Insets(0))));
+    }
+
+    public void loadSetOnMouseClicked(Consumer<MouseEvent> onClickFunction, boolean automaticallyUpdate) {
+
+        this.setOnMousePressed(e -> {
+            this.setLoading();
+        });
+
+        this.setOnMouseReleased(e -> {
+            onClickFunction.accept(e);
+            if(automaticallyUpdate) setActive();
+        });
+    }
+
+    public void loadSetOnMouseClicked(Consumer<MouseEvent> onClickFunction) {
+        loadSetOnMouseClicked(onClickFunction, true);
     }
 }

@@ -5,6 +5,7 @@ import javafx.geometry.Insets;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -13,6 +14,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Consumer;
 
 public class ProductCard extends HBox{
 
@@ -23,8 +25,6 @@ public class ProductCard extends HBox{
     public ProductCard(Product product) {
 
         this.product = product;
-        this.setPadding(new Insets(20));
-        this.setBackground(new Background(new BackgroundFill(Color.rgb(0, 0, 0, 0.1), new CornerRadii(10), new Insets(10))));
 
         if(product.getImages().size() > 0) {
             productImage = generateImageView(product.getImages().get(0).getImageUrl());
@@ -38,14 +38,41 @@ public class ProductCard extends HBox{
 
         productTitle = new Label(product.getName());
 
+        this.getChildren().add(productImage);
+        this.getChildren().add(productTitle);
+
+        setStyling();
+    }
+
+    public void loadSetOnMouseClicked(Consumer<MouseEvent> onClickFunction) {
+
+        this.setOnMousePressed(e -> {
+            this.setLoading();
+        });
+
+        this.setOnMouseReleased(e -> {
+            onClickFunction.accept(e);
+            setActive();
+        });
+    }
+
+    private void setActive() {
+        this.setBackground(new Background(new BackgroundFill(Color.rgb(0, 0, 0, 0.1), new CornerRadii(5), new Insets(0))));
+    }
+
+    private void setLoading() {
+        this.setBackground(new Background(new BackgroundFill(Color.rgb(0, 0, 0, 0.2), new CornerRadii(5), new Insets(0))));
+    }
+
+    private void setStyling() {
+        this.setPadding(new Insets(20));
+        this.setBackground(new Background(new BackgroundFill(Color.rgb(0, 0, 0, 0.1), new CornerRadii(10), new Insets(10))));
+
         productTitle.setFont(new Font(18));
         productTitle.setPadding(new Insets(0, 0, 0, 10));
 
         productImage.setFitHeight(100);
         productImage.setFitWidth(100);
-
-        this.getChildren().add(productImage);
-        this.getChildren().add(productTitle);
     }
 
     public ImageView getImage() {

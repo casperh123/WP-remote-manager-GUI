@@ -25,6 +25,8 @@ public class RESTConnection implements Serializable {
 
     public byte[] GETRequest(String endpoint, String parameters) throws BadHTTPResponseException {
 
+        long start = System.nanoTime();
+
         OkHttpClient client = HTTPClient.getHTTPClient();
 
         Request request = new Request.Builder()
@@ -35,6 +37,7 @@ public class RESTConnection implements Serializable {
         try (Response response = client.newCall(request).execute()) {
             if(!response.isSuccessful()) throw new BadHTTPResponseException(response.code());
             this.latestHeaders = response.headers();
+            System.out.println("Request timing: " + ((System.nanoTime() - start) / 1000000) + " ms");
             return response.body().bytes();
         } catch (IOException e) {
             throw new BadHTTPResponseException(e.getMessage());
@@ -46,7 +49,6 @@ public class RESTConnection implements Serializable {
         OkHttpClient client = HTTPClient.getHTTPClient();
         List<byte[]> responseBodies = new ArrayList<>();
         CountDownLatch countDownLatch = new CountDownLatch(parameters.size());
-
 
         for(String parameter : parameters) {
             client.newCall(new Request.Builder()
@@ -78,7 +80,7 @@ public class RESTConnection implements Serializable {
         return responseBodies;
     }
 
-    public Headers GETRequestHead(String endpoint, String parameters) throws BadHTTPResponseException {
+    public Headers GETRequestHeaders(String endpoint, String parameters) throws BadHTTPResponseException {
 
         OkHttpClient client = HTTPClient.getHTTPClient();
         Request request = new Request.Builder()

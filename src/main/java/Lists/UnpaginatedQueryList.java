@@ -1,6 +1,5 @@
 package Lists;
 
-import Components.AbstractComponent;
 import Components.Interfaces.ID;
 import Exceptions.BadHTTPResponseException;
 import Exceptions.FirstPageException;
@@ -19,7 +18,11 @@ public class UnpaginatedQueryList<E extends ID> extends QueryList<E> {
 
         super(connection, restEndpoint, containedClass);
 
-        Map<String, List<String>> httpHeaders = connection.GETRequestHead(restEndpoint, "&per_page=1").toMultimap();
+        long start = System.nanoTime();
+
+        Map<String, List<String>> httpHeaders = connection.GETRequestHeaders(restEndpoint, "&per_page=1").toMultimap();
+
+        System.out.println("Header Request timing: " + (System.nanoTime() - start) / 1000000 + " ms");
 
         if(httpHeaders.containsKey("x-wp-total")) {
             this.totalItems = Integer.parseInt(httpHeaders.get("x-wp-total").get(0));

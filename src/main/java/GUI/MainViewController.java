@@ -21,11 +21,7 @@ import java.util.ResourceBundle;
 
 public class MainViewController implements Initializable {
 
-    public MainViewController() throws URISyntaxException {
-
-        System.out.println("Mannes");
-
-    }
+    public MainViewController() {}
 
 
     @FXML

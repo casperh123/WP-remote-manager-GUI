@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
 public class WebsiteList extends VBox {
 
@@ -62,10 +63,6 @@ public class WebsiteList extends VBox {
             this.activeWebsite = websites.get(0);
             loadWebsites();
         }
-    }
-
-    public Website getActiveWebsite() {
-        return activeWebsite;
     }
 
     public List<Website> getWebsites() {
@@ -120,29 +117,34 @@ public class WebsiteList extends VBox {
 
     private void generateWebsiteCard(Website website) {
 
-        WebsiteCard addedCard = new WebsiteCard(website);
+        WebsiteCard websiteCard = new WebsiteCard(website);
 
-        websiteList.getChildren().add(addedCard);
+        websiteList.getChildren().add(websiteCard);
 
-        addedCard.setOnMouseClicked(e -> {
+        websiteCard.loadSetOnMouseClicked(e -> {
 
-            Website containedWebsite = addedCard.getWebsite();
+            Website containedWebsite = websiteCard.getWebsite();
 
-            cachedPanes.put(activeWebsite.getName(), mainContent.getContent());
+            for(Node childNode : websiteList.getChildren()) {
+                if(childNode instanceof WebsiteCard inactiveCard) {
+                    inactiveCard.setInactive();
+                }
+            }
+
+            activeWebsite = websiteCard.getWebsite();
+
+            ProductListPane productList = new ProductListPane(activeWebsite);
+
+            //cachedPanes.put(activeWebsite.getName(), mainContent.getContent());
 
             /*if(cachedPanes.containsKey(containedWebsite.getName())) {
                 mainContent.setContent(cachedPanes.get(containedWebsite.getName()));
                 activeWebsite = containedWebsite;
             } else {*/
 
-            activeWebsite = containedWebsite;
-
-            ProductListPane newPane = new ProductListPane(activeWebsite);
-
-            cachedPanes.put(activeWebsite.getName(), newPane);
-            mainContent.setContent(newPane);
-            paneHistory.addPane(mainContent.getContent());
             /*}*/
+            mainContent.setContent(productList);
+            paneHistory.addPane(mainContent.getContent());
         });
     }
 }

@@ -21,7 +21,7 @@ public class ProductListPane extends VBox {
 
     private StateButton previousPage;
     private StateButton  nextPage;
-    private Button reloadButton;
+    private StateButton reloadButton;
     private HBox buttonContainer;
     private VBox productContiner;
     private QueryList<Product> products;
@@ -30,10 +30,11 @@ public class ProductListPane extends VBox {
 
         previousPage = new StateButton("Previous Page");
         nextPage = new StateButton("Next Page");
-        reloadButton = new PrimaryButton("Reload");
+        reloadButton = new StateButton("Reload");
 
         previousPage.setInactive();
         nextPage.setActive();
+        reloadButton.setActive();
 
         buttonContainer = new HBox(previousPage, nextPage, reloadButton);
         productContiner = new VBox();
@@ -41,15 +42,11 @@ public class ProductListPane extends VBox {
         this.getChildren().add(buttonContainer);
         this.getChildren().add(productContiner);
 
-        long start = System.nanoTime();
-
         try{
             this.products = website.getProducts();
         } catch (FetchException | BadHTTPResponseException e) {
             System.out.println(e.getMessage());
         }
-
-        System.out.println((System.nanoTime() - start)/1000000);
 
         renderProducts();
         setOnClick();
@@ -62,14 +59,22 @@ public class ProductListPane extends VBox {
     }
 
     private void setOnClick() {
-        previousPage.setOnMouseClicked(e -> {
+        previousPage.loadSetOnMouseClicked(e -> {
+
+            if(products.getCurrentPage() == 1) {
+                previousPage.setInactive();
+                return;
+            }
+
             long start = System.nanoTime();
             try {
                 products.getPreviousPage();
                 renderProducts();
                 if(products.getCurrentPage() == 1) {
                     previousPage.setInactive();
+                    return;
                 } else {
+                    previousPage.setActive();
                     nextPage.setActive();
                 }
             } catch (FirstPageException ex) {//TODO Exceptions
@@ -77,12 +82,13 @@ public class ProductListPane extends VBox {
             } catch (BadHTTPResponseException ex) {
                 throw new RuntimeException(ex);
             }
-            System.out.println((System.nanoTime() - start)/1000000);
-        });
+            System.out.println("Full load Timing: " + (System.nanoTime() - start)/1000000 + " ms");
+        }, false);
 
-        nextPage.setOnMouseClicked(e -> {
+        nextPage.loadSetOnMouseClicked(e -> {
 
             if(products.getCurrentPage() == products.getPagesAmount()) {
+                nextPage.setInactive();
                 return;
             }
 
@@ -94,16 +100,17 @@ public class ProductListPane extends VBox {
                     nextPage.setInactive();
                 } else {
                     previousPage.setActive();
+                    nextPage.setActive();
                 }
             } catch (LastPageException ex) { //TODO Exception
                 throw new RuntimeException(ex);
             } catch (BadHTTPResponseException ex) {
                 throw new RuntimeException(ex);
             }
-            System.out.println((System.nanoTime() - start)/1000000);
-        });
+            System.out.println("Full load Timing: " + (System.nanoTime() - start)/1000000 + " ms");
+        }, false);
 
-        reloadButton.setOnMouseClicked(e -> {
+        reloadButton.loadSetOnMouseClicked(e -> {
             try {
                 products.updateList();
                 renderProducts();

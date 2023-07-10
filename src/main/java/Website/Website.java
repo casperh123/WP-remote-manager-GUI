@@ -69,7 +69,7 @@ public class Website implements Serializable {
                 return new PaginatedQueryList<>(connection, RESTEndpoints.getCouponsEndpoint(), Coupon.class) {
                 };
             } catch (BadHTTPResponseException e) {
-                System.out.println("Fuck");
+                System.out.println("Fuck"); // TODO Exception
                 return null;
             }
         });
@@ -118,7 +118,7 @@ public class Website implements Serializable {
                 return new PaginatedQueryList<>(connection, RESTEndpoints.getOrdersEndpoint(), Order.class) {
                 };
             } catch (BadHTTPResponseException e) {
-                System.out.println("Fuck");
+                System.out.println("Fuck"); // TODO Exception
                 return null;
             }
         });
@@ -142,7 +142,7 @@ public class Website implements Serializable {
                 return new PaginatedQueryList<>(connection, RESTEndpoints.getProductAttributesEndpoint(), ProductAttribute.class) {
                 };
             } catch (BadHTTPResponseException e) {
-                System.out.println("Fuck");
+                System.out.println("Fuck"); //TODO Exception
                 return null;
             }
         });
