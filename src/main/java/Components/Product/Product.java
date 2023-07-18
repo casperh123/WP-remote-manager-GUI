@@ -58,6 +58,7 @@ public class Product extends AbstractComponent {
     @JsonProperty("shipping_taxable")
     protected boolean shippingTaxable;
 
+    protected int price;
     @JsonProperty("regular_price")
     protected String regularPrice;
     @JsonProperty("sale_price")
@@ -248,4 +249,18 @@ public class Product extends AbstractComponent {
     public String getDescription() { return description; }
 
     public String getShortDescription() { return shortDescription; }
+
+    public int getStockQuantity() {
+        if(stockQuantity != null) {
+            return stockQuantity;
+        } else {
+            return 0;
+        }
+    }
+
+    public String getStockStatus() { return stockStatus; }
+
+    public int getRegularPrice() { return price; }
+
+    public List<ProductCategory> getCategories(){ return categories; }
 }

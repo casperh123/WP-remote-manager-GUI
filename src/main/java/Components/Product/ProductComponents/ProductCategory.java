@@ -24,4 +24,8 @@ public class ProductCategory extends AbstractComponent {
     public String getSlug() {
         return slug;
     }
+
+    public String toString() {
+        return name;
+    }
 }
