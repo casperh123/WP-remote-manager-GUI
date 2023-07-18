@@ -1,8 +1,12 @@
 package GUI.Panes.WebsiteList;
 
+import Exceptions.BadHTTPResponseException;
+import Exceptions.FetchException;
 import GUI.Cards.WebsiteCard;
 import GUI.Components.PrimaryButton;
+import GUI.GlobalState.GlobalState;
 import GUI.PaneHistory.PaneHistory;
+import GUI.Panes.OrderListPane;
 import GUI.Panes.ProductListPane;
 import GUI.Panes.WebsiteList.AddWebsite.AddWebsiteView;
 import Utility.FileManager;
@@ -14,6 +18,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -29,19 +34,13 @@ public class WebsiteList extends VBox {
 
     Map<String, Node> cachedPanes;
     private List<Website> websites;
-    private Website activeWebsite;
-
-    private ScrollPane mainContent;
     private HBox topContent;
     private VBox websiteList;
-    private PaneHistory paneHistory;
 
-    public WebsiteList(ScrollPane mainContent, Map<String, Node> cachedPanes) {
+    public WebsiteList(Map<String, Node> cachedPanes) {
 
         this.cachedPanes = cachedPanes;
-        this.mainContent = mainContent;
         this.topContent = new HBox();
-        this.paneHistory = PaneHistory.getInstance();
 
         renderBasicLayout();
 
@@ -60,7 +59,14 @@ public class WebsiteList extends VBox {
         if(websites.size() == 0) {
             addWebsite();
         } else {
-            this.activeWebsite = websites.get(0);
+            //TODO Exception handling lol
+            try {
+                GlobalState.setActiveWebsite( websites.get(0));
+            } catch (BadHTTPResponseException e) {
+                throw new RuntimeException(e);
+            } catch (FetchException e) {
+                throw new RuntimeException(e);
+            }
             loadWebsites();
         }
     }
@@ -106,9 +112,6 @@ public class WebsiteList extends VBox {
         websiteList.getChildren().clear();
 
         if (websites.size() != 0) {
-
-            activeWebsite = websites.get(0);
-
             for (Website website : websites) {
                 generateWebsiteCard(website);
             }
@@ -123,28 +126,20 @@ public class WebsiteList extends VBox {
 
         websiteCard.loadSetOnMouseClicked(e -> {
 
-            Website containedWebsite = websiteCard.getWebsite();
+            try {
+                PaneHistory.getInstance().addPane(GlobalState.getMainContent());
+                GlobalState.setActiveWebsite(websiteCard.getWebsite());
+            } catch (BadHTTPResponseException ex) {
+                throw new RuntimeException(ex);
+            } catch (FetchException ex) {
+                throw new RuntimeException(ex);
+            }
 
             for(Node childNode : websiteList.getChildren()) {
                 if(childNode instanceof WebsiteCard inactiveCard) {
                     inactiveCard.setInactive();
                 }
             }
-
-            activeWebsite = websiteCard.getWebsite();
-
-            ProductListPane productList = new ProductListPane(activeWebsite);
-
-            //cachedPanes.put(activeWebsite.getName(), mainContent.getContent());
-
-            /*if(cachedPanes.containsKey(containedWebsite.getName())) {
-                mainContent.setContent(cachedPanes.get(containedWebsite.getName()));
-                activeWebsite = containedWebsite;
-            } else {*/
-
-            /*}*/
-            mainContent.setContent(productList);
-            paneHistory.addPane(mainContent.getContent());
         });
     }
 }

@@ -16,7 +16,7 @@ import java.io.IOException;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
-public class ProductCard extends HBox{
+public class ProductCard extends ListCard {
 
     ImageView productImage;
     Label productTitle;
@@ -38,36 +38,16 @@ public class ProductCard extends HBox{
 
         productTitle = new Label(product.getName());
 
-        this.getChildren().add(productImage);
-        this.getChildren().add(productTitle);
-
+        setContent();
         setStyling();
     }
 
-    public void loadSetOnMouseClicked(Consumer<MouseEvent> onClickFunction) {
-
-        this.setOnMousePressed(e -> {
-            this.setLoading();
-        });
-
-        this.setOnMouseReleased(e -> {
-            onClickFunction.accept(e);
-            setActive();
-        });
+    protected void setContent() {
+        this.getChildren().add(productImage);
+        this.getChildren().add(productTitle);
     }
 
-    private void setActive() {
-        this.setBackground(new Background(new BackgroundFill(Color.rgb(0, 0, 0, 0.1), new CornerRadii(5), new Insets(0))));
-    }
-
-    private void setLoading() {
-        this.setBackground(new Background(new BackgroundFill(Color.rgb(0, 0, 0, 0.2), new CornerRadii(5), new Insets(0))));
-    }
-
-    private void setStyling() {
-        this.setPadding(new Insets(20));
-        this.setBackground(new Background(new BackgroundFill(Color.rgb(0, 0, 0, 0.1), new CornerRadii(10), new Insets(10))));
-
+    protected void setStyling() {
         productTitle.setFont(new Font(18));
         productTitle.setPadding(new Insets(0, 0, 0, 10));
 
@@ -75,15 +55,8 @@ public class ProductCard extends HBox{
         productImage.setFitWidth(100);
     }
 
-    public ImageView getImage() {
-        return productImage;
-    }
-
     private ImageView generateImageView(String imageUrl) {
-
-        ImageView imageView = new ImageView(new Image(imageUrl, 200, 200, true, true, true));
-
-        return imageView;
+        return new ImageView(new Image(imageUrl, 200, 200, true, true, true));
     }
 
     public Product getProduct() {

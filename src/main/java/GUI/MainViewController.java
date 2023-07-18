@@ -1,7 +1,8 @@
 package GUI;
 
-import GUI.Components.PrimaryButton;
+import GUI.GlobalState.GlobalState;
 import GUI.PaneHistory.PaneHistory;
+import GUI.PaneHistory.StateButton.StateButton;
 import GUI.Panes.MissingDescriptionPane;
 import GUI.Panes.MissingProductsPane;
 import GUI.Panes.WebsiteList.WebsiteList;
@@ -13,7 +14,6 @@ import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
@@ -23,9 +23,6 @@ public class MainViewController implements Initializable {
 
     public MainViewController() {}
 
-
-    @FXML
-    private ScrollPane mainContent;
     @FXML
     private HBox topBar;
     @FXML
@@ -38,16 +35,22 @@ public class MainViewController implements Initializable {
     private WebsiteList websiteList;
     private PaneHistory paneHistory;
 
+    private StateButton productsButton;
+    private StateButton orderButton;
+
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
+        mainWrapper.setCenter(GlobalState.getMainScrollPane());
+
         cachedPanes = new HashMap<>();
-        websiteList = new WebsiteList(mainContent, cachedPanes);
+        websiteList = new WebsiteList(cachedPanes);
         paneHistory = PaneHistory.getInstance();
         backButton = paneHistory.getBackButton();
         forwardButton = paneHistory.getForwardButton();
-        paneHistory.setContent(mainContent);
+        productsButton = new StateButton("Products");
+        orderButton = new StateButton("Orders");
 
         setEventHandlers();
         setStyle();
@@ -56,8 +59,11 @@ public class MainViewController implements Initializable {
         topBar.getChildren().add(backButton);
         topBar.getChildren().add(forwardButton);
 
-        mainWrapper.setLeft(websiteList);
+        for(Button button : GlobalState.getGlobalButtons()) {
+            topBar.getChildren().add(button);
+        }
 
+        mainWrapper.setLeft(websiteList);
     }
 
     public void initializeToolBar() {
@@ -73,13 +79,13 @@ public class MainViewController implements Initializable {
         toolBar.getMenus().add(toolDropdown);
 
         missingProductsTool.setOnAction(e -> {
-            mainContent.setContent(new MissingProductsPane(websiteList.getWebsites()));
-            paneHistory.addPane(mainContent.getContent());
+            paneHistory.addPane(GlobalState.getMainContent());
+            GlobalState.setMainContent(new MissingProductsPane(websiteList.getWebsites()));
         });
 
         missingDescriptionsTool.setOnAction(e -> {
-            mainContent.setContent(new MissingDescriptionPane(websiteList.getWebsites()));
-            paneHistory.addPane(mainContent.getContent());
+            paneHistory.addPane(GlobalState.getMainContent());
+            GlobalState.setMainContent(new MissingDescriptionPane(websiteList.getWebsites()));
         });
 
     }

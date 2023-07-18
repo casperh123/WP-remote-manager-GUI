@@ -1,20 +1,21 @@
 package GUI.PaneHistory;
 
+import GUI.GlobalState.GlobalState;
 import GUI.PaneHistory.StateButton.StateButton;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.layout.Pane;
 
 import java.util.Stack;
 
 public class PaneHistory {
 
-    private Stack<Node> backStack;
-    private Stack<Node> forwardStack;
-    private Node nodeBuffer;
+    private Stack<Pane> backStack;
+    private Stack<Pane> forwardStack;
+    private Pane nodepane;
     private StateButton backButton;
     private StateButton forwardButton;
-    private ScrollPane content;
     private static PaneHistory paneHistory;
 
     private PaneHistory() {
@@ -23,20 +24,20 @@ public class PaneHistory {
         this.forwardStack = new Stack<>();
         this.backButton = new StateButton("Back");
         this.forwardButton = new StateButton("Forward");
-        this.nodeBuffer = null;
+        this.nodepane = null;
 
         setEventHandlers();
     }
 
 
-    public void addPane(Node pane) {
+    public void addPane(Pane pane) {
 
-        if(nodeBuffer == null) {
-            nodeBuffer = pane;
+        if(nodepane == null) {
+            nodepane = pane;
         } else {
-            backStack.push(nodeBuffer);
+            backStack.push(nodepane);
             backButton.setActive();
-            nodeBuffer = pane;
+            nodepane = pane;
         }
 
         if(forwardStack.size() > 0) {
@@ -69,23 +70,23 @@ public class PaneHistory {
 
     private void getPreviousPane() {
 
-        forwardStack.push(nodeBuffer);
+        forwardStack.push(nodepane);
         forwardButton.setActive();
 
-        nodeBuffer = backStack.pop();
+        nodepane = backStack.pop();
 
-        content.setContent(nodeBuffer);
+        GlobalState.setMainContent(nodepane);
 
     }
 
     private void getNextPane() {
 
-        backStack.push(nodeBuffer);
+        backStack.push(nodepane);
         backButton.setActive();
 
-        nodeBuffer = forwardStack.pop();
+        nodepane = forwardStack.pop();
 
-        content.setContent(nodeBuffer);
+        GlobalState.setMainContent(nodepane);
     }
 
 
@@ -96,11 +97,7 @@ public class PaneHistory {
     public Button getForwardButton() {
         return forwardButton;
     }
-
-    public void setContent(ScrollPane content) {
-        this.content = content;
-    }
-
+    
     public static PaneHistory getInstance() {
         if(paneHistory == null) {
             paneHistory = new PaneHistory();

@@ -19,8 +19,4 @@
             </HBox>
         </VBox>
     </top>
-    <center>
-        <ScrollPane fx:id="mainContent">
-        </ScrollPane>
-    </center>
 </BorderPane>
