@@ -72,6 +72,11 @@ public class PaginatedQueryList<E extends ID> extends QueryList<E> {
         }
     }
 
+    public void setPage(int page) throws BadHTTPResponseException {
+        currentPage = page;
+        updateList();
+    }
+
     public void primeUpdatedList(int page) throws BadHTTPResponseException {
 
         primerList = new ArrayList<>();

@@ -1,10 +1,8 @@
 package GUI.PaneHistory;
 
 import GUI.GlobalState.GlobalState;
-import GUI.PaneHistory.StateButton.StateButton;
-import javafx.scene.Node;
+import GUI.Components.StateButton;
 import javafx.scene.control.Button;
-import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.Pane;
 
 import java.util.Stack;

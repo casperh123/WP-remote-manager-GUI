@@ -31,5 +31,11 @@ public abstract class QueryList<E extends ID> extends AbstractComponentList<E> {
 
     public abstract int getPagesAmount();
 
+    public int getTotalItems() {
+        return totalItems;
+    }
+
+    public abstract void setPage(int page) throws BadHTTPResponseException;
+
     public abstract void updateList() throws BadHTTPResponseException;
 }

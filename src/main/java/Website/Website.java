@@ -1,5 +1,6 @@
 package Website;
 
+import Components.Category.Category;
 import Components.Coupon.Coupon;
 import Components.Customer.Customer;
 import Components.Order.Order;
@@ -7,6 +8,7 @@ import Components.Product.Product;
 import Components.ProductAttribute.ProductAttribute;
 import Exceptions.BadHTTPResponseException;
 import Exceptions.FetchException;
+import GUI.Panes.CategoryListPane;
 import Lists.PaginatedQueryList;
 import Lists.QueryList;
 import Lists.UnpaginatedQueryList;
@@ -116,6 +118,30 @@ public class Website implements Serializable {
         CompletableFuture<PaginatedQueryList<Order>> listFuture = CompletableFuture.supplyAsync(() -> {
             try {
                 return new PaginatedQueryList<>(connection, RESTEndpoints.getOrdersEndpoint(), Order.class) {
+                };
+            } catch (BadHTTPResponseException e) {
+                System.out.println("Fuck"); // TODO Exception
+                return null;
+            }
+        });
+
+        try {
+            if(listFuture.get() == null) {
+                throw new FetchException("Could not complete request");
+            }
+            return listFuture.get();
+        } catch (InterruptedException | ExecutionException e) {
+            throw new FetchException(e.getMessage());
+        }
+    }
+
+    public QueryList<Category> getCategories() throws FetchException {
+
+        RESTConnection connection = new RESTConnection(stringUrl, user);
+
+        CompletableFuture<PaginatedQueryList<Category>> listFuture = CompletableFuture.supplyAsync(() -> {
+            try {
+                return new PaginatedQueryList<>(connection, RESTEndpoints.getProductCategoriesEndpoint(), Category.class) {
                 };
             } catch (BadHTTPResponseException e) {
                 System.out.println("Fuck"); // TODO Exception

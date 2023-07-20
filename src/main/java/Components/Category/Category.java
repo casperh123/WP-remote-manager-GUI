@@ -67,4 +67,13 @@ public class Category extends AbstractComponent {
     public void setDisplay(String display) {
         this.display = display;
     }
+
+    public int getCount() { return count; }
+
+    public WPImage getImage() {
+        if(image == null) {
+            return new WPImage();
+        }
+        return image;
+    }
 }

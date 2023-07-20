@@ -3,7 +3,8 @@ package GUI.GlobalState;
 import Exceptions.BadHTTPResponseException;
 import Exceptions.FetchException;
 import GUI.PaneHistory.PaneHistory;
-import GUI.PaneHistory.StateButton.StateButton;
+import GUI.Components.StateButton;
+import GUI.Panes.CategoryListPane;
 import GUI.Panes.OrderListPane;
 import GUI.Panes.ProductListPane;
 import Website.Website;
@@ -21,6 +22,7 @@ public class GlobalState {
     private static String listState;
     private static StateButton productsButton;
     private static StateButton ordersButton;
+    private static StateButton categoriesButton;
     private static ScrollPane mainScrollPane;
     private static Pane mainContent;
 
@@ -32,6 +34,11 @@ public class GlobalState {
 
         productsButton = new StateButton("Products");
         ordersButton = new StateButton("Orders");
+        categoriesButton = new StateButton("Categories");
+
+        productsButton.setActive();
+        ordersButton.setActive();
+        categoriesButton.setActive();
 
         setEventListeners();
     }
@@ -50,6 +57,17 @@ public class GlobalState {
 
         ordersButton.loadSetOnMouseClicked(e -> {
             GlobalState.setListOrders();
+            try {
+                mainContent = GlobalState.getListPane();
+                mainScrollPane.setContent(mainContent);
+                PaneHistory.getInstance().addPane(mainContent);
+            } catch (BadHTTPResponseException | FetchException ex) {
+                throw new RuntimeException(ex);
+            }
+        });
+
+        categoriesButton.loadSetOnMouseClicked(e -> {
+            GlobalState.setListCategories();
             try {
                 mainContent = GlobalState.getListPane();
                 mainScrollPane.setContent(mainContent);
@@ -82,6 +100,9 @@ public class GlobalState {
             case "orders" -> {
                 return new OrderListPane(activeWebsite.getOrders());
             }
+            case "categories" -> {
+                return new CategoryListPane(activeWebsite.getCategories());
+            }
         }
         return new Pane(new Text("No Website Selected"));
     }
@@ -91,6 +112,7 @@ public class GlobalState {
 
         buttonList.add(productsButton);
         buttonList.add(ordersButton);
+        buttonList.add(categoriesButton);
 
         return buttonList;
     }
@@ -110,4 +132,6 @@ public class GlobalState {
     }
 
     public static void setListOrders() { listState = "orders"; }
+
+    public static void setListCategories() { listState = "categories"; }
 }

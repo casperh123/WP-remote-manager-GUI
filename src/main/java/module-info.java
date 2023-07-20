@@ -31,8 +31,8 @@ module GUI {
     opens GUI;
     exports GUI.PaneHistory;
     opens GUI.PaneHistory;
-    exports GUI.PaneHistory.StateButton;
-    opens GUI.PaneHistory.StateButton;
+    exports GUI.Components;
+    opens GUI.Components;
 
 
 }

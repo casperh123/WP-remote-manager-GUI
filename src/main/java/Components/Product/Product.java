@@ -263,4 +263,8 @@ public class Product extends AbstractComponent {
     public int getRegularPrice() { return price; }
 
     public List<ProductCategory> getCategories(){ return categories; }
+
+    public String getDateCreated() {
+        return dateCreated;
+    }
 }

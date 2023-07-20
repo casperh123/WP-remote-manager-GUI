@@ -53,6 +53,10 @@ public class UnpaginatedQueryList<E extends ID> extends QueryList<E> {
 
     }
 
+    public void setPage(int page) {
+
+    }
+
     @Override
     public int getCurrentPage() {
         return 0;

@@ -1,4 +1,4 @@
-package GUI.PaneHistory.StateButton;
+package GUI.Components;
 
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;

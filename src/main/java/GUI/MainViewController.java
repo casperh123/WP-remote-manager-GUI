@@ -2,7 +2,7 @@ package GUI;
 
 import GUI.GlobalState.GlobalState;
 import GUI.PaneHistory.PaneHistory;
-import GUI.PaneHistory.StateButton.StateButton;
+import GUI.Components.StateButton;
 import GUI.Panes.MissingDescriptionPane;
 import GUI.Panes.MissingProductsPane;
 import GUI.Panes.WebsiteList.WebsiteList;

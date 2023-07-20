@@ -3,6 +3,7 @@ package GUI.Cards;
 import Components.Category.Category;
 import Components.Product.Product ;
 import Components.Product.ProductComponents.ProductCategory;
+import Utility.GetWebImage;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
@@ -28,6 +29,9 @@ public class ProductCard extends ListCard {
     Label stockStatus;
     Label price;
     Label categories;
+    Label status;
+    Label dateCreated;
+    VBox statusTimeWrapper;
 
     Product product;
 
@@ -36,13 +40,7 @@ public class ProductCard extends ListCard {
         this.product = product;
 
         if(product.getImages().size() > 0) {
-            productImage = generateImageView(product.getImages().get(0).getImageUrl());
-        } else {
-            try {
-                productImage = new ImageView(new Image(new FileInputStream("src/main/resources/Images/placeholder.jpg")));
-            } catch (FileNotFoundException e) {
-                throw new RuntimeException(e);
-            }
+            productImage = GetWebImage.getImage(product.getImages().get(0).getImageUrl());
         }
 
         setContent();
@@ -53,6 +51,11 @@ public class ProductCard extends ListCard {
         productTitle = new Label(product.getName());
         productSku = new Label(product.getSku());
         price = new Label(Integer.toString(product.getRegularPrice()));
+        status = new Label(product.getStatus());
+        dateCreated = new Label(product.getDateCreated());
+        statusTimeWrapper = new VBox();
+
+        statusTimeWrapper.getChildren().addAll(status, dateCreated);
 
         if(product.getStockStatus().equals("outofstock")) {
             stockStatus = new Label("Out of stock ");
@@ -71,12 +74,29 @@ public class ProductCard extends ListCard {
 
         categories = new Label(categoryString.toString());
 
-        this.getChildren().addAll(productImage, productTitle, productSku, stockStatus, price, categories);
+        this.getChildren().addAll(productImage, productTitle, productSku, stockStatus, price, categories, statusTimeWrapper);
     }
 
     protected void setStyling() {
-        this.setSpacing(20.0);
         this.setAlignment(Pos.CENTER_LEFT);
+
+        this.setHgap(10);
+        this.getColumnConstraints().add(new ColumnConstraints(100));
+        this.getColumnConstraints().add(new ColumnConstraints(250));
+        this.getColumnConstraints().add(new ColumnConstraints(100));
+        this.getColumnConstraints().add(new ColumnConstraints(100));
+        this.getColumnConstraints().add(new ColumnConstraints(50));
+        this.getColumnConstraints().add(new ColumnConstraints(200));
+
+        GridPane.setConstraints(productImage, 0, 0);
+        GridPane.setConstraints(productTitle, 1, 0);
+        GridPane.setConstraints(productSku, 2, 0);
+        GridPane.setConstraints(stockStatus, 3, 0);
+        GridPane.setConstraints(price, 4, 0);
+        GridPane.setConstraints(categories, 5, 0);
+        GridPane.setConstraints(statusTimeWrapper, 6, 0);
+
+        statusTimeWrapper.setAlignment(Pos.CENTER_LEFT);
 
         productTitle.setFont(new Font(18));
         productTitle.setMaxWidth(300);
@@ -88,10 +108,6 @@ public class ProductCard extends ListCard {
 
         productImage.setFitHeight(100);
         productImage.setFitWidth(100);
-    }
-
-    private ImageView generateImageView(String imageUrl) {
-        return new ImageView(new Image(imageUrl, 200, 200, true, true, true));
     }
 
     public Product getProduct() {
