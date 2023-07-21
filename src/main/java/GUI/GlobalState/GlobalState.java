@@ -7,6 +7,7 @@ import GUI.Components.StateButton;
 import GUI.Panes.CategoryListPane;
 import GUI.Panes.OrderListPane;
 import GUI.Panes.ProductListPane;
+import GUI.Panes.TagListPane;
 import Website.Website;
 import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
@@ -23,6 +24,7 @@ public class GlobalState {
     private static StateButton productsButton;
     private static StateButton ordersButton;
     private static StateButton categoriesButton;
+    private static StateButton tagsButton;
     private static ScrollPane mainScrollPane;
     private static Pane mainContent;
 
@@ -35,10 +37,12 @@ public class GlobalState {
         productsButton = new StateButton("Products");
         ordersButton = new StateButton("Orders");
         categoriesButton = new StateButton("Categories");
+        tagsButton = new StateButton("Tags");
 
         productsButton.setActive();
         ordersButton.setActive();
         categoriesButton.setActive();
+        tagsButton.setActive();
 
         setEventListeners();
     }
@@ -76,6 +80,17 @@ public class GlobalState {
                 throw new RuntimeException(ex);
             }
         });
+
+        tagsButton.loadSetOnMouseClicked(e -> {
+            GlobalState.setListTags();
+            try {
+                mainContent = GlobalState.getListPane();
+                mainScrollPane.setContent(mainContent);
+                PaneHistory.getInstance().addPane(mainContent);
+            } catch (BadHTTPResponseException | FetchException ex) {
+                throw new RuntimeException(ex);
+            }
+        });
     }
 
     public static ScrollPane getMainScrollPane() {
@@ -103,6 +118,9 @@ public class GlobalState {
             case "categories" -> {
                 return new CategoryListPane(activeWebsite.getCategories());
             }
+            case "tags" -> {
+                return new TagListPane(activeWebsite.getTags());
+            }
         }
         return new Pane(new Text("No Website Selected"));
     }
@@ -113,6 +131,7 @@ public class GlobalState {
         buttonList.add(productsButton);
         buttonList.add(ordersButton);
         buttonList.add(categoriesButton);
+        buttonList.add(tagsButton);
 
         return buttonList;
     }
@@ -134,4 +153,7 @@ public class GlobalState {
     public static void setListOrders() { listState = "orders"; }
 
     public static void setListCategories() { listState = "categories"; }
+
+    public static void setListTags() { listState = "tags"; }
 }
+

@@ -39,7 +39,7 @@ public class Customer implements ID {
     private Shipping shipping;
 
     @JsonCreator
-    public Customer() {};
+    public Customer() {}
 
     public String toString() {
         return "ID: " + id + " First Name: " + firstName + " Last Name: " + lastName;

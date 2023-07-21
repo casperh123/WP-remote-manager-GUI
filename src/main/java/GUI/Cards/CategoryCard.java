@@ -26,9 +26,10 @@ public class CategoryCard extends ListCard {
 
         setContent();
         setStyle();
+        setEventListeners();
     }
 
-    public void setContent() {
+    protected void setContent() {
         categoryImage = GetWebImage.getImage(category.getImage().getImageUrl());
         categoryName = new Label(category.getName());
 
@@ -50,7 +51,7 @@ public class CategoryCard extends ListCard {
         this.getChildren().addAll(categoryImage, categoryName, descriptionPreview, slug, productsInCategory);
     }
 
-    public void setStyle() {
+    protected void setStyle() {
         this.setAlignment(Pos.CENTER_LEFT);
         this.setHgap(10);
 
@@ -62,5 +63,9 @@ public class CategoryCard extends ListCard {
 
         categoryImage.setFitWidth(100);
         categoryImage.setFitHeight(100);
+    }
+
+    protected void setEventListeners() {
+
     }
 }

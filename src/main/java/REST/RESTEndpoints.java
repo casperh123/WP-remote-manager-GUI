@@ -39,4 +39,6 @@ public class RESTEndpoints {
     }
 
     public static String getProductReviewsEndpoint() {return "/wp-json/wc/v3/products/reviews?";};
+
+    public static String getProductTagsEndpoint() { return "/wp-json/wc/v3/products/tags?"; }
 }

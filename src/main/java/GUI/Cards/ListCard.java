@@ -13,13 +13,16 @@ import java.util.function.Function;
 public abstract class ListCard extends GridPane {
 
     public ListCard() {
-        setStyling();
-    }
-
-    private void setStyling() {
         this.setPadding(new Insets(20));
         this.setBackground(new Background(new BackgroundFill(Color.rgb(0, 0, 0, 0.1), new CornerRadii(5), new Insets(10))));
     }
+
+
+    protected abstract void setContent();
+
+    protected abstract void setStyle();
+
+    protected abstract void setEventListeners();
 
     public void loadSetOnMouseClicked(Consumer<MouseEvent> onClickFunction) {
 

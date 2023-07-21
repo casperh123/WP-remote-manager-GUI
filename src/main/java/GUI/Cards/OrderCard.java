@@ -25,9 +25,11 @@ public class OrderCard extends ListCard {
         this.order = order;
 
         setContent();
-        setStyling();
+        setStyle();
+        setEventListeners();
     }
 
+    @Override
     public void setContent() {
         orderNumber = new Label("#" + order.getNumber());
         customerName = new Label(order.getBilling().getFirstName() + " " + order.getBilling().getLastName());
@@ -38,7 +40,13 @@ public class OrderCard extends ListCard {
         this.getChildren().addAll(orderNumber, customerName, dateCreated, statusContainer, orderAmount);
     }
 
-    public void setStyling() {
+    @Override
+    protected void setEventListeners() {
+
+    }
+
+    @Override
+    public void setStyle() {
 
         this.setAlignment(Pos.CENTER_LEFT);
         this.setHgap(10.0);

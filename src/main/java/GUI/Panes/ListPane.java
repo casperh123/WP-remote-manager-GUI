@@ -4,7 +4,6 @@ import Components.Interfaces.ID;
 import Exceptions.BadHTTPResponseException;
 import Exceptions.FirstPageException;
 import Exceptions.LastPageException;
-import GUI.Components.LoadingTextField;
 import GUI.Components.StateButton;
 import Lists.QueryList;
 import javafx.geometry.Insets;
@@ -22,7 +21,8 @@ public abstract class ListPane extends VBox {
     private StateButton  nextPage;
     private StateButton reloadButton;
     private HBox pageSelectorWrapper;
-    private HBox buttonContainer;
+    private HBox topButtonContainer;
+    private HBox bottomButtonContainer;
     protected VBox listContainer;
     protected QueryList<? extends ID> componentList;
 
@@ -31,12 +31,18 @@ public abstract class ListPane extends VBox {
         this.componentList = componentList;
 
         setContent();
-        setOnClick();
+        setEventListeners();
         setStyling();
         renderList();
     }
 
     private void setContent() {
+
+        if(componentList.size() == 0) {
+            this.getChildren().add(new Label("No elements found"));
+            return;
+        }
+
         totalItems = new Label(Integer.toString(componentList.getTotalItems()) + " Elements");
         currentPage = new TextField("1");
         previousPage = new StateButton("Previous Page");
@@ -46,10 +52,10 @@ public abstract class ListPane extends VBox {
 
         pageSelectorWrapper.getChildren().addAll(currentPage, new Label("/"), new Label(Integer.toString(componentList.getPagesAmount())));
 
-        buttonContainer = new HBox(totalItems, pageSelectorWrapper, previousPage, nextPage, reloadButton);
+        topButtonContainer = new HBox(totalItems, pageSelectorWrapper, previousPage, nextPage, reloadButton);
         listContainer = new VBox();
 
-        this.getChildren().add(buttonContainer);
+        this.getChildren().add(topButtonContainer);
         this.getChildren().add(listContainer);
     }
 
@@ -61,15 +67,15 @@ public abstract class ListPane extends VBox {
         pageSelectorWrapper.setSpacing(5);
         pageSelectorWrapper.setAlignment(Pos.CENTER_LEFT);
 
-        buttonContainer.setPadding(new Insets(10));
-        buttonContainer.setSpacing(10);
-        buttonContainer.setAlignment(Pos.CENTER_LEFT);
+        topButtonContainer.setPadding(new Insets(10));
+        topButtonContainer.setSpacing(10);
+        topButtonContainer.setAlignment(Pos.CENTER_LEFT);
 
         currentPage.setMaxWidth(50);
         currentPage.setAlignment(Pos.CENTER);
     }
 
-    private void setOnClick() {
+    private void setEventListeners() {
         previousPage.loadSetOnMouseClicked(e -> {
 
             if(componentList.getCurrentPage() == 1) {

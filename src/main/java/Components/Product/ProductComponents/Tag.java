@@ -6,6 +6,8 @@ import com.jsoniter.annotation.JsonCreator;
 public class Tag extends AbstractComponent {
 
     private String slug;
+    private String description;
+    private int count;
 
     @JsonCreator
     public Tag() {
@@ -22,5 +24,13 @@ public class Tag extends AbstractComponent {
 
     public void setSlug(String slug) {
         this.slug = slug;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public int getCount() {
+        return count;
     }
 }

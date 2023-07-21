@@ -4,11 +4,12 @@ import Components.Interfaces.ID;
 import Components.Product.Product;
 import GUI.Cards.ProductCard;
 import Lists.PaginatedQueryList;
+import Lists.QueryList;
 import javafx.geometry.Insets;
 
 public class ProductListPane extends ListPane {
 
-    public ProductListPane(PaginatedQueryList<Product> productList) {
+    public ProductListPane(QueryList<Product> productList) {
         super(productList);
 
         this.setSpacing(10.0);

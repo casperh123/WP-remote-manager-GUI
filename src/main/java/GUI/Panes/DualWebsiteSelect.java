@@ -15,6 +15,7 @@ import java.util.List;
 public abstract class DualWebsiteSelect extends VBox {
 
     private Text title;
+    private String titleString;
     private Text mainWebsiteNotice;
     protected Text comparingWebsiteNotice;
     protected TextArea missingProductsText;
@@ -25,8 +26,16 @@ public abstract class DualWebsiteSelect extends VBox {
     private Button clearButton;
 
     public DualWebsiteSelect(String title, List<Website> websites) {
-        this.title = new Text(title);
+        this.titleString = title;
         this.websites = websites;
+        generateWebsiteCards();
+        setContent();
+        setStyle();
+        setEventListeners();
+    }
+
+    private void setContent() {
+        this.title = new Text(titleString);
         this.mainWebsiteNotice = new Text();
         this.comparingWebsiteNotice = new Text();
         this.missingProductsText = new TextArea();
@@ -36,10 +45,6 @@ public abstract class DualWebsiteSelect extends VBox {
         this.getChildren().add(mainWebsiteNotice);
         this.getChildren().add(comparingWebsiteNotice);
         this.getChildren().add(clearButton);
-
-        generateWebsiteCards();
-        setEventHandlers();
-        setStyle();
     }
 
     private void generateWebsiteCards() {
@@ -68,7 +73,7 @@ public abstract class DualWebsiteSelect extends VBox {
         this.title.setFont(Font.font(20));
     }
 
-    private void setEventHandlers() {
+    private void setEventListeners() {
         clearButton.setOnMouseClicked(e -> {
             mainWebsite = null;
             comparingWebsite = null;

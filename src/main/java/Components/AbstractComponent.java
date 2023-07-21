@@ -4,13 +4,6 @@ import Components.Interfaces.ID;
 import com.jsoniter.annotation.JsonCreator;
 
 public abstract class AbstractComponent implements ID {
-    @Override
-    public String toString() {
-        return "AbstractComponent{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                '}';
-    }
 
     protected int id;
     protected String name;
@@ -38,6 +31,14 @@ public abstract class AbstractComponent implements ID {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    @Override
+    public String toString() {
+        return "AbstractComponent{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                '}';
     }
 
 }

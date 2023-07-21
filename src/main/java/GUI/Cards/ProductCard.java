@@ -1,25 +1,15 @@
 package GUI.Cards;
 
-import Components.Category.Category;
 import Components.Product.Product ;
 import Components.Product.ProductComponents.ProductCategory;
 import Utility.GetWebImage;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
-import javafx.scene.text.Text;
-
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.concurrent.CompletableFuture;
-import java.util.function.Consumer;
 
 public class ProductCard extends ListCard {
 
@@ -44,9 +34,11 @@ public class ProductCard extends ListCard {
         }
 
         setContent();
-        setStyling();
+        setStyle();
+        setEventListeners();
     }
 
+    @Override
     protected void setContent() {
         productTitle = new Label(product.getName());
         productSku = new Label(product.getSku());
@@ -77,7 +69,13 @@ public class ProductCard extends ListCard {
         this.getChildren().addAll(productImage, productTitle, productSku, stockStatus, price, categories, statusTimeWrapper);
     }
 
-    protected void setStyling() {
+    @Override
+    protected void setEventListeners() {
+
+    }
+
+    @Override
+    protected void setStyle() {
         this.setAlignment(Pos.CENTER_LEFT);
 
         this.setHgap(10);

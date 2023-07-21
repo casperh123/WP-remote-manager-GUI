@@ -26,9 +26,28 @@ public class WebsiteCard extends ListCard {
 
         this.setPadding(new Insets(20));
         this.setBackground(new Background(new BackgroundFill(Color.rgb(0, 0, 0, 0.1), new CornerRadii(5), new Insets(0))));
+
+        setContent();
+        setStyle();
+        setEventListeners();
     }
 
     public Website getWebsite() {
         return website;
+    }
+
+    @Override
+    protected void setStyle() {
+
+    }
+
+    @Override
+    protected void setContent() {
+
+    }
+
+    @Override
+    protected void setEventListeners() {
+
     }
 }

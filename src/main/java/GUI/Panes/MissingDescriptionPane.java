@@ -33,10 +33,10 @@ public class MissingDescriptionPane extends DualWebsiteSelect {
         this.getChildren().add(ignoreStringTitle);
         this.getChildren().add(ignoreString);
 
-        setEventHandlers();
+        setEventListeners();
     }
 
-    private void setEventHandlers() {
+    private void setEventListeners() {
         startSearchButton.setOnMouseClicked(e -> {
             search();
         });
