@@ -33,7 +33,6 @@ public abstract class ListPane extends VBox {
         setContent();
         setEventListeners();
         setStyling();
-        renderList();
     }
 
     private void setContent() {

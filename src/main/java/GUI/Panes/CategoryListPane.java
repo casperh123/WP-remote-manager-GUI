@@ -9,6 +9,8 @@ public class CategoryListPane extends ListPane {
 
     public CategoryListPane(QueryList<Category> categoriesList) {
         super(categoriesList);
+
+        renderList();
     }
 
     @Override

@@ -2,6 +2,7 @@ package Website;
 
 import Components.Category.Category;
 import Components.Coupon.Coupon;
+import Components.Currency;
 import Components.Customer.Customer;
 import Components.Order.Order;
 import Components.Product.Product;
@@ -15,6 +16,8 @@ import Lists.QueryList;
 import Lists.UnpaginatedQueryList;
 import REST.RESTConnection;
 import REST.RESTEndpoints;
+import com.jsoniter.JsonIterator;
+import com.jsoniter.any.Any;
 
 import java.io.Serializable;
 import java.net.URISyntaxException;
@@ -26,7 +29,7 @@ public class Website implements Serializable {
     private String name;
     private String stringUrl;
     private User user;
-
+    private Currency currency;
 
     public Website(String name, String url, User user) throws URISyntaxException {
 
@@ -38,6 +41,19 @@ public class Website implements Serializable {
 
         this.name = name;
         this.user = user;
+        this.currency = null;
+
+        RESTConnection connection = new RESTConnection(stringUrl, user);
+
+        try {
+            byte[] getResponse = connection.GETRequest(RESTEndpoints.getCurrentCurrencyEndpoint(), "");
+
+            Any json = JsonIterator.deserialize(getResponse);
+
+            currency = json.as(Currency.class);
+        } catch (BadHTTPResponseException e) {
+            currency = new Currency("NaN", "NaN", "NaN");
+        }
 
         System.out.println("done");
     }
@@ -206,6 +222,10 @@ public class Website implements Serializable {
         } catch (InterruptedException | ExecutionException e) {
             throw new FetchException(e.getMessage());
         }
+    }
+
+    public Currency getCurrency() {
+        return currency;
     }
 
     //TODO implement endpoint

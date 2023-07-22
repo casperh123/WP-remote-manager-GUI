@@ -14,6 +14,8 @@ public class TagListPane extends ListPane {
 
         this.setSpacing(10);
         this.setPadding(new Insets(10));
+
+        renderList();
     }
 
     @Override

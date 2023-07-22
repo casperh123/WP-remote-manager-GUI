@@ -11,6 +11,8 @@ public class OrderListPane extends ListPane {
 
     public OrderListPane(QueryList<Order> orderList) {
         super(orderList);
+
+        renderList();
     }
 
     @Override

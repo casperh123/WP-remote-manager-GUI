@@ -110,7 +110,7 @@ public class GlobalState {
     public static Pane getListPane() throws BadHTTPResponseException, FetchException {
         switch(listState) {
             case "products" -> {
-                return new ProductListPane(activeWebsite.getProducts());
+                return new ProductListPane(activeWebsite.getProducts(), activeWebsite.getCurrency());
             }
             case "orders" -> {
                 return new OrderListPane(activeWebsite.getOrders());

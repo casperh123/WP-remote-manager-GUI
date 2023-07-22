@@ -7,6 +7,7 @@ module GUI {
     requires org.jetbrains.annotations;
     requires kotlin.stdlib;
     requires java.desktop;
+    requires javafx.web;
 
     opens Components.Product.ProductComponents;
     opens Components;

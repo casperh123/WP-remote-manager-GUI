@@ -267,4 +267,8 @@ public class Product extends AbstractComponent {
     public String getDateCreated() {
         return dateCreated;
     }
+
+    public String getPermalink() {
+        return permalink;
+    }
 }

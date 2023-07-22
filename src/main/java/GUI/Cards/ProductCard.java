@@ -22,12 +22,14 @@ public class ProductCard extends ListCard {
     Label status;
     Label dateCreated;
     VBox statusTimeWrapper;
+    String currencyCode;
 
     Product product;
 
-    public ProductCard(Product product) {
+    public ProductCard(Product product, String currencyCode) {
 
         this.product = product;
+        this.currencyCode = currencyCode;
 
         if(product.getImages().size() > 0) {
             productImage = GetWebImage.getImage(product.getImages().get(0).getImageUrl());
@@ -42,7 +44,7 @@ public class ProductCard extends ListCard {
     protected void setContent() {
         productTitle = new Label(product.getName());
         productSku = new Label(product.getSku());
-        price = new Label(Integer.toString(product.getRegularPrice()));
+        price = new Label(Integer.toString(product.getRegularPrice()) + " " + currencyCode);
         status = new Label(product.getStatus());
         dateCreated = new Label(product.getDateCreated());
         statusTimeWrapper = new VBox();
@@ -83,7 +85,7 @@ public class ProductCard extends ListCard {
         this.getColumnConstraints().add(new ColumnConstraints(250));
         this.getColumnConstraints().add(new ColumnConstraints(100));
         this.getColumnConstraints().add(new ColumnConstraints(100));
-        this.getColumnConstraints().add(new ColumnConstraints(50));
+        this.getColumnConstraints().add(new ColumnConstraints(80));
         this.getColumnConstraints().add(new ColumnConstraints(200));
 
         GridPane.setConstraints(productImage, 0, 0);

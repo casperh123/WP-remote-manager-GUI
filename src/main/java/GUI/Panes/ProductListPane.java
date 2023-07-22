@@ -1,19 +1,28 @@
 package GUI.Panes;
 
+import Components.Currency;
 import Components.Interfaces.ID;
 import Components.Product.Product;
 import GUI.Cards.ProductCard;
+import GUI.ComponentPages.ProductPage;
+import GUI.GlobalState.GlobalState;
 import Lists.PaginatedQueryList;
 import Lists.QueryList;
 import javafx.geometry.Insets;
 
 public class ProductListPane extends ListPane {
 
-    public ProductListPane(QueryList<Product> productList) {
+    private Currency currency;
+
+    public ProductListPane(QueryList<Product> productList, Currency currency) {
         super(productList);
+
+        this.currency = currency;
 
         this.setSpacing(10.0);
         this.setPadding(new Insets(10));
+
+        renderList();
     }
 
     protected void renderList() {
@@ -28,7 +37,13 @@ public class ProductListPane extends ListPane {
 
             Product product = (Product) component;
 
-            listContainer.getChildren().add(new ProductCard(product));
+            ProductCard productCard = new ProductCard(product, currency.getCode());
+
+            productCard.setOnMouseClicked(e -> {
+                GlobalState.setMainContent(new ProductPage(product));
+            });
+
+            listContainer.getChildren().add(productCard);
         }
     }
 }
