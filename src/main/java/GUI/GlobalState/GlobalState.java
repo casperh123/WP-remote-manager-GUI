@@ -52,8 +52,7 @@ public class GlobalState {
             GlobalState.setListProducts();
             try {
                 mainContent = GlobalState.getListPane();
-                mainScrollPane.setContent(mainContent);
-                PaneHistory.getInstance().addPane(mainContent);
+                setMainContent(mainContent);
             } catch (BadHTTPResponseException | FetchException ex) {
                 throw new RuntimeException(ex);
             }
@@ -63,8 +62,7 @@ public class GlobalState {
             GlobalState.setListOrders();
             try {
                 mainContent = GlobalState.getListPane();
-                mainScrollPane.setContent(mainContent);
-                PaneHistory.getInstance().addPane(mainContent);
+                setMainContent(mainContent);
             } catch (BadHTTPResponseException | FetchException ex) {
                 throw new RuntimeException(ex);
             }
@@ -74,8 +72,7 @@ public class GlobalState {
             GlobalState.setListCategories();
             try {
                 mainContent = GlobalState.getListPane();
-                mainScrollPane.setContent(mainContent);
-                PaneHistory.getInstance().addPane(mainContent);
+                setMainContent(mainContent);
             } catch (BadHTTPResponseException | FetchException ex) {
                 throw new RuntimeException(ex);
             }
@@ -85,8 +82,7 @@ public class GlobalState {
             GlobalState.setListTags();
             try {
                 mainContent = GlobalState.getListPane();
-                mainScrollPane.setContent(mainContent);
-                PaneHistory.getInstance().addPane(mainContent);
+                setMainContent(mainContent);
             } catch (BadHTTPResponseException | FetchException ex) {
                 throw new RuntimeException(ex);
             }
@@ -98,6 +94,12 @@ public class GlobalState {
     }
 
     public static void setMainContent(Pane mainContent) {
+        GlobalState.mainContent = mainContent;
+        mainScrollPane.setContent(mainContent);
+        PaneHistory.getInstance().addPane(GlobalState.getMainContent());
+    }
+
+    public static void setMainContentNoCache(Pane mainContent) {
         GlobalState.mainContent = mainContent;
         mainScrollPane.setContent(mainContent);
     }
@@ -143,7 +145,7 @@ public class GlobalState {
     public static void setActiveWebsite(Website website) throws BadHTTPResponseException, FetchException {
         activeWebsite = website;
         mainContent = getListPane();
-        mainScrollPane.setContent(mainContent);
+        setMainContent(mainContent);
     }
 
     public static void setListProducts() {

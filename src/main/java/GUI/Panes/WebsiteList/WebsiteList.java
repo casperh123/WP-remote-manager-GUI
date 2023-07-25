@@ -5,9 +5,6 @@ import Exceptions.FetchException;
 import GUI.Cards.WebsiteCard;
 import GUI.Components.PrimaryButton;
 import GUI.GlobalState.GlobalState;
-import GUI.PaneHistory.PaneHistory;
-import GUI.Panes.OrderListPane;
-import GUI.Panes.ProductListPane;
 import GUI.Panes.WebsiteList.AddWebsite.AddWebsiteView;
 import Utility.FileManager;
 import Website.Website;
@@ -18,7 +15,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -28,7 +24,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CompletableFuture;
 
 public class WebsiteList extends VBox {
 
@@ -127,7 +122,6 @@ public class WebsiteList extends VBox {
         websiteCard.loadSetOnMouseClicked(e -> {
 
             try {
-                PaneHistory.getInstance().addPane(GlobalState.getMainContent());
                 GlobalState.setActiveWebsite(websiteCard.getWebsite());
             } catch (BadHTTPResponseException ex) {
                 throw new RuntimeException(ex);

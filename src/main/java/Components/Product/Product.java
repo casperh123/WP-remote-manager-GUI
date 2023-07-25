@@ -257,18 +257,51 @@ public class Product extends AbstractComponent {
             return 0;
         }
     }
-
     public String getStockStatus() { return stockStatus; }
-
     public int getRegularPrice() { return price; }
-
     public List<ProductCategory> getCategories(){ return categories; }
 
     public String getDateCreated() {
         return dateCreated;
     }
 
+    public String getFormattedDateCreated() {
+
+        String[] dateTime = dateCreated.split("T");
+
+        if(dateTime.length < 1) {
+          return "Invalid Date/Time format";
+        }
+
+        String date = dateTime[0];
+        String time = dateTime[1];
+
+        date = date.replaceAll("-", ".");
+
+        String[] segmentedTime = time.split(":");
+
+        time = segmentedTime[0] + ":" + segmentedTime[1];
+
+        return date + " " + time;
+    }
+
     public String getPermalink() {
         return permalink;
     }
+
+    public String getFormattedStatus() {
+        switch (status) {
+            case "draft" -> {
+                return "Draft";
+            }
+            case "pending" -> {
+                return "Pending";
+            }
+            case "private" -> {
+                return "Private";
+            }
+        }
+        return "Published";
+    }
+
 }

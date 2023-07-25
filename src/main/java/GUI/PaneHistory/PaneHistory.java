@@ -29,7 +29,7 @@ public class PaneHistory {
 
 
     public void addPane(Pane pane) {
-
+        /*
         if(nodepane == null) {
             nodepane = pane;
         } else {
@@ -41,28 +41,32 @@ public class PaneHistory {
         if(forwardStack.size() > 0) {
             forwardButton.setInactive();
             forwardStack.clear();
-        }
+        }*/
     }
 
     private void setEventHandlers() {
         backButton.setOnMouseClicked(e -> {
-            if(backStack.size() == 1) {
-                backButton.setInactive();
-            } else if(backStack.size() == 0) {
+            if(backStack.size() == 0) {
                 return;
             }
 
             getPreviousPane();
+
+            if(backStack.size() == 0) {
+                backButton.setInactive();
+            }
         });
 
         forwardButton.setOnMouseClicked(e -> {
-            if(forwardStack.size() == 1) {
-                forwardButton.setInactive();
-            } else if(forwardStack.size() == 0) {
+            if(forwardStack.size() == 0) {
                 return;
             }
 
             getNextPane();
+
+            if(forwardStack.size() == 0) {
+                forwardButton.setInactive();
+            }
         });
     }
 
@@ -73,7 +77,7 @@ public class PaneHistory {
 
         nodepane = backStack.pop();
 
-        GlobalState.setMainContent(nodepane);
+        GlobalState.setMainContentNoCache(nodepane);
 
     }
 
@@ -84,7 +88,7 @@ public class PaneHistory {
 
         nodepane = forwardStack.pop();
 
-        GlobalState.setMainContent(nodepane);
+        GlobalState.setMainContentNoCache(nodepane);
     }
 
 

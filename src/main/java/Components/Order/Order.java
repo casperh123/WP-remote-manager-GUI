@@ -394,4 +394,24 @@ public class Order implements ID {
     public void setSetPaid(boolean setPaid) {
         this.setPaid = setPaid;
     }
+
+    public String getFormattedDateCreated() {
+
+        String[] dateTime = dateCreated.split("T");
+
+        if(dateTime.length < 1) {
+            return "Invalid Date/Time format";
+        }
+
+        String date = dateTime[0];
+        String time = dateTime[1];
+
+        date = date.replaceAll("-", ".");
+
+        String[] segmentedTime = time.split(":");
+
+        time = segmentedTime[0] + ":" + segmentedTime[1];
+
+        return date + " " + time;
+    }
 }

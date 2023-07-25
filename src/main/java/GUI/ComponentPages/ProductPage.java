@@ -1,14 +1,15 @@
 package GUI.ComponentPages;
 
 import Components.Product.Product;
+import GUI.Components.CopyableText;
 import GUI.Components.StateButton;
+import GUI.Utility.QuillHTMLEditor;
 import javafx.geometry.Insets;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import javafx.scene.web.HTMLEditor;
 
 public class ProductPage extends GridPane {
 
@@ -19,8 +20,9 @@ public class ProductPage extends GridPane {
     private StateButton saveButton;
     private VBox mainContainer;
     private TextField name;
-    private Label permalink;
-    private HTMLEditor description;
+    private HBox permalinkWrapper;
+    private CopyableText permalink;
+    private QuillHTMLEditor description;
 
     public ProductPage(Product product) {
         this.product = product;
@@ -41,18 +43,18 @@ public class ProductPage extends GridPane {
     private void setContent() {
         setMainContainerContent();
         setSaveControlsContent();
-
     }
 
     private void setMainContainerContent() {
         mainContainer = new VBox();
         name = new TextField(product.getName());
-        permalink = new Label(product.getPermalink());
-        description = new HTMLEditor();
+        permalinkWrapper = new HBox();
+        permalink = new CopyableText(product.getPermalink());
+        description = new QuillHTMLEditor(product.getDescription());
 
-        description.setHtmlText(product.getDescription());
+        permalinkWrapper.getChildren().addAll(new Label("Permalink: "), permalink);
 
-        mainContainer.getChildren().addAll(name, permalink, description);
+        mainContainer.getChildren().addAll(name, permalinkWrapper, description.getWebView());
 
         GridPane.setColumnIndex(mainContainer, 0);
 
@@ -63,7 +65,7 @@ public class ProductPage extends GridPane {
 
         saveControlsContainer = new VBox();
         statusDropDown = new ComboBox<>();
-        timeDateCreated = new Label(product.getDateCreated());
+        timeDateCreated = new Label("Published on: " + product.getFormattedDateCreated());
 
         if(product == null) {
             saveButton = new StateButton("Publish");
@@ -96,6 +98,9 @@ public class ProductPage extends GridPane {
     }
 
     private void setStyling(){
+        this.setBackground(new Background(new BackgroundFill(Color.rgb(0, 0, 0, 0.1), new CornerRadii(5), new Insets(10))));
+
+
         ColumnConstraints mainColumnConstraint = new ColumnConstraints();
         ColumnConstraints secondaryColumnConstraint = new ColumnConstraints();
 
@@ -115,12 +120,14 @@ public class ProductPage extends GridPane {
     private void setMainContainerStyling() {
         mainContainer.setSpacing(10);
         mainContainer.setPadding(new Insets(20));
+
+        permalink.setTextUnderline(true);
+        permalink.setTextFill(Color.rgb(1, 122, 177));
     }
 
     private void setSaveControlsContainerStyling() {
         saveControlsContainer.setSpacing(10);
         saveControlsContainer.setPadding(new Insets(20));
-        setBackground(new Background(new BackgroundFill(Color.rgb(0, 0, 0, 0.1), new CornerRadii(5), new Insets(10))));
     }
 
     private void setEventListeners() {

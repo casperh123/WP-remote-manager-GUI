@@ -1,26 +1,30 @@
 package GUI.Cards;
 
-import Components.Product.Product ;
+import Components.Product.Product;
 import Components.Product.ProductComponents.ProductCategory;
+import GUI.ComponentPages.ProductPage;
+import GUI.Components.CopyableText;
+import GUI.GlobalState.GlobalState;
 import Utility.GetWebImage;
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.*;
+import javafx.scene.layout.ColumnConstraints;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 
 public class ProductCard extends ListCard {
 
     ImageView productImage;
-    Label productTitle;
-    Label productSku;
+    CopyableText productTitle;
+    CopyableText productSku;
     Label stockStatus;
-    Label price;
-    Label categories;
+    CopyableText price;
+    CopyableText categories;
     Label status;
-    Label dateCreated;
+    CopyableText dateCreated;
     VBox statusTimeWrapper;
     String currencyCode;
 
@@ -42,11 +46,11 @@ public class ProductCard extends ListCard {
 
     @Override
     protected void setContent() {
-        productTitle = new Label(product.getName());
-        productSku = new Label(product.getSku());
-        price = new Label(Integer.toString(product.getRegularPrice()) + " " + currencyCode);
-        status = new Label(product.getStatus());
-        dateCreated = new Label(product.getDateCreated());
+        productTitle = new CopyableText(product.getName());
+        productSku = new CopyableText(product.getSku());
+        price = new CopyableText(product.getRegularPrice() + " " + currencyCode);
+        status = new Label(product.getFormattedStatus());
+        dateCreated = new CopyableText(product.getFormattedDateCreated());
         statusTimeWrapper = new VBox();
 
         statusTimeWrapper.getChildren().addAll(status, dateCreated);
@@ -66,14 +70,16 @@ public class ProductCard extends ListCard {
             categoryString.append(category).append(", ");
         }
 
-        categories = new Label(categoryString.toString());
+        categories = new CopyableText(categoryString.toString());
 
         this.getChildren().addAll(productImage, productTitle, productSku, stockStatus, price, categories, statusTimeWrapper);
     }
 
     @Override
     protected void setEventListeners() {
-
+        this.setOnMouseClicked(e -> {
+            GlobalState.setMainContent(new ProductPage(product));
+        });
     }
 
     @Override
@@ -99,11 +105,10 @@ public class ProductCard extends ListCard {
         statusTimeWrapper.setAlignment(Pos.CENTER_LEFT);
 
         productTitle.setFont(new Font(18));
-        productTitle.setMaxWidth(300);
         productTitle.setWrapText(true);
-        productTitle.setPadding(new Insets(0, 0, 0, 10));
+        productTitle.setTextMaxWidth(200);
 
-        categories.setMaxWidth(250);
+        categories.setTextMaxWidth(150);
         categories.setWrapText(true);
 
         productImage.setFitHeight(100);

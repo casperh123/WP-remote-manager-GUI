@@ -2,7 +2,6 @@ package GUI;
 
 import GUI.GlobalState.GlobalState;
 import GUI.PaneHistory.PaneHistory;
-import GUI.Components.StateButton;
 import GUI.Panes.MissingDescriptionPane;
 import GUI.Panes.MissingProductsPane;
 import GUI.Panes.WebsiteList.WebsiteList;
@@ -10,7 +9,10 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuBar;
+import javafx.scene.control.MenuItem;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 
@@ -33,24 +35,18 @@ public class MainViewController implements Initializable {
     private Button forwardButton;
     private Map<String, Node> cachedPanes;
     private WebsiteList websiteList;
-    private PaneHistory paneHistory;
-
-    private StateButton productsButton;
-    private StateButton orderButton;
 
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
+
         mainWrapper.setCenter(GlobalState.getMainScrollPane());
 
         cachedPanes = new HashMap<>();
         websiteList = new WebsiteList(cachedPanes);
-        paneHistory = PaneHistory.getInstance();
-        backButton = paneHistory.getBackButton();
-        forwardButton = paneHistory.getForwardButton();
-        productsButton = new StateButton("Products");
-        orderButton = new StateButton("Orders");
+        backButton = PaneHistory.getInstance().getBackButton();
+        forwardButton = PaneHistory.getInstance().getForwardButton();
 
         setEventHandlers();
         setStyle();
@@ -79,12 +75,10 @@ public class MainViewController implements Initializable {
         toolBar.getMenus().add(toolDropdown);
 
         missingProductsTool.setOnAction(e -> {
-            paneHistory.addPane(GlobalState.getMainContent());
             GlobalState.setMainContent(new MissingProductsPane(websiteList.getWebsites()));
         });
 
         missingDescriptionsTool.setOnAction(e -> {
-            paneHistory.addPane(GlobalState.getMainContent());
             GlobalState.setMainContent(new MissingDescriptionPane(websiteList.getWebsites()));
         });
 

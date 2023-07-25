@@ -1,20 +1,19 @@
 package GUI.Cards;
 
 import Components.Order.Order;
-import javafx.beans.property.DoubleProperty;
+import GUI.Components.CopyableText;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
 public class OrderCard extends ListCard {
 
     private Order order;
-    private Label orderNumber;
-    private Label customerName;
+    private CopyableText orderNumber;
+    private CopyableText customerName;
     private Label dateCreated;
     private Label orderAmount;
     private VBox statusContainer;
@@ -31,9 +30,9 @@ public class OrderCard extends ListCard {
 
     @Override
     public void setContent() {
-        orderNumber = new Label("#" + order.getNumber());
-        customerName = new Label(order.getBilling().getFirstName() + " " + order.getBilling().getLastName());
-        dateCreated = new Label(order.getDateCreated());
+        orderNumber = new CopyableText("#" + order.getNumber());
+        customerName = new CopyableText(order.getBilling().getFirstName() + " " + order.getBilling().getLastName());
+        dateCreated = new Label(order.getFormattedDateCreated());
         statusContainer = new VBox(new Text(order.getStatus()));
         orderAmount = new Label(order.getTotal() + " " + order.getCurrency());
 
@@ -57,17 +56,29 @@ public class OrderCard extends ListCard {
         GridPane.setConstraints(statusContainer, 3, 0);
         GridPane.setConstraints(orderAmount, 4, 0);
 
-        this.getColumnConstraints().add(new ColumnConstraints(50));
+        this.getColumnConstraints().add(new ColumnConstraints(100));
         this.getColumnConstraints().add(new ColumnConstraints(150));
 
         statusContainer.setPadding(new Insets(10));
 
-        if(order.getStatus().equals("processing")) {
-            statusContainer.setBackground(new Background(new BackgroundFill(Color.rgb(198, 225, 198, 1), new CornerRadii(5), new Insets(0))));
-            statusContainer.setBorder(new Border(new BorderStroke(Color.rgb(0, 0, 0, 0.1), BorderStrokeStyle.SOLID, new CornerRadii(5), BorderWidths.DEFAULT)));
-        } else {
-            statusContainer.setBackground(new Background(new BackgroundFill(Color.rgb(200, 215, 225, 1), new CornerRadii(5), new Insets(0))));
-            statusContainer.setBorder(new Border(new BorderStroke(Color.rgb(0, 0, 0, 0.1), BorderStrokeStyle.SOLID, new CornerRadii(5), BorderWidths.DEFAULT)));
+
+        switch (order.getStatus()) {
+            case "processing" -> {
+                statusContainer.setBackground(new Background(new BackgroundFill(Color.rgb(198, 225, 198, 1), new CornerRadii(5), new Insets(0))));
+                statusContainer.setBorder(new Border(new BorderStroke(Color.rgb(0, 0, 0, 0.1), BorderStrokeStyle.SOLID, new CornerRadii(5), BorderWidths.DEFAULT)));
+            }
+            case "completed" -> {
+                statusContainer.setBackground(new Background(new BackgroundFill(Color.rgb(200, 215, 225, 1), new CornerRadii(5), new Insets(0))));
+                statusContainer.setBorder(new Border(new BorderStroke(Color.rgb(0, 0, 0, 0.1), BorderStrokeStyle.SOLID, new CornerRadii(5), BorderWidths.DEFAULT)));
+            }
+            case "on-hold" -> {
+                statusContainer.setBackground(new Background(new BackgroundFill(Color.rgb(248, 220, 166, 1), new CornerRadii(5), new Insets(0))));
+                statusContainer.setBorder(new Border(new BorderStroke(Color.rgb(0, 0, 0, 0.1), BorderStrokeStyle.SOLID, new CornerRadii(5), BorderWidths.DEFAULT)));
+            }
+            default -> {
+                statusContainer.setBackground(new Background(new BackgroundFill(Color.rgb(229, 228, 228, 1), new CornerRadii(5), new Insets(0))));
+                statusContainer.setBorder(new Border(new BorderStroke(Color.rgb(0, 0, 0, 0.1), BorderStrokeStyle.SOLID, new CornerRadii(5), BorderWidths.DEFAULT)));
+            }
         }
     }
 }
