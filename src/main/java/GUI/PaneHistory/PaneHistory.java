@@ -29,7 +29,6 @@ public class PaneHistory {
 
 
     public void addPane(Pane pane) {
-        /*
         if(nodepane == null) {
             nodepane = pane;
         } else {
@@ -41,7 +40,7 @@ public class PaneHistory {
         if(forwardStack.size() > 0) {
             forwardButton.setInactive();
             forwardStack.clear();
-        }*/
+        }
     }
 
     private void setEventHandlers() {

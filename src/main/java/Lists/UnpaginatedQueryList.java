@@ -53,6 +53,11 @@ public class UnpaginatedQueryList<E extends ID> extends QueryList<E> {
 
     }
 
+    @Override
+    public void refresh() throws BadHTTPResponseException {
+        //TODO implement refresh
+    }
+
     public void setPage(int page) {
 
     }
@@ -67,7 +72,6 @@ public class UnpaginatedQueryList<E extends ID> extends QueryList<E> {
         return 0;
     }
 
-    @Override
     public void updateList() throws BadHTTPResponseException {
 
         this.clear();

@@ -10,40 +10,42 @@ import Components.Product.ProductComponents.Tag;
 import Components.ProductAttribute.ProductAttribute;
 import Exceptions.BadHTTPResponseException;
 import Exceptions.FetchException;
-import GUI.Panes.CategoryListPane;
 import Lists.PaginatedQueryList;
 import Lists.QueryList;
 import Lists.UnpaginatedQueryList;
 import REST.RESTConnection;
 import REST.RESTEndpoints;
+import com.google.common.io.CountingOutputStream;
 import com.jsoniter.JsonIterator;
 import com.jsoniter.any.Any;
 
-import java.io.Serializable;
 import java.net.URISyntaxException;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
-public class Website implements Serializable {
+public class Website {
 
-    private String name;
-    private String stringUrl;
-    private User user;
+    private APICredentials apiCredentials;
     private Currency currency;
+    private QueryList<Product> products;
+    private QueryList<Order> orders;
+    private QueryList<Tag> tags;
+    private QueryList<Category> categories;
+    private QueryList<Coupon> coupons;
+    private QueryList<Customer> customers;
 
-    public Website(String name, String url, User user) throws URISyntaxException {
+    public Website(APICredentials apiCredentials) {
 
-        if(url.matches("^(https|http)://[a-zA-Z]+(.[a-zA-Z]+)+$")) {
-            this.stringUrl = url + "/";
-        } else {
-            throw new URISyntaxException(url, "URL has to start with http:// or https:// and end with .xxx");
-        }
-
-        this.name = name;
-        this.user = user;
+        this.apiCredentials = apiCredentials;
         this.currency = null;
+        this.products = null;
+        this.orders = null;
+        this.tags = null;
+        this.categories = null;
+        this.coupons = null;
+        customers = null;
 
-        RESTConnection connection = new RESTConnection(stringUrl, user);
+        RESTConnection connection = new RESTConnection(apiCredentials.getUrl(), apiCredentials);
 
         try {
             byte[] getResponse = connection.GETRequest(RESTEndpoints.getCurrentCurrencyEndpoint(), "");
@@ -59,150 +61,86 @@ public class Website implements Serializable {
     }
 
     public String getName() {
-        return name;
+        return apiCredentials.getName();
     }
     public String getUrl() {
-        return stringUrl;
+        return apiCredentials.getUrl();
     }
 
-    public PaginatedQueryList<Product> getProducts() throws FetchException, BadHTTPResponseException {
+    public APICredentials getApiCredentials() {
+        return apiCredentials;
+    }
 
-        RESTConnection connection = new RESTConnection(stringUrl, user);
+    public QueryList<Product> getProducts() throws BadHTTPResponseException {
 
-        return new PaginatedQueryList<>(connection, RESTEndpoints.getProductsEndpoint(), Product.class);
+        if(products == null) {
+            RESTConnection connection = new RESTConnection(apiCredentials.getUrl(), apiCredentials);
+
+            products = new PaginatedQueryList<>(connection, RESTEndpoints.getProductsEndpoint(), Product.class);
+        }
+        return products;
     }
 
     public QueryList<Product> getAllProducts() throws FetchException, BadHTTPResponseException {
 
-        RESTConnection connection = new RESTConnection(stringUrl, user);
+        RESTConnection connection = new RESTConnection(apiCredentials.getUrl(), apiCredentials);
 
         return new UnpaginatedQueryList<>(connection, RESTEndpoints.getProductsEndpoint(), Product.class);
     }
 
-    public QueryList<Coupon> getCoupons() throws FetchException {
+    public QueryList<Coupon> getCoupons() throws BadHTTPResponseException {
 
-        RESTConnection connection = new RESTConnection(stringUrl, user);
+        if(coupons == null) {
+            RESTConnection connection = new RESTConnection(apiCredentials.getUrl(), apiCredentials);
 
-        CompletableFuture<PaginatedQueryList<Coupon>> listFuture = CompletableFuture.supplyAsync(() -> {
-            try {
-                return new PaginatedQueryList<>(connection, RESTEndpoints.getCouponsEndpoint(), Coupon.class) {
-                };
-            } catch (BadHTTPResponseException e) {
-                System.out.println("Fuck"); // TODO Exception
-                return null;
-            }
-        });
-
-
-        try {
-            if(listFuture.get() == null) {
-                throw new FetchException("Could not complete request");
-            }
-            return listFuture.get();
-        } catch (InterruptedException | ExecutionException e) {
-            throw new FetchException(e.getMessage());
+            coupons = new PaginatedQueryList<>(connection, RESTEndpoints.getCouponsEndpoint(), Coupon.class);
         }
+        return coupons;
     }
 
-    public QueryList<Customer> getCustomers() throws FetchException {
+    public QueryList<Customer> getCustomers() throws BadHTTPResponseException {
 
-        RESTConnection connection = new RESTConnection(stringUrl, user);
+        if(currency == null) {
+            RESTConnection connection = new RESTConnection(apiCredentials.getUrl(), apiCredentials);
 
-        CompletableFuture<PaginatedQueryList<Customer>> listFuture = CompletableFuture.supplyAsync(() -> {
-            try {
-                return new PaginatedQueryList<>(connection, RESTEndpoints.getCustomersEndpoint(), Customer.class) {
-                };
-            } catch (BadHTTPResponseException e) {
-                System.out.println("Fuck");
-                return null;
-            }
-        });
-
-        try {
-            if(listFuture.get() == null) {
-                throw new FetchException("Could not complete request");
-            }
-            return listFuture.get();
-        } catch (InterruptedException | ExecutionException e) {
-            throw new FetchException(e.getMessage());
+            customers = new PaginatedQueryList<>(connection, RESTEndpoints.getCustomersEndpoint(), Customer.class);
         }
+        return customers;
     }
 
-    public QueryList<Order> getOrders() throws FetchException {
+    public QueryList<Order> getOrders() throws BadHTTPResponseException {
 
-        RESTConnection connection = new RESTConnection(stringUrl, user);
+        if(orders == null) {
+            RESTConnection connection = new RESTConnection(apiCredentials.getUrl(), apiCredentials);
 
-        CompletableFuture<PaginatedQueryList<Order>> listFuture = CompletableFuture.supplyAsync(() -> {
-            try {
-                return new PaginatedQueryList<>(connection, RESTEndpoints.getOrdersEndpoint(), Order.class) {
-                };
-            } catch (BadHTTPResponseException e) {
-                System.out.println("Fuck"); // TODO Exception
-                return null;
-            }
-        });
-
-        try {
-            if(listFuture.get() == null) {
-                throw new FetchException("Could not complete request");
-            }
-            return listFuture.get();
-        } catch (InterruptedException | ExecutionException e) {
-            throw new FetchException(e.getMessage());
+            orders = new PaginatedQueryList<>(connection, RESTEndpoints.getOrdersEndpoint(), Order.class);
         }
+        return orders;
     }
 
-    public QueryList<Tag> getTags() throws FetchException {
+    public QueryList<Tag> getTags() throws BadHTTPResponseException {
 
-        RESTConnection connection = new RESTConnection(stringUrl, user);
+        if(tags == null) {
+            RESTConnection connection = new RESTConnection(apiCredentials.getUrl(), apiCredentials);
 
-        CompletableFuture<PaginatedQueryList<Tag>> listFuture = CompletableFuture.supplyAsync(() -> {
-            try {
-                return new PaginatedQueryList<>(connection, RESTEndpoints.getProductTagsEndpoint(), Tag.class) {
-                };
-            } catch (BadHTTPResponseException e) {
-                System.out.println("Fuck"); // TODO Exception
-                return null;
-            }
-        });
-
-        try {
-            if(listFuture.get() == null) {
-                throw new FetchException("Could not complete request");
-            }
-            return listFuture.get();
-        } catch (InterruptedException | ExecutionException e) {
-            throw new FetchException(e.getMessage());
+            tags = new PaginatedQueryList<>(connection, RESTEndpoints.getProductTagsEndpoint(), Tag.class);
         }
+        return tags;
     }
 
-    public QueryList<Category> getCategories() throws FetchException {
+    public QueryList<Category> getCategories() throws BadHTTPResponseException {
 
-        RESTConnection connection = new RESTConnection(stringUrl, user);
+        if(categories == null) {
+            RESTConnection connection = new RESTConnection(apiCredentials.getUrl(), apiCredentials);
 
-        CompletableFuture<PaginatedQueryList<Category>> listFuture = CompletableFuture.supplyAsync(() -> {
-            try {
-                return new PaginatedQueryList<>(connection, RESTEndpoints.getProductCategoriesEndpoint(), Category.class) {
-                };
-            } catch (BadHTTPResponseException e) {
-                System.out.println("Fuck"); // TODO Exception
-                return null;
-            }
-        });
-
-        try {
-            if(listFuture.get() == null) {
-                throw new FetchException("Could not complete request");
-            }
-            return listFuture.get();
-        } catch (InterruptedException | ExecutionException e) {
-            throw new FetchException(e.getMessage());
+            categories = new PaginatedQueryList<>(connection, RESTEndpoints.getProductCategoriesEndpoint(), Category.class);
         }
+        return categories;
     }
 
     public QueryList<ProductAttribute> getProductAttributes() throws FetchException {
 
-        RESTConnection connection = new RESTConnection(stringUrl, user);
+        RESTConnection connection = new RESTConnection(apiCredentials.getUrl(), apiCredentials);
 
         CompletableFuture<PaginatedQueryList<ProductAttribute>> listFuture = CompletableFuture.supplyAsync(() -> {
             try {
@@ -232,7 +170,7 @@ public class Website implements Serializable {
 /*
     public QueryList<ProductAttributeTerm> getProductAttributeTerm() throws FetchException {
 
-        RESTConnection connection = new RESTConnection(stringUrl, user);
+        RESTConnection connection = new RESTConnection(apiCredentials.getUrl(), user);
 
         CompletableFuture<PaginatedQueryList<ProductAttributeTerm>> listFuture = CompletableFuture.supplyAsync(() -> {
             try {

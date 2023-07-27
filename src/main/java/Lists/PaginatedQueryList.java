@@ -72,6 +72,11 @@ public class PaginatedQueryList<E extends ID> extends QueryList<E> {
         }
     }
 
+    @Override
+    public void refresh() throws BadHTTPResponseException {
+        updateList();
+    }
+
     public void setPage(int page) throws BadHTTPResponseException {
         currentPage = page;
         updateList();

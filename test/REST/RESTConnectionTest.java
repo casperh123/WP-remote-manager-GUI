@@ -1,7 +1,7 @@
 package REST;
 
 import Exceptions.BadHTTPResponseException;
-import Website.User;
+import Website.APICredentials;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -19,7 +19,7 @@ class RESTConnectionTest {
     @BeforeEach
     void setUp() {
         connection = new RESTConnection("https://staging-skadedyrsexpertendk-test.kinsta.cloud/",
-                new User("Casper",
+                new APICredentials("Casper",
                         "ck_1a62e360c9cfdfe4d4438f35155c6816e872b558",
                         "cs_ac785b31f21fe1835e2dd6adb3e0c6a474d56357"));
     }

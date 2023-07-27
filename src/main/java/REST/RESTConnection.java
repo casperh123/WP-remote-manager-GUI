@@ -2,7 +2,7 @@ package REST;
 
 import Exceptions.BadHTTPResponseException;
 import Utility.HTTPClient;
-import Website.User;
+import Website.APICredentials;
 import okhttp3.*;
 import org.jetbrains.annotations.NotNull;
 
@@ -18,7 +18,7 @@ public class RESTConnection implements Serializable {
     private String credentials;
     private Headers latestHeaders;
 
-    public RESTConnection(String websiteRootUrl, User user) {
+    public RESTConnection(String websiteRootUrl, APICredentials user) {
         this.websiteRootUrl = websiteRootUrl;
         this.credentials = Credentials.basic(user.getApiKey(), user.getApiSecret());
     }

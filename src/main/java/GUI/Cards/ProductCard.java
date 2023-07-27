@@ -21,8 +21,8 @@ public class ProductCard extends ListCard {
     CopyableText productTitle;
     CopyableText productSku;
     Label stockStatus;
-    CopyableText price;
-    CopyableText categories;
+    Label price;
+    Label categories;
     Label status;
     CopyableText dateCreated;
     VBox statusTimeWrapper;
@@ -36,7 +36,7 @@ public class ProductCard extends ListCard {
         this.currencyCode = currencyCode;
 
         if(product.getImages().size() > 0) {
-            productImage = GetWebImage.getImage(product.getImages().get(0).getImageUrl());
+            productImage = GetWebImage.getImage(product.getImages().get(0).getImageUrl(), 100, 100);
         }
 
         setContent();
@@ -48,7 +48,7 @@ public class ProductCard extends ListCard {
     protected void setContent() {
         productTitle = new CopyableText(product.getName());
         productSku = new CopyableText(product.getSku());
-        price = new CopyableText(product.getRegularPrice() + " " + currencyCode);
+        price = new Label(product.getRegularPrice() + " " + currencyCode);
         status = new Label(product.getFormattedStatus());
         dateCreated = new CopyableText(product.getFormattedDateCreated());
         statusTimeWrapper = new VBox();
@@ -66,20 +66,16 @@ public class ProductCard extends ListCard {
         StringBuilder categoryString = new StringBuilder();
 
         for(ProductCategory category : product.getCategories()) {
-
             categoryString.append(category).append(", ");
         }
 
-        categories = new CopyableText(categoryString.toString());
+        categories = new Label(categoryString.toString());
 
         this.getChildren().addAll(productImage, productTitle, productSku, stockStatus, price, categories, statusTimeWrapper);
     }
 
     @Override
     protected void setEventListeners() {
-        this.setOnMouseClicked(e -> {
-            GlobalState.setMainContent(new ProductPage(product));
-        });
     }
 
     @Override
@@ -108,7 +104,7 @@ public class ProductCard extends ListCard {
         productTitle.setWrapText(true);
         productTitle.setTextMaxWidth(200);
 
-        categories.setTextMaxWidth(150);
+        categories.setMaxWidth(150);
         categories.setWrapText(true);
 
         productImage.setFitHeight(100);

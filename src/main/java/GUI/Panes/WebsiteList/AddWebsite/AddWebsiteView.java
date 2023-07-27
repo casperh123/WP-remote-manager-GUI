@@ -2,7 +2,7 @@ package GUI.Panes.WebsiteList.AddWebsite;
 
 import Utility.FileManager;
 import Website.Website;
-import Website.User;
+import Website.APICredentials;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -10,6 +10,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class AddWebsiteView extends VBox {
@@ -18,7 +19,6 @@ public class AddWebsiteView extends VBox {
 
     TextField websiteUrl;
     TextField websiteName;
-    TextField userName;
     TextField userKey;
     TextField userSecret;
     Label errorLabel;
@@ -37,7 +37,6 @@ public class AddWebsiteView extends VBox {
 
         websiteUrl = new TextField();
         websiteName = new TextField();
-        userName = new TextField();
         userKey = new TextField();
         userSecret = new TextField();
         submitButton = new Button("Add Website");
@@ -47,8 +46,6 @@ public class AddWebsiteView extends VBox {
         this.getChildren().add(websiteName);
         this.getChildren().add(new Label("Website URL"));
         this.getChildren().add(websiteUrl);
-        this.getChildren().add(new Label("Username"));
-        this.getChildren().add(userName);
         this.getChildren().add(new Label("API Key"));
         this.getChildren().add(userKey);
         this.getChildren().add(new Label("API Secret"));
@@ -59,7 +56,7 @@ public class AddWebsiteView extends VBox {
         submitButton.setOnMouseClicked(e -> {
             try {
                 addWebsite();
-                FileManager.save("src/main/resources/Websites/website.obj", websites);
+                saveWebsites();
                 errorLabel.setText("Success");
                 parentStage.close();
             } catch (URISyntaxException ex) {
@@ -68,9 +65,19 @@ public class AddWebsiteView extends VBox {
         });
     }
 
-    public void addWebsite() throws URISyntaxException {
-        User newUser = new User(userName.getText(), userKey.getText(), userSecret.getText());
+    public void saveWebsites() {
+        List<APICredentials> apiCredentials = new ArrayList<>();
 
-        websites.add(new Website(websiteName.getText(), websiteUrl.getText(), newUser));
+        for(Website website : websites) {
+            apiCredentials.add(website.getApiCredentials());
+        }
+
+        FileManager.save("src/main/resources/Websites/apicredentials.obj", apiCredentials);
+    }
+
+    public void addWebsite() throws URISyntaxException {
+        APICredentials newApiCredentials = new APICredentials(userKey.getText(), userSecret.getText(), websiteUrl.getText(), websiteName.getText());
+
+        websites.add(new Website(newApiCredentials));
     }
 }

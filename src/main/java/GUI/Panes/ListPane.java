@@ -133,7 +133,7 @@ public abstract class ListPane extends VBox {
 
         reloadButton.loadSetOnMouseClicked(e -> {
             try {
-                componentList.updateList();
+                componentList.refresh();
                 renderList();
             } catch (BadHTTPResponseException ex) {
                 throw new RuntimeException(ex); // TODO Exception Handling

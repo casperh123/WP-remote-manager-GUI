@@ -51,8 +51,8 @@ public class GlobalState {
         productsButton.loadSetOnMouseClicked(e -> {
             GlobalState.setListProducts();
             try {
-                mainContent = GlobalState.getListPane();
-                setMainContent(mainContent);
+                Pane newMainContent = GlobalState.getListPane();
+                setMainContent(newMainContent);
             } catch (BadHTTPResponseException | FetchException ex) {
                 throw new RuntimeException(ex);
             }
@@ -61,8 +61,8 @@ public class GlobalState {
         ordersButton.loadSetOnMouseClicked(e -> {
             GlobalState.setListOrders();
             try {
-                mainContent = GlobalState.getListPane();
-                setMainContent(mainContent);
+                Pane newMainContent = GlobalState.getListPane();
+                setMainContent(newMainContent);
             } catch (BadHTTPResponseException | FetchException ex) {
                 throw new RuntimeException(ex);
             }
@@ -71,8 +71,8 @@ public class GlobalState {
         categoriesButton.loadSetOnMouseClicked(e -> {
             GlobalState.setListCategories();
             try {
-                mainContent = GlobalState.getListPane();
-                setMainContent(mainContent);
+                Pane newMainContent = GlobalState.getListPane();
+                setMainContent(newMainContent);
             } catch (BadHTTPResponseException | FetchException ex) {
                 throw new RuntimeException(ex);
             }
@@ -81,8 +81,8 @@ public class GlobalState {
         tagsButton.loadSetOnMouseClicked(e -> {
             GlobalState.setListTags();
             try {
-                mainContent = GlobalState.getListPane();
-                setMainContent(mainContent);
+                Pane newMainContent = GlobalState.getListPane();
+                setMainContent(newMainContent);
             } catch (BadHTTPResponseException | FetchException ex) {
                 throw new RuntimeException(ex);
             }
@@ -107,7 +107,6 @@ public class GlobalState {
     public static Pane getMainContent() {
         return mainContent;
     }
-
 
     public static Pane getListPane() throws BadHTTPResponseException, FetchException {
         switch(listState) {

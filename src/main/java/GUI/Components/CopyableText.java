@@ -29,7 +29,7 @@ public class CopyableText extends HBox {
         this.clipboard = Clipboard.getSystemClipboard();
 
         try {
-            this.clipboardIcon = new ImageView(new Image(new FileInputStream("src/main/resources/Images/clipboard.png")));
+            this.clipboardIcon = new ImageView(new Image(new FileInputStream("src/main/resources/Images/clipboard.png"), 30, 30, true, true));
         } catch (FileNotFoundException e) {
             this.clipboardIcon = new ImageView();
         }

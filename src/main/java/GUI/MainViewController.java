@@ -1,10 +1,12 @@
 package GUI;
 
+import GUI.Components.StateButton;
 import GUI.GlobalState.GlobalState;
 import GUI.PaneHistory.PaneHistory;
 import GUI.Panes.MissingDescriptionPane;
 import GUI.Panes.MissingProductsPane;
 import GUI.Panes.WebsiteList.WebsiteList;
+import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
@@ -13,8 +15,12 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 
 import java.net.URL;
 import java.util.HashMap;
@@ -90,6 +96,23 @@ public class MainViewController implements Initializable {
     }
 
     public void setEventHandlers() {
+
+        Button forwardButton = PaneHistory.getInstance().getForwardButton();
+        Button backButton = PaneHistory.getInstance().getBackButton();
+
+        mainWrapper.setOnMouseClicked(e -> {
+            if(e.getButton() == MouseButton.FORWARD) {
+                Event.fireEvent(forwardButton, new MouseEvent(MouseEvent.MOUSE_CLICKED, 0,
+                        0, 0, 0, MouseButton.PRIMARY, 1, true, true, true, true,
+                        true, true, true, true, true, true, null));
+            }
+
+            if(e.getButton() == MouseButton.BACK) {
+                Event.fireEvent(backButton, new MouseEvent(MouseEvent.MOUSE_CLICKED, 0,
+                        0, 0, 0, MouseButton.PRIMARY, 1, true, true, true, true,
+                        true, true, true, true, true, true, null));
+            }
+        });
     }
 }
 

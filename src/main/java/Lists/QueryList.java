@@ -27,6 +27,8 @@ public abstract class QueryList<E extends ID> extends AbstractComponentList<E> {
 
     public abstract void getPreviousPage() throws FirstPageException, BadHTTPResponseException;
 
+    public abstract void refresh() throws BadHTTPResponseException;
+
     public abstract int getCurrentPage();
 
     public abstract int getPagesAmount();
@@ -36,6 +38,4 @@ public abstract class QueryList<E extends ID> extends AbstractComponentList<E> {
     }
 
     public abstract void setPage(int page) throws BadHTTPResponseException;
-
-    public abstract void updateList() throws BadHTTPResponseException;
 }

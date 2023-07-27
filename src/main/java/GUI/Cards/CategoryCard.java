@@ -1,6 +1,8 @@
 package GUI.Cards;
 
 import Components.Category.Category;
+import GUI.ComponentPages.CategoryPage;
+import GUI.GlobalState.GlobalState;
 import Utility.GetWebImage;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
@@ -17,7 +19,6 @@ public class CategoryCard extends ListCard {
     Label slug;
     Label productsInCategory;
     String sanitisedDescription;
-
     Category category;
 
     public CategoryCard(Category category) {
@@ -30,7 +31,7 @@ public class CategoryCard extends ListCard {
     }
 
     protected void setContent() {
-        categoryImage = GetWebImage.getImage(category.getImage().getImageUrl());
+        categoryImage = GetWebImage.getImage(category.getImage().getImageUrl(), 100, 100);
         categoryName = new Label(category.getName());
 
         if(descriptionPreview == null) {
@@ -66,6 +67,8 @@ public class CategoryCard extends ListCard {
     }
 
     protected void setEventListeners() {
-
+        this.setOnMouseClicked(e -> {
+            GlobalState.setMainContent(new CategoryPage(category));
+        });
     }
 }

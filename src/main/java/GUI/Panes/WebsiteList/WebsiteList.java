@@ -8,6 +8,7 @@ import GUI.GlobalState.GlobalState;
 import GUI.Panes.WebsiteList.AddWebsite.AddWebsiteView;
 import Utility.FileManager;
 import Website.Website;
+import Website.APICredentials;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -29,6 +30,7 @@ public class WebsiteList extends VBox {
 
     Map<String, Node> cachedPanes;
     private List<Website> websites;
+    private List<APICredentials> websiteCredentials;
     private HBox topContent;
     private VBox websiteList;
 
@@ -36,19 +38,24 @@ public class WebsiteList extends VBox {
 
         this.cachedPanes = cachedPanes;
         this.topContent = new HBox();
+        this.websites = new ArrayList<>();
 
         renderBasicLayout();
 
-        File websiteFile = new File("src/main/resources/Websites/website.obj");
+        File apiCredentialFile = new File("src/main/resources/Websites/apicredentials.obj");
 
-        if(websiteFile.isFile()) {
+        if(apiCredentialFile.isFile()) {
             try {
-                this.websites = (List<Website>) FileManager.loadFile(websiteFile);
+                this.websiteCredentials = (List<APICredentials>) FileManager.loadFile(apiCredentialFile);
             } catch (IOException e) {
-                this.websites = new ArrayList<>();
+                this.websiteCredentials = new ArrayList<>();
             }
         } else {
-            this.websites = new ArrayList<>();
+            this.websiteCredentials = new ArrayList<>();
+        }
+
+        for(APICredentials credentials : websiteCredentials) {
+            websites.add(new Website(credentials));
         }
 
         if(websites.size() == 0) {

@@ -4,6 +4,8 @@ import Components.Currency;
 import Components.Interfaces.ID;
 import Components.Product.Product;
 import GUI.Cards.ProductCard;
+import GUI.ComponentPages.ProductPage;
+import GUI.GlobalState.GlobalState;
 import Lists.QueryList;
 import javafx.geometry.Insets;
 
@@ -35,6 +37,10 @@ public class ProductListPane extends ListPane {
             Product product = (Product) component;
 
             ProductCard productCard = new ProductCard(product, currency.getCode());
+
+            productCard.setOnMouseClicked(e -> {
+                GlobalState.setMainContent(new ProductPage(product));
+            });
 
             listContainer.getChildren().add(productCard);
         }

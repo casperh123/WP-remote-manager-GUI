@@ -7,17 +7,17 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 
 public class GetWebImage {
-    public static ImageView getImage(String imageUrl) {
+    public static ImageView getImage(String imageUrl, double width, double height) {
 
         if(imageUrl == null) {
             return getImagePlaceholder();
         }
 
-        Image image = new Image(imageUrl, 200, 200, true, true, true);
+        Image image = new Image(imageUrl, width, height, true, true, true);
 
         if(image.isError()) {
             try {
-                image = new Image(new FileInputStream("src/main/resources/Images/placeholder.jpg"));
+                image = new Image(new FileInputStream("src/main/resources/Images/placeholder.jpg"), width, height, true, true);
             } catch (FileNotFoundException e) {
                 image = null;
             }
