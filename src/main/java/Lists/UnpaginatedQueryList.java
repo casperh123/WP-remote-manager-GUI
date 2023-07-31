@@ -55,7 +55,7 @@ public class UnpaginatedQueryList<E extends ID> extends QueryList<E> {
 
     @Override
     public void refresh() throws BadHTTPResponseException {
-        //TODO implement refresh
+        updateList();
     }
 
     public void setPage(int page) {
@@ -72,7 +72,7 @@ public class UnpaginatedQueryList<E extends ID> extends QueryList<E> {
         return 0;
     }
 
-    public void updateList() throws BadHTTPResponseException {
+    private void updateList() throws BadHTTPResponseException {
 
         this.clear();
 
@@ -83,6 +83,8 @@ public class UnpaginatedQueryList<E extends ID> extends QueryList<E> {
             parameters.add("&per_page=100&page=" + i);
         }
 
+        long start = System.nanoTime();
+
         getResponses = connection.GETRequest(restEndpoint, parameters);
 
         for(byte[] getResponse : getResponses) {
@@ -91,5 +93,7 @@ public class UnpaginatedQueryList<E extends ID> extends QueryList<E> {
 
             json.forEach(item -> this.add(item.as(containedClass)));
         }
+
+        System.out.println("Request timing: " + ((System.nanoTime() - start) / 1000000) + " ms");
     }
 }

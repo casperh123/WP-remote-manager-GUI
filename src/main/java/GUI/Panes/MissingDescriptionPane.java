@@ -58,10 +58,8 @@ public class MissingDescriptionPane extends DualWebsiteSelect {
         try {
             mainProducts = new HashSet<>(mainWebsite.getAllProducts());
             comparingProducts = new HashSet<>(comparingWebsite.getAllProducts());
-        } catch (FetchException e) {
-            throw new RuntimeException(e);
         } catch (BadHTTPResponseException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException(e); // TODO EXCEPTION
         }
 
         for(Product product : mainProducts) {

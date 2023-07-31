@@ -107,6 +107,7 @@ public class ProductPage extends GridPane {
         mainColumnConstraint.setPercentWidth(80);
         secondaryColumnConstraint.setPercentWidth(20);
 
+
         this.getColumnConstraints().add(mainColumnConstraint);
         this.getColumnConstraints().add(secondaryColumnConstraint);
 

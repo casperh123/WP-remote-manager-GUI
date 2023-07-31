@@ -15,11 +15,9 @@ import Lists.QueryList;
 import Lists.UnpaginatedQueryList;
 import REST.RESTConnection;
 import REST.RESTEndpoints;
-import com.google.common.io.CountingOutputStream;
 import com.jsoniter.JsonIterator;
 import com.jsoniter.any.Any;
 
-import java.net.URISyntaxException;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
@@ -27,7 +25,8 @@ public class Website {
 
     private APICredentials apiCredentials;
     private Currency currency;
-    private QueryList<Product> products;
+    private QueryList<Product> paginatedProducts;
+    private QueryList<Product> allProducts;
     private QueryList<Order> orders;
     private QueryList<Tag> tags;
     private QueryList<Category> categories;
@@ -38,7 +37,8 @@ public class Website {
 
         this.apiCredentials = apiCredentials;
         this.currency = null;
-        this.products = null;
+        this.paginatedProducts= null;
+        this.allProducts = null;
         this.orders = null;
         this.tags = null;
         this.categories = null;
@@ -71,21 +71,23 @@ public class Website {
         return apiCredentials;
     }
 
-    public QueryList<Product> getProducts() throws BadHTTPResponseException {
+    public QueryList<Product> getPaginatedProducts() throws BadHTTPResponseException {
 
-        if(products == null) {
+        if(paginatedProducts == null) {
             RESTConnection connection = new RESTConnection(apiCredentials.getUrl(), apiCredentials);
 
-            products = new PaginatedQueryList<>(connection, RESTEndpoints.getProductsEndpoint(), Product.class);
+            paginatedProducts = new PaginatedQueryList<>(connection, RESTEndpoints.getProductsEndpoint(), Product.class);
         }
-        return products;
+        return paginatedProducts;
     }
 
-    public QueryList<Product> getAllProducts() throws FetchException, BadHTTPResponseException {
+    public QueryList<Product> getAllProducts() throws BadHTTPResponseException {
+        if(paginatedProducts == null) {
+            RESTConnection connection = new RESTConnection(apiCredentials.getUrl(), apiCredentials);
 
-        RESTConnection connection = new RESTConnection(apiCredentials.getUrl(), apiCredentials);
-
-        return new UnpaginatedQueryList<>(connection, RESTEndpoints.getProductsEndpoint(), Product.class);
+            paginatedProducts = new UnpaginatedQueryList<>(connection, RESTEndpoints.getProductsEndpoint(), Product.class);
+        }
+        return paginatedProducts;
     }
 
     public QueryList<Coupon> getCoupons() throws BadHTTPResponseException {

@@ -43,7 +43,7 @@ public abstract class ListPane extends VBox {
         }
 
         totalItems = new Label(Integer.toString(componentList.getTotalItems()) + " Elements");
-        currentPage = new TextField("1");
+        currentPage = new TextField(Integer.toString(componentList.getCurrentPage()));
         previousPage = new StateButton("Previous Page");
         nextPage = new StateButton("Next Page");
         reloadButton = new StateButton("Reload");
@@ -59,8 +59,14 @@ public abstract class ListPane extends VBox {
     }
 
     private void setStyling() {
-        previousPage.setInactive();
-        nextPage.setActive();
+        if(componentList.getCurrentPage() == 1) {
+            nextPage.setActive();
+        } else if(componentList.getCurrentPage() == componentList.getPagesAmount()) {
+            previousPage.setActive();
+        } else {
+            previousPage.setActive();
+            nextPage.setActive();
+        }
         reloadButton.setActive();
 
         pageSelectorWrapper.setSpacing(5);

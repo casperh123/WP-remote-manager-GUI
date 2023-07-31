@@ -21,20 +21,24 @@ import java.io.FileNotFoundException;
 public class CopyableText extends HBox {
 
     private Label text;
+    private static Image clipboardImage;
     private ImageView clipboardIcon;
     private Clipboard clipboard;
+
+    static {
+        try {
+            clipboardImage = new Image(new FileInputStream("src/main/resources/Images/clipboard.png"), 30, 30, true, true);
+        } catch (FileNotFoundException e) {
+            //TODO exception handling
+        }
+    }
 
     public CopyableText(String text) {
         this.text = new Label(text);
         this.clipboard = Clipboard.getSystemClipboard();
+        this.clipboardIcon = new ImageView(clipboardImage);
 
-        try {
-            this.clipboardIcon = new ImageView(new Image(new FileInputStream("src/main/resources/Images/clipboard.png"), 30, 30, true, true));
-        } catch (FileNotFoundException e) {
-            this.clipboardIcon = new ImageView();
-        }
-
-        this.getChildren().addAll(this.text, this.clipboardIcon);
+        this.getChildren().addAll(this.text, clipboardIcon);
 
         clipboardIcon.setVisible(false);
 

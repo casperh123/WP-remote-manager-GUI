@@ -26,9 +26,9 @@ public class QuillHTMLEditor {
                 "        }\n" +
                 "    </style>\n" +
                 "</head>\n" +
-                "<body>\n" +
+                "<body style=\"background-color: rgba(0,0,0,0.14);\">\n" +
                 "<!-- Create the editor container -->\n" +
-                "<div id=\"editor\">\n" +
+                "<div id=\"editor\" style=\"background-color: #fff;\">\n" +
                     text +
                 "</div>\n" +
                 "\n" +
@@ -59,6 +59,11 @@ public class QuillHTMLEditor {
                 "  theme: 'snow'\n" +
                 "});" +
                 "</script>\n" +
+                "<style>\n" +
+                        ".ql-toolbar {\n" +
+                        "    background-color: white;\n" +
+                        "}\n" +
+                "</style>" +
                 "</body>\n" +
                 "</html>");
     }

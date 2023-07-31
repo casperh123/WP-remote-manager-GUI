@@ -10,7 +10,9 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
+import java.util.stream.Collectors;
 
 public class RESTConnection implements Serializable {
 
@@ -47,37 +49,47 @@ public class RESTConnection implements Serializable {
     public List<byte[]> GETRequest(String endpoint, List<String> parameters) throws BadHTTPResponseException {
 
         OkHttpClient client = HTTPClient.getHTTPClient();
-        List<byte[]> responseBodies = new ArrayList<>();
-        CountDownLatch countDownLatch = new CountDownLatch(parameters.size());
+        List<CompletableFuture<byte[]>> futures = new ArrayList<>();
 
-        for(String parameter : parameters) {
+        for (String parameter : parameters) {
+            CompletableFuture<byte[]> future = new CompletableFuture<>();
+
             client.newCall(new Request.Builder()
                             .url(websiteRootUrl + endpoint + parameter)
                             .header("Authorization", credentials)
                             .build())
                     .enqueue(new Callback() {
                         public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                            if(!response.isSuccessful()) throw new BadHTTPResponseException(response.code());
-                            try (ResponseBody responseBody = response.body()) {
-                                responseBodies.add(responseBody.bytes());
+                            if (!response.isSuccessful()) {
+                                future.completeExceptionally(new BadHTTPResponseException(response.code()));
+                                return;
                             }
-                            countDownLatch.countDown();
+
+                            try (ResponseBody responseBody = response.body()) {
+                                future.complete(responseBody.bytes());
+                            }
                         }
 
                         @Override
                         public void onFailure(Call call, IOException e) {
                             System.out.println("Request failed: " + e.getMessage());
-                            countDownLatch.countDown();
+                            future.completeExceptionally(e);
                         }
                     });
+
+            futures.add(future);
         }
 
-        try {
-            countDownLatch.await();
-        } catch (InterruptedException e) {
-            throw new BadHTTPResponseException(e.getMessage());
-        }
-        return responseBodies;
+        return futures.stream()
+                .map(future -> {
+                    try {
+
+                        return future.get(); // Waits for this future to complete
+                    } catch (Exception e) {
+                        throw new RuntimeException(e); // or handle exception
+                    }
+                })
+                .collect(Collectors.toList());
     }
 
     public Headers GETRequestHeaders(String endpoint, String parameters) throws BadHTTPResponseException {

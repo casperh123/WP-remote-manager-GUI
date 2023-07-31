@@ -38,10 +38,6 @@ public class ProductListPane extends ListPane {
 
             ProductCard productCard = new ProductCard(product, currency.getCode());
 
-            productCard.setOnMouseClicked(e -> {
-                GlobalState.setMainContent(new ProductPage(product));
-            });
-
             listContainer.getChildren().add(productCard);
         }
     }
