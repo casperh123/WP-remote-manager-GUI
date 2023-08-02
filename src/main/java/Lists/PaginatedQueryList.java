@@ -16,6 +16,7 @@ import java.util.Map;
 
 public class PaginatedQueryList<E extends ID> extends QueryList<E> {
 
+    private static final int MAX_ELEMENTS_PER_REQUEST = 100;
     private List<E> primerList = null;
     private int perPage;
     private int currentPage;
@@ -80,6 +81,23 @@ public class PaginatedQueryList<E extends ID> extends QueryList<E> {
     public void setPage(int page) throws BadHTTPResponseException {
         currentPage = page;
         updateList();
+    }
+
+    @Override
+    public void setPerPage(int perPage) {
+        if(perPage <= maxPerPage()) {
+            this.perPage = perPage;
+        }
+    }
+
+    @Override
+    public int maxPerPage() {
+        return MAX_ELEMENTS_PER_REQUEST;
+    }
+
+    @Override
+    public void filterByStatus() throws BadHTTPResponseException {
+
     }
 
     public void primeUpdatedList(int page) throws BadHTTPResponseException {
@@ -162,4 +180,5 @@ public class PaginatedQueryList<E extends ID> extends QueryList<E> {
     public void setCurrentPage(int page) {
         this.currentPage = page;
     }
+
 }

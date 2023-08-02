@@ -13,8 +13,23 @@ public abstract class QueryList<E extends ID> extends AbstractComponentList<E> {
     protected int totalItems;
     protected int totalPages;
     protected int currentPage;
-
+    protected ComponentStatus componentStatus;
     protected Class<E> containedClass;
+
+    enum ComponentStatus {
+        ALL,
+        PUBLISHED,
+        PRIVATE,
+        DRAFT,
+        PENDING,
+        PROCESSING,
+        ON_HOLD,
+        COMPLETED,
+        CANCELLED,
+        REFUNDED,
+        FAILED,
+        TRASH
+    }
 
     public QueryList(RESTConnection connection, String restEndpoint, Class<E> containedClass) throws BadHTTPResponseException {
         super();
@@ -32,10 +47,11 @@ public abstract class QueryList<E extends ID> extends AbstractComponentList<E> {
     public abstract int getCurrentPage();
 
     public abstract int getPagesAmount();
-
     public int getTotalItems() {
         return totalItems;
     }
-
     public abstract void setPage(int page) throws BadHTTPResponseException;
+    public abstract void setPerPage(int perPage);
+    public abstract int maxPerPage();
+    public abstract void filterByStatus() throws BadHTTPResponseException;
 }

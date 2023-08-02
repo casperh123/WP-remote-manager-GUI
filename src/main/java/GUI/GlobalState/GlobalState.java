@@ -20,7 +20,7 @@ import java.util.List;
 public class GlobalState {
 
     private static Website activeWebsite;
-    private static String listState;
+    private static ListState listState;
     private static StateButton productsButton;
     private static StateButton ordersButton;
     private static StateButton categoriesButton;
@@ -28,8 +28,15 @@ public class GlobalState {
     private static ScrollPane mainScrollPane;
     private static Pane mainContent;
 
+    enum ListState {
+        PRODUCTS,
+        ORDERS,
+        CATEGORIES,
+        TAGS
+    }
+
     static {
-        listState = "products";
+        listState = ListState.PRODUCTS;
 
         mainContent = new Pane(new Text("No Text Selected"));
         mainScrollPane = new ScrollPane(mainContent);
@@ -49,7 +56,7 @@ public class GlobalState {
 
     private static void setEventListeners() {
         productsButton.loadSetOnMouseClicked(e -> {
-            GlobalState.setListProducts();
+            listState = ListState.PRODUCTS;
             try {
                 Pane newMainContent = GlobalState.getListPane();
                 setMainContent(newMainContent);
@@ -59,7 +66,7 @@ public class GlobalState {
         });
 
         ordersButton.loadSetOnMouseClicked(e -> {
-            GlobalState.setListOrders();
+            listState = ListState.ORDERS;
             try {
                 Pane newMainContent = GlobalState.getListPane();
                 setMainContent(newMainContent);
@@ -69,7 +76,7 @@ public class GlobalState {
         });
 
         categoriesButton.loadSetOnMouseClicked(e -> {
-            GlobalState.setListCategories();
+            listState = ListState.CATEGORIES;
             try {
                 Pane newMainContent = GlobalState.getListPane();
                 setMainContent(newMainContent);
@@ -79,7 +86,7 @@ public class GlobalState {
         });
 
         tagsButton.loadSetOnMouseClicked(e -> {
-            GlobalState.setListTags();
+            listState = ListState.TAGS;
             try {
                 Pane newMainContent = GlobalState.getListPane();
                 setMainContent(newMainContent);
@@ -110,16 +117,16 @@ public class GlobalState {
 
     public static Pane getListPane() throws BadHTTPResponseException, FetchException {
         switch(listState) {
-            case "products" -> {
+            case PRODUCTS -> {
                 return new ProductListPane(activeWebsite.getAllProducts(), activeWebsite.getCurrency());
             }
-            case "orders" -> {
+            case ORDERS -> {
                 return new OrderListPane(activeWebsite.getOrders());
             }
-            case "categories" -> {
+            case CATEGORIES -> {
                 return new CategoryListPane(activeWebsite.getCategories());
             }
-            case "tags" -> {
+            case TAGS -> {
                 return new TagListPane(activeWebsite.getTags());
             }
         }
@@ -146,15 +153,5 @@ public class GlobalState {
         mainContent = getListPane();
         setMainContent(mainContent);
     }
-
-    public static void setListProducts() {
-        listState = "products";
-    }
-
-    public static void setListOrders() { listState = "orders"; }
-
-    public static void setListCategories() { listState = "categories"; }
-
-    public static void setListTags() { listState = "tags"; }
 }
 

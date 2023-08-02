@@ -76,7 +76,9 @@ public class ProductCard extends ListCard {
 
     @Override
     protected void setEventListeners() {
-        GlobalState.setMainContent(new ProductPage(product));
+        this.setOnMouseClicked(e -> {
+            GlobalState.setMainContent(new ProductPage(product));
+        });
     }
 
     @Override

@@ -1,14 +1,11 @@
 package GUI.Cards;
 
-import Website.Website;
 import javafx.geometry.Insets;
-import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 
 import java.util.function.Consumer;
-import java.util.function.Function;
 
 public abstract class ListCard extends GridPane {
 
