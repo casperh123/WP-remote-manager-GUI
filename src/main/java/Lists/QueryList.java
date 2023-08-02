@@ -1,6 +1,5 @@
 package Lists;
 
-import Components.AbstractComponent;
 import Components.Interfaces.ID;
 import Exceptions.BadHTTPResponseException;
 import Exceptions.FirstPageException;
@@ -13,10 +12,10 @@ public abstract class QueryList<E extends ID> extends AbstractComponentList<E> {
     protected int totalItems;
     protected int totalPages;
     protected int currentPage;
-    protected ComponentStatus componentStatus;
+    protected StatusFilter componentStatus;
     protected Class<E> containedClass;
 
-    enum ComponentStatus {
+    public enum StatusFilter {
         ALL,
         PUBLISHED,
         PRIVATE,
@@ -53,5 +52,6 @@ public abstract class QueryList<E extends ID> extends AbstractComponentList<E> {
     public abstract void setPage(int page) throws BadHTTPResponseException;
     public abstract void setPerPage(int perPage);
     public abstract int maxPerPage();
-    public abstract void filterByStatus() throws BadHTTPResponseException;
+    public abstract void filterByStatus(StatusFilter filter) throws BadHTTPResponseException;
+    public abstract StatusFilter[] getStatuses();
 }

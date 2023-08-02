@@ -12,7 +12,7 @@ import Exceptions.BadHTTPResponseException;
 import Exceptions.FetchException;
 import Lists.PaginatedQueryList;
 import Lists.QueryList;
-import Lists.UnpaginatedQueryList;
+import Lists.UnpaginatedProductList;
 import REST.RESTConnection;
 import REST.RESTEndpoints;
 import com.jsoniter.JsonIterator;
@@ -85,7 +85,7 @@ public class Website {
         if(paginatedProducts == null) {
             RESTConnection connection = new RESTConnection(apiCredentials.getUrl(), apiCredentials);
 
-            paginatedProducts = new UnpaginatedQueryList<>(connection, RESTEndpoints.getProductsEndpoint(), Product.class);
+            paginatedProducts = new UnpaginatedProductList(connection, RESTEndpoints.getProductsEndpoint());
         }
         return paginatedProducts;
     }

@@ -1,6 +1,5 @@
 package Lists;
 
-import Components.AbstractComponent;
 import Components.Interfaces.ID;
 import Exceptions.BadHTTPResponseException;
 import Exceptions.ElementNotInArrayException;
@@ -96,8 +95,13 @@ public class PaginatedQueryList<E extends ID> extends QueryList<E> {
     }
 
     @Override
-    public void filterByStatus() throws BadHTTPResponseException {
+    public void filterByStatus(StatusFilter filter) throws BadHTTPResponseException {
 
+    }
+
+    @Override
+    public StatusFilter[] getStatuses() {
+        return new StatusFilter[0];
     }
 
     public void primeUpdatedList(int page) throws BadHTTPResponseException {

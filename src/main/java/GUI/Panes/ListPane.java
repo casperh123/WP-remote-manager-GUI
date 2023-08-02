@@ -2,14 +2,15 @@ package GUI.Panes;
 
 import Components.Interfaces.ID;
 import GUI.Panes.ListPaneComponents.PaginationControl;
+import GUI.Panes.ListPaneComponents.StatusControl;
 import Lists.QueryList;
-import javafx.scene.control.Label;
-import javafx.scene.layout.*;
+import javafx.application.Platform;
+import javafx.scene.layout.VBox;
 
 public abstract class ListPane extends VBox {
 
     private PaginationControl paginationControl;
-    private HBox statusButtonContainer;
+    private StatusControl statusControl;
     protected VBox listContainer;
     protected QueryList<? extends ID> componentList;
 
@@ -25,13 +26,18 @@ public abstract class ListPane extends VBox {
         paginationControl = new PaginationControl(componentList);
         listContainer = new VBox();
 
-        this.getChildren().add(paginationControl);
-        this.getChildren().add(listContainer);
+        statusControl = new StatusControl(componentList.getStatuses(), componentList);
+
+        this.getChildren().addAll(paginationControl, statusControl, listContainer);
     }
 
     private void setEventListeners() {
         paginationControl.currentPageProperty().addListener((obs, oldPage, newPage) -> {
             renderList();
+        });
+
+        statusControl.currentStatusProperty().addListener((obs, oldStatus, newStatus) -> {
+            Platform.runLater(this::renderList);
         });
     }
 

@@ -4,8 +4,6 @@ import Components.Currency;
 import Components.Interfaces.ID;
 import Components.Product.Product;
 import GUI.Cards.ProductCard;
-import GUI.ComponentPages.ProductPage;
-import GUI.GlobalState.GlobalState;
 import Lists.QueryList;
 import javafx.geometry.Insets;
 

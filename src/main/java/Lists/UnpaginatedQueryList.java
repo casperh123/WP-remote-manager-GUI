@@ -1,7 +1,6 @@
 package Lists;
 
 import Components.Interfaces.ID;
-import Components.Product.Product;
 import Exceptions.BadHTTPResponseException;
 import Exceptions.FirstPageException;
 import Exceptions.LastPageException;
@@ -9,13 +8,15 @@ import REST.RESTConnection;
 import com.jsoniter.JsonIterator;
 import com.jsoniter.any.Any;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 public class UnpaginatedQueryList<E extends ID> extends QueryList<E> {
 
     private int perPage;
     private int currentPage;
-    private List<E> unalteredList;
 
     public UnpaginatedQueryList(RESTConnection connection, String restEndpoint, Class<E> containedClass) throws BadHTTPResponseException {
 
@@ -23,7 +24,6 @@ public class UnpaginatedQueryList<E extends ID> extends QueryList<E> {
 
         this.perPage = 100;
         this.currentPage = 1;
-        unalteredList = null;
 
         long start = System.nanoTime();
 
@@ -141,7 +141,13 @@ public class UnpaginatedQueryList<E extends ID> extends QueryList<E> {
     }
 
     @Override
-    public void filterByStatus() throws BadHTTPResponseException {
+    public void filterByStatus(StatusFilter filter) throws BadHTTPResponseException {
+
+    }
+
+    @Override
+    public StatusFilter[] getStatuses() {
+        return StatusFilter.values();
     }
 
     public void setPerPage(int perPage) {
