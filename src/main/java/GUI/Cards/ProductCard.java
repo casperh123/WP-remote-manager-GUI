@@ -5,7 +5,6 @@ import Components.Product.ProductComponents.ProductCategory;
 import GUI.ComponentPages.ProductPage;
 import GUI.Components.CopyableText;
 import GUI.GlobalState.GlobalState;
-import Utility.GetWebImage;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
@@ -36,7 +35,7 @@ public class ProductCard extends ListCard {
         this.currencyCode = currencyCode;
 
         if(product.getImages().size() > 0) {
-            productImage = GetWebImage.getImage(product.getImages().get(0).getImageUrl(), 100, 100);
+            productImage = new ImageView(product.getImages().get(0).getImage());
         }
 
         setContent();

@@ -1,12 +1,9 @@
 package Components;
 
 import com.jsoniter.annotation.JsonCreator;
+import com.jsoniter.annotation.JsonIgnore;
 import com.jsoniter.annotation.JsonProperty;
-
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.net.URL;
+import javafx.scene.image.Image;
 
 public class WPImage extends AbstractComponent {
 
@@ -29,6 +26,9 @@ public class WPImage extends AbstractComponent {
     //Read-Only
     @JsonProperty("date_modified_gmt")
     private String dateModifiedGmt;
+
+    @JsonIgnore
+    private Image image;
 
     @JsonCreator
     public WPImage() {
@@ -78,6 +78,12 @@ public class WPImage extends AbstractComponent {
     }
     public String getImageUrl() {
         return src;
+    }
+    public Image getImage() {
+        if(image == null) {
+            image = new Image(src, 300, 300, true, true, true);
+        }
+        return image;
     }
 
     public String toString() {

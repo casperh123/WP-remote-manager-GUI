@@ -104,6 +104,11 @@ public class PaginatedQueryList<E extends ID> extends QueryList<E> {
         return new StatusFilter[0];
     }
 
+    @Override
+    public int elementsWithStatus(StatusFilter status) {
+        return 0;
+    }
+
     public void primeUpdatedList(int page) throws BadHTTPResponseException {
 
         primerList = new ArrayList<>();

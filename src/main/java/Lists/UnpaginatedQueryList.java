@@ -15,8 +15,8 @@ import java.util.Map;
 
 public class UnpaginatedQueryList<E extends ID> extends QueryList<E> {
 
-    private int perPage;
-    private int currentPage;
+    protected int perPage;
+    protected int currentPage;
 
     public UnpaginatedQueryList(RESTConnection connection, String restEndpoint, Class<E> containedClass) throws BadHTTPResponseException {
 
@@ -148,6 +148,11 @@ public class UnpaginatedQueryList<E extends ID> extends QueryList<E> {
     @Override
     public StatusFilter[] getStatuses() {
         return StatusFilter.values();
+    }
+
+    @Override
+    public int elementsWithStatus(StatusFilter status) {
+        return 0;
     }
 
     public void setPerPage(int perPage) {

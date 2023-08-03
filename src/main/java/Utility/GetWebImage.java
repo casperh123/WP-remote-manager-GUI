@@ -7,7 +7,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 
 public class GetWebImage {
-    public static ImageView getImage(String imageUrl, double width, double height) {
+    public static ImageView getImageView(String imageUrl, double width, double height) {
 
         if(imageUrl == null) {
             return getImagePlaceholder();
@@ -25,7 +25,6 @@ public class GetWebImage {
 
         return new ImageView(image);
     }
-
     public static ImageView getImagePlaceholder() {
         try {
             return new ImageView(new Image(new FileInputStream("src/main/resources/Images/placeholder.jpg")));

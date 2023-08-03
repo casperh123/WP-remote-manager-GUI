@@ -31,7 +31,7 @@ public class CategoryCard extends ListCard {
     }
 
     protected void setContent() {
-        categoryImage = GetWebImage.getImage(category.getImage().getImageUrl(), 100, 100);
+        categoryImage = GetWebImage.getImageView(category.getImage().getImageUrl(), 100, 100);
         categoryName = new Label(category.getName());
 
         if(descriptionPreview == null) {

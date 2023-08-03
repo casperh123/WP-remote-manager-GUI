@@ -23,6 +23,8 @@ public class PaginationControl extends HBox {
     private StateButton reloadButton;
     private TextField currentPage;
     private Label elements;
+    private Label pages;
+
     private final IntegerProperty currentPageProperty = new SimpleIntegerProperty();
     private Label errorMessage;
 
@@ -37,6 +39,7 @@ public class PaginationControl extends HBox {
 
         previousPage = new StateButton("Previous Page");
         nextPage = new StateButton("Next Page");
+        pages = new Label("/ " + queryList.getPagesAmount());
         reloadButton = new StateButton("Reload");
         currentPage = new TextField(Integer.toString(queryList.getCurrentPage()));
         elements = new Label(queryList.getTotalItems() + " elements");
@@ -45,7 +48,7 @@ public class PaginationControl extends HBox {
 
         updateListMetrics();
 
-        this.getChildren().addAll(elements, currentPage, new Label("/"), new Label(Integer.toString(queryList.getPagesAmount())), previousPage, nextPage, reloadButton, errorMessage);
+        this.getChildren().addAll(elements, currentPage, pages, previousPage, nextPage, reloadButton, errorMessage);
     }
 
     private void setStyling() {
@@ -136,9 +139,10 @@ public class PaginationControl extends HBox {
         return currentPageProperty;
     }
 
-    private void updateListMetrics() {
+    public void updateListMetrics() {
         updateButtonStates();
         updateCurrentPageField();
+        pages.setText("/ " + queryList.getPagesAmount());
     }
 
     private void updateButtonStates() {

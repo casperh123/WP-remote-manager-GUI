@@ -10,10 +10,31 @@ import java.util.List;
 public class UnpaginatedProductList extends UnpaginatedQueryList<Product> {
 
     private List<Product> unalteredList;
+    private int elementsPublished;
+    private int elementsPrivate;
+    private int elementsDraft;
+    private int elementsPending;
 
     public UnpaginatedProductList(RESTConnection connection, String restEndpoint) throws BadHTTPResponseException {
         super(connection, restEndpoint, Product.class);
         unalteredList = null;
+
+        for(Product product : internalList) {
+            switch(product.getStatus()) {
+                case "publish" -> {
+                    elementsPublished++;
+                }
+                case "private" -> {
+                    elementsPrivate++;
+                }
+                case "draft" -> {
+                    elementsDraft++;
+                }
+                case "pending" -> {
+                    elementsPending++;
+                }
+            }
+        }
     }
 
     @Override
@@ -25,20 +46,30 @@ public class UnpaginatedProductList extends UnpaginatedQueryList<Product> {
             case PUBLISHED -> {
                 saveInternalList();
                 internalList = getListByStatus("publish");
+                updateListMetrics();
             }
             case PRIVATE -> {
                 saveInternalList();
                 internalList = getListByStatus("private");
+                updateListMetrics();
             }
             case DRAFT -> {
                 saveInternalList();
                 internalList = getListByStatus("draft");
+                updateListMetrics();
             }
             case PENDING -> {
                 saveInternalList();
                 internalList = getListByStatus("pending");
+                updateListMetrics();
             }
         }
+    }
+
+    public void updateListMetrics() {
+        totalItems = internalList.size();
+        totalPages = (int) Math.ceil(totalItems / (perPage + 0.0));
+        currentPage = 1;
     }
 
     public void saveInternalList() {
@@ -77,5 +108,29 @@ public class UnpaginatedProductList extends UnpaginatedQueryList<Product> {
         statuses[4] = StatusFilter.PENDING;
 
         return statuses;
+    }
+
+    @Override
+    public int elementsWithStatus(StatusFilter status) {
+        switch(status) {
+            case ALL -> {
+                return internalList.size();
+            }
+            case PUBLISHED -> {
+                return elementsPublished;
+            }
+            case PRIVATE -> {
+                return elementsPrivate;
+            }
+            case PENDING -> {
+                return elementsPending;
+            }
+            case DRAFT -> {
+                return elementsDraft;
+            }
+            default -> {
+                return 0;
+            }
+        }
     }
 }

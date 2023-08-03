@@ -54,4 +54,5 @@ public abstract class QueryList<E extends ID> extends AbstractComponentList<E> {
     public abstract int maxPerPage();
     public abstract void filterByStatus(StatusFilter filter) throws BadHTTPResponseException;
     public abstract StatusFilter[] getStatuses();
+    public abstract int elementsWithStatus(StatusFilter status);
 }

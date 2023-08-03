@@ -37,7 +37,10 @@ public abstract class ListPane extends VBox {
         });
 
         statusControl.currentStatusProperty().addListener((obs, oldStatus, newStatus) -> {
-            Platform.runLater(this::renderList);
+            Platform.runLater(() -> {
+                renderList();
+                paginationControl.updateListMetrics();
+            });
         });
     }
 

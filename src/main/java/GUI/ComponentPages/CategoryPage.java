@@ -12,8 +12,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
-import java.util.List;
-
 public class CategoryPage extends VBox {
 
     private InputFieldH name;
@@ -42,7 +40,7 @@ public class CategoryPage extends VBox {
         initializeComboBoxes();
         description = new QuillHTMLEditor(category.getDescription());
         thumbnailContainer = new HBox();
-        thumbnail = GetWebImage.getImage(wpThumbnail.getImageUrl(), 100, 100);
+        thumbnail = GetWebImage.getImageView(wpThumbnail.getImageUrl(), 100, 100);
         updateButton = new StateButton("Update");
 
         thumbnailContainer.getChildren().add(thumbnail);
