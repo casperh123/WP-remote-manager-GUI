@@ -28,7 +28,7 @@ public class StatusControl extends HBox {
 
             StatusFilterSelector statusControl = new StatusFilterSelector(status, componentList.elementsWithStatus(status));
 
-            statusControl.setOnMouseClicked(e -> {
+            statusControl.loadSetOnMouseClicked(e -> {
                 currentStatusProperty.set(statusControl.getStatus());
                 try {
                     componentList.filterByStatus(statusControl.getStatus());
