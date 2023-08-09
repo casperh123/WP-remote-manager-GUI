@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 
 public class PaginatedQueryListTest {
 
-    PaginatedQueryList<Product> products = new PaginatedQueryList<>(
+    SingleRequestList<Product> products = new SingleRequestList<>(
             new RESTConnection("https://staging-skadedyrsexpertendk-test.kinsta.cloud/",
                     new APICredentials("Casper",
                             "ck_1a62e360c9cfdfe4d4438f35155c6816e872b558",
@@ -28,7 +28,7 @@ public class PaginatedQueryListTest {
         products.updateList();
 
         assert(products.size() == 100);
-        assert(products.getCurrentPage() == 1);
+        assert(products.getPage() == 1);
     }
 
     @Test
@@ -36,18 +36,18 @@ public class PaginatedQueryListTest {
 
         products.setCurrentPage(4);
 
-        products.getPreviousPage();
+        products.previousPage();
 
         assert(products.size() == 100);
-        assert(products.getCurrentPage() == 3);
+        assert(products.getPage() == 3);
     }
 
     @Test
     public void getNextPage() throws BadHTTPResponseException, LastPageException {
 
-        products.getNextPage();
+        products.nextPage();
 
         assert(products.size() == 100);
-        assert(products.getCurrentPage() == 2);
+        assert(products.getPage() == 2);
     }
 }

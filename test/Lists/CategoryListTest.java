@@ -19,7 +19,7 @@ public class CategoryListTest {
 
         long startTime = System.nanoTime();
 
-        categories = new UnpaginatedQueryList<Category>(
+        categories = new CompleteComponentList<Category>(
                 new RESTConnection("https://staging-skadedyrsexpertendk-test.kinsta.cloud/",
                         new APICredentials("Casper",
                                 "ck_1a62e360c9cfdfe4d4438f35155c6816e872b558",

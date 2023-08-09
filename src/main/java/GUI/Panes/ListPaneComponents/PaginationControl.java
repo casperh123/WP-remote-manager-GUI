@@ -39,10 +39,10 @@ public class PaginationControl extends HBox {
 
         previousPage = new StateButton("Previous Page");
         nextPage = new StateButton("Next Page");
-        pages = new Label("/ " + queryList.getPagesAmount());
+        pages = new Label("/ " + queryList.getPages());
         reloadButton = new StateButton("Reload");
-        currentPage = new TextField(Integer.toString(queryList.getCurrentPage()));
-        elements = new Label(queryList.getTotalItems() + " elements");
+        currentPage = new TextField(Integer.toString(queryList.getPage()));
+        elements = new Label(queryList.loadedItems() + " elements");
         errorMessage = new Label("");
         errorMessage.setTextFill(Color.RED);  // Set the error message to red.
 
@@ -65,14 +65,14 @@ public class PaginationControl extends HBox {
 
     private void setEventListeners() {
         previousPage.loadSetOnMouseClicked(e -> {
-            if(queryList.getCurrentPage() == 1) {
+            if(queryList.getPage() == 1) {
                 updateListMetrics();
                 return;
             }
 
             try {
-                queryList.getPreviousPage();
-                currentPageProperty.set(queryList.getCurrentPage());
+                queryList.previousPage();
+                currentPageProperty.set(queryList.getPage());
                 clearErrorMessage();
                 updateListMetrics();
             } catch (Exception ex) {
@@ -81,14 +81,14 @@ public class PaginationControl extends HBox {
         });
 
         nextPage.loadSetOnMouseClicked(e -> {
-            if(queryList.getCurrentPage() == queryList.getPagesAmount()) {
+            if(queryList.getPage() == queryList.getPages()) {
                 updateListMetrics();
                 return;
             }
 
             try {
-                queryList.getNextPage();
-                currentPageProperty.set(queryList.getCurrentPage());
+                queryList.nextPage();
+                currentPageProperty.set(queryList.getPage());
                 clearErrorMessage();
                 updateListMetrics();
             } catch (Exception ex) {
@@ -103,10 +103,10 @@ public class PaginationControl extends HBox {
 
             int enteredPage = Integer.parseInt(currentPage.getText());
 
-            if(enteredPage >= 1 && enteredPage <= queryList.getPagesAmount()) {
+            if(enteredPage >= 1 && enteredPage <= queryList.getPages()) {
                 try {
                     queryList.setPage(enteredPage);
-                    currentPageProperty.set(queryList.getCurrentPage());
+                    currentPageProperty.set(queryList.getPage());
                     clearErrorMessage();
                     updateButtonStates();
                 } catch (Exception ex) {
@@ -120,7 +120,7 @@ public class PaginationControl extends HBox {
         reloadButton.loadSetOnMouseClicked(e -> {
             try {
                 queryList.refresh();
-                currentPageProperty.set(queryList.getCurrentPage());
+                currentPageProperty.set(queryList.getPage());
             } catch (BadHTTPResponseException ex) {
                 throw new RuntimeException(ex); // TODO Exception Handling
             }
@@ -142,13 +142,13 @@ public class PaginationControl extends HBox {
     public void updateListMetrics() {
         updateButtonStates();
         updateCurrentPageField();
-        pages.setText("/ " + queryList.getPagesAmount());
+        pages.setText("/ " + queryList.getPages());
     }
 
     private void updateButtonStates() {
 
-        int currentPage = queryList.getCurrentPage();
-        int totalPages = queryList.getPagesAmount();
+        int currentPage = queryList.getPage();
+        int totalPages = queryList.getPages();
 
         Platform.runLater(() -> {
             if (currentPage == 1) {
@@ -165,6 +165,6 @@ public class PaginationControl extends HBox {
     }
 
     private void updateCurrentPageField() {
-        currentPage.setText(Integer.toString(queryList.getCurrentPage()));
+        currentPage.setText(Integer.toString(queryList.getPage()));
     }
 }

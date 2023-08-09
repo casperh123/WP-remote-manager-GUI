@@ -13,12 +13,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-public class UnpaginatedQueryList<E extends ID> extends QueryList<E> {
+public class CompleteComponentList<E extends ID> extends QueryList<E> {
 
     protected int perPage;
     protected int currentPage;
 
-    public UnpaginatedQueryList(RESTConnection connection, String restEndpoint, Class<E> containedClass) throws BadHTTPResponseException {
+    public CompleteComponentList(RESTConnection connection, String restEndpoint, Class<E> containedClass) throws BadHTTPResponseException {
 
         super(connection, restEndpoint, containedClass);
 
@@ -50,7 +50,7 @@ public class UnpaginatedQueryList<E extends ID> extends QueryList<E> {
         }
     }
 
-    public void getNextPage() throws LastPageException, BadHTTPResponseException {
+    public void nextPage() throws LastPageException, BadHTTPResponseException {
         if(currentPage == totalPages) {
             throw new LastPageException("Cannot display next page: Already on the last page");
         } else {
@@ -58,7 +58,7 @@ public class UnpaginatedQueryList<E extends ID> extends QueryList<E> {
         }
     }
 
-    public void getPreviousPage() throws FirstPageException, BadHTTPResponseException {
+    public void previousPage() throws FirstPageException, BadHTTPResponseException {
         if(currentPage == 1) {
             throw new FirstPageException("Cannot display previous page: Already on the first page");
         } else {
@@ -79,12 +79,12 @@ public class UnpaginatedQueryList<E extends ID> extends QueryList<E> {
     }
 
     @Override
-    public int getCurrentPage() {
+    public int getPage() {
         return currentPage;
     }
 
     @Override
-    public int getPagesAmount() {
+    public int getPages() {
         return totalPages;
     }
 

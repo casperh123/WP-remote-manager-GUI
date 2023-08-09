@@ -11,7 +11,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CountDownLatch;
 import java.util.stream.Collectors;
 
 public class RESTConnection implements Serializable {
@@ -99,6 +98,8 @@ public class RESTConnection implements Serializable {
                 .url(websiteRootUrl + endpoint + parameters)
                 .header("Authorization", credentials)
                 .build();
+
+        System.out.println(request.url());
 
         try (Response response = client.newCall(request).execute()) {
             if(!response.isSuccessful()) throw new BadHTTPResponseException(response.code());

@@ -12,9 +12,9 @@ import static org.junit.jupiter.api.Assertions.fail;
 public class ProductAttributesListTest {
     @Test
     public void customerQueryListTest() {
-        PaginatedQueryList<ProductAttribute> customers = null;
+        SingleRequestList<ProductAttribute> customers = null;
         try {
-            customers = new PaginatedQueryList<>(
+            customers = new SingleRequestList<>(
                     new RESTConnection("https://staging-skadedyrsexpertendk-test.kinsta.cloud/",
                             new APICredentials("Casper",
                                     "ck_1a62e360c9cfdfe4d4438f35155c6816e872b558",

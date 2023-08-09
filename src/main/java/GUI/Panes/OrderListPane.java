@@ -2,9 +2,7 @@ package GUI.Panes;
 
 import Components.Interfaces.ID;
 import Components.Order.Order;
-import Components.Product.Product;
 import GUI.Cards.OrderCard;
-import GUI.Cards.ProductCard;
 import Lists.QueryList;
 
 public class OrderListPane extends ListPane {

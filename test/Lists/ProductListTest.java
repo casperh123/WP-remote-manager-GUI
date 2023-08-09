@@ -19,7 +19,7 @@ public class ProductListTest {
 
     @Test
     public void updateListTest() throws BadHTTPResponseException {
-        products = new UnpaginatedQueryList<>(
+        products = new CompleteComponentList<>(
                 new RESTConnection("https://staging-skadedyrsexpertendk-test.kinsta.cloud/",
                         new APICredentials("Casper",
                                 "ck_1a62e360c9cfdfe4d4438f35155c6816e872b558",

@@ -7,7 +7,7 @@ import REST.RESTConnection;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UnpaginatedProductList extends UnpaginatedQueryList<Product> {
+public class CompleteProductList extends CompleteComponentList<Product> {
 
     private List<Product> unalteredList;
     private int elementsPublished;
@@ -15,7 +15,7 @@ public class UnpaginatedProductList extends UnpaginatedQueryList<Product> {
     private int elementsDraft;
     private int elementsPending;
 
-    public UnpaginatedProductList(RESTConnection connection, String restEndpoint) throws BadHTTPResponseException {
+    public CompleteProductList(RESTConnection connection, String restEndpoint) throws BadHTTPResponseException {
         super(connection, restEndpoint, Product.class);
         unalteredList = null;
 

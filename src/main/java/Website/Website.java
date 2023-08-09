@@ -10,9 +10,10 @@ import Components.Product.ProductComponents.Tag;
 import Components.ProductAttribute.ProductAttribute;
 import Exceptions.BadHTTPResponseException;
 import Exceptions.FetchException;
-import Lists.PaginatedQueryList;
+import Lists.SingleRequestList;
 import Lists.QueryList;
-import Lists.UnpaginatedProductList;
+import Lists.CompleteProductList;
+import Lists.SingleRequestOrderList;
 import REST.RESTConnection;
 import REST.RESTEndpoints;
 import com.jsoniter.JsonIterator;
@@ -76,7 +77,7 @@ public class Website {
         if(paginatedProducts == null) {
             RESTConnection connection = new RESTConnection(apiCredentials.getUrl(), apiCredentials);
 
-            paginatedProducts = new PaginatedQueryList<>(connection, RESTEndpoints.getProductsEndpoint(), Product.class);
+            paginatedProducts = new SingleRequestList<>(connection, RESTEndpoints.getProductsEndpoint(), Product.class);
         }
         return paginatedProducts;
     }
@@ -85,7 +86,7 @@ public class Website {
         if(paginatedProducts == null) {
             RESTConnection connection = new RESTConnection(apiCredentials.getUrl(), apiCredentials);
 
-            paginatedProducts = new UnpaginatedProductList(connection, RESTEndpoints.getProductsEndpoint());
+            paginatedProducts = new CompleteProductList(connection, RESTEndpoints.getProductsEndpoint());
         }
         return paginatedProducts;
     }
@@ -95,7 +96,7 @@ public class Website {
         if(coupons == null) {
             RESTConnection connection = new RESTConnection(apiCredentials.getUrl(), apiCredentials);
 
-            coupons = new PaginatedQueryList<>(connection, RESTEndpoints.getCouponsEndpoint(), Coupon.class);
+            coupons = new SingleRequestList<>(connection, RESTEndpoints.getCouponsEndpoint(), Coupon.class);
         }
         return coupons;
     }
@@ -105,7 +106,7 @@ public class Website {
         if(currency == null) {
             RESTConnection connection = new RESTConnection(apiCredentials.getUrl(), apiCredentials);
 
-            customers = new PaginatedQueryList<>(connection, RESTEndpoints.getCustomersEndpoint(), Customer.class);
+            customers = new SingleRequestList<>(connection, RESTEndpoints.getCustomersEndpoint(), Customer.class);
         }
         return customers;
     }
@@ -115,7 +116,7 @@ public class Website {
         if(orders == null) {
             RESTConnection connection = new RESTConnection(apiCredentials.getUrl(), apiCredentials);
 
-            orders = new PaginatedQueryList<>(connection, RESTEndpoints.getOrdersEndpoint(), Order.class);
+            orders = new SingleRequestOrderList(connection, RESTEndpoints.getOrdersEndpoint());
         }
         return orders;
     }
@@ -125,7 +126,7 @@ public class Website {
         if(tags == null) {
             RESTConnection connection = new RESTConnection(apiCredentials.getUrl(), apiCredentials);
 
-            tags = new PaginatedQueryList<>(connection, RESTEndpoints.getProductTagsEndpoint(), Tag.class);
+            tags = new SingleRequestList<>(connection, RESTEndpoints.getProductTagsEndpoint(), Tag.class);
         }
         return tags;
     }
@@ -135,7 +136,7 @@ public class Website {
         if(categories == null) {
             RESTConnection connection = new RESTConnection(apiCredentials.getUrl(), apiCredentials);
 
-            categories = new PaginatedQueryList<>(connection, RESTEndpoints.getProductCategoriesEndpoint(), Category.class);
+            categories = new SingleRequestList<>(connection, RESTEndpoints.getProductCategoriesEndpoint(), Category.class);
         }
         return categories;
     }
@@ -144,9 +145,9 @@ public class Website {
 
         RESTConnection connection = new RESTConnection(apiCredentials.getUrl(), apiCredentials);
 
-        CompletableFuture<PaginatedQueryList<ProductAttribute>> listFuture = CompletableFuture.supplyAsync(() -> {
+        CompletableFuture<SingleRequestList<ProductAttribute>> listFuture = CompletableFuture.supplyAsync(() -> {
             try {
-                return new PaginatedQueryList<>(connection, RESTEndpoints.getProductAttributesEndpoint(), ProductAttribute.class) {
+                return new SingleRequestList<>(connection, RESTEndpoints.getProductAttributesEndpoint(), ProductAttribute.class) {
                 };
             } catch (BadHTTPResponseException e) {
                 System.out.println("Fuck"); //TODO Exception

@@ -37,16 +37,16 @@ public abstract class QueryList<E extends ID> extends AbstractComponentList<E> {
         this.containedClass = containedClass;
     }
 
-    public abstract void getNextPage() throws LastPageException, BadHTTPResponseException;
+    public abstract void nextPage() throws LastPageException, BadHTTPResponseException;
 
-    public abstract void getPreviousPage() throws FirstPageException, BadHTTPResponseException;
+    public abstract void previousPage() throws FirstPageException, BadHTTPResponseException;
 
     public abstract void refresh() throws BadHTTPResponseException;
 
-    public abstract int getCurrentPage();
+    public abstract int getPage();
 
-    public abstract int getPagesAmount();
-    public int getTotalItems() {
+    public abstract int getPages();
+    public int loadedItems() {
         return totalItems;
     }
     public abstract void setPage(int page) throws BadHTTPResponseException;

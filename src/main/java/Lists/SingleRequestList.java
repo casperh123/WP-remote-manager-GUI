@@ -13,14 +13,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class PaginatedQueryList<E extends ID> extends QueryList<E> {
+public class SingleRequestList<E extends ID> extends QueryList<E> {
 
     private static final int MAX_ELEMENTS_PER_REQUEST = 100;
     private List<E> primerList = null;
     private int perPage;
     private int currentPage;
 
-    public PaginatedQueryList(RESTConnection connection, String restEndpoint, Class<E> containedClass) throws BadHTTPResponseException {
+    public SingleRequestList(RESTConnection connection, String restEndpoint, Class<E> containedClass) throws BadHTTPResponseException {
         super(connection, restEndpoint, containedClass);
         this.currentPage = 1;
         this.perPage = 100;
@@ -43,18 +43,22 @@ public class PaginatedQueryList<E extends ID> extends QueryList<E> {
         }
     }
 
-    public void updateList() throws BadHTTPResponseException {
+    protected void updateList() throws BadHTTPResponseException {
+        updateList("");
+    }
+
+    protected void updateList(String parameter) throws BadHTTPResponseException {
 
         this.clear();
 
-        byte[] getResponse = connection.GETRequest(restEndpoint, "&per_page= + " + perPage + "&page=" + currentPage);
+        byte[] getResponse = connection.GETRequest(restEndpoint,  parameter + "&per_page= + " + perPage + "&page=" + currentPage);
 
         Any json = JsonIterator.deserialize(getResponse);
 
         json.forEach(item -> this.add(item.as(containedClass)));
     }
 
-    public void getNextPage() throws LastPageException, BadHTTPResponseException {
+    public void nextPage() throws LastPageException, BadHTTPResponseException {
         if(currentPage == totalPages) {
             throw new LastPageException("Cannot display next page: Already on the last page");
         } else {
@@ -63,7 +67,7 @@ public class PaginatedQueryList<E extends ID> extends QueryList<E> {
         }
     }
 
-    public void getPreviousPage() throws FirstPageException, BadHTTPResponseException {
+    public void previousPage() throws FirstPageException, BadHTTPResponseException {
         if(currentPage == 1) {
             throw new FirstPageException("Cannot display previous page: Already on the first page");
         } else {
@@ -105,7 +109,7 @@ public class PaginatedQueryList<E extends ID> extends QueryList<E> {
     }
 
     @Override
-    public int elementsWithStatus(StatusFilter status) {
+    public int elementsWithStatus(StatusFilter status){
         return 0;
     }
 
@@ -177,12 +181,12 @@ public class PaginatedQueryList<E extends ID> extends QueryList<E> {
         throw new ElementNotInArrayException(String.valueOf(id));
     }
 
-    public int getCurrentPage() {
+    public int getPage() {
         return currentPage;
     }
 
     @Override
-    public int getPagesAmount() {
+    public int getPages() {
         return totalPages;
     }
 
