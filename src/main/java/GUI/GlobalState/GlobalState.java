@@ -17,8 +17,8 @@ public class GlobalState {
         return state;
     }
 
-    public static GlobalStates setState(GlobalStates state) {
-        return GlobalState.state = state;
+    public static void setState(GlobalStates state) {
+        GlobalState.state = state;
     }
 
     public static Website getActiveWebsite() {

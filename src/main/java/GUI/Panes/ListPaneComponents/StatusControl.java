@@ -36,7 +36,6 @@ public class StatusControl extends HBox {
                     throw new RuntimeException(ex); //TODO Exception lol
                 }
             });
-
             this.getChildren().add(statusControl);
         }
     }
