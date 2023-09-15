@@ -34,11 +34,8 @@ public class CopyableText extends HBox {
     }
 
     public CopyableText(String text) {
-        this.text = new Label(text);
-        this.clipboard = Clipboard.getSystemClipboard();
-        this.clipboardIcon = new ImageView(clipboardImage);
 
-        this.getChildren().addAll(this.text, clipboardIcon);
+        setContent(text);
 
         clipboardIcon.setVisible(false);
 
@@ -52,6 +49,14 @@ public class CopyableText extends HBox {
         clipboardIcon.setFitWidth(15);
         clipboardIcon.setFitHeight(15);
         clipboardIcon.pickOnBoundsProperty().set(true);
+    }
+
+    private void setContent(String text) {
+        this.text = new Label(text);
+        this.clipboard = Clipboard.getSystemClipboard();
+        this.clipboardIcon = new ImageView(clipboardImage);
+
+        this.getChildren().addAll(this.text, clipboardIcon);
     }
 
     private void setEventHandlers() {

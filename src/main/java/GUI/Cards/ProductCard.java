@@ -4,7 +4,7 @@ import Components.Product.Product;
 import Components.Product.ProductComponents.ProductCategory;
 import GUI.ComponentPages.ProductPage;
 import GUI.Components.CopyableText;
-import GUI.GlobalState.GlobalState;
+import GUI.GlobalState.GlobalComponents;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
@@ -14,34 +14,31 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 
-public class ProductCard extends ListCard {
+public class ProductCard extends BaseCard {
 
-    ImageView productImage;
-    CopyableText productTitle;
-    CopyableText productSku;
-    Label stockStatus;
-    Label price;
-    Label categories;
-    Label status;
-    CopyableText dateCreated;
-    VBox statusTimeWrapper;
-    String currencyCode;
+    private ImageView productImage;
+    private CopyableText productTitle;
+    private CopyableText productSku;
+    private Label stockStatus;
+    private Label price;
+    private Label categories;
+    private Label status;
+    private CopyableText dateCreated;
+    private VBox statusTimeWrapper;
+    private String currencyCode;
+    private Product product;
 
-    Product product;
-
-    public ProductCard(Product product, String currencyCode) {
-
+    public ProductCard(final Product product, final String currencyCode) {
         this.product = product;
         this.currencyCode = currencyCode;
 
-        if(product.getImages().size() > 0) {
-            productImage = new ImageView(product.getImages().get(0).getImage());
-        }
+        productImage = product.getImages().size() > 0 ? new ImageView(product.getFeaturedImage().getImage()) : new ImageView();
 
         setContent();
         setStyle();
         setEventListeners();
     }
+
 
     @Override
     protected void setContent() {
@@ -76,7 +73,7 @@ public class ProductCard extends ListCard {
     @Override
     protected void setEventListeners() {
         this.setOnMouseClicked(e -> {
-            GlobalState.setMainContent(new ProductPage(product));
+            GlobalComponents.getInstance().setMainContent(new ProductPage(product));
         });
     }
 
@@ -84,21 +81,10 @@ public class ProductCard extends ListCard {
     protected void setStyle() {
         this.setAlignment(Pos.CENTER_LEFT);
 
-        this.setHgap(10);
-        this.getColumnConstraints().add(new ColumnConstraints(100));
-        this.getColumnConstraints().add(new ColumnConstraints(250));
-        this.getColumnConstraints().add(new ColumnConstraints(100));
-        this.getColumnConstraints().add(new ColumnConstraints(100));
-        this.getColumnConstraints().add(new ColumnConstraints(80));
-        this.getColumnConstraints().add(new ColumnConstraints(200));
+        setGridConstraints();
+        setColumnConstraints();
 
-        GridPane.setConstraints(productImage, 0, 0);
-        GridPane.setConstraints(productTitle, 1, 0);
-        GridPane.setConstraints(productSku, 2, 0);
-        GridPane.setConstraints(stockStatus, 3, 0);
-        GridPane.setConstraints(price, 4, 0);
-        GridPane.setConstraints(categories, 5, 0);
-        GridPane.setConstraints(statusTimeWrapper, 6, 0);
+        this.setHgap(10);
 
         statusTimeWrapper.setAlignment(Pos.CENTER_LEFT);
 
@@ -111,6 +97,27 @@ public class ProductCard extends ListCard {
 
         productImage.setFitHeight(100);
         productImage.setFitWidth(100);
+    }
+
+    public void setGridConstraints() {
+        GridPane.setConstraints(productImage, 0, 0);
+        GridPane.setConstraints(productTitle, 1, 0);
+        GridPane.setConstraints(productSku, 2, 0);
+        GridPane.setConstraints(stockStatus, 3, 0);
+        GridPane.setConstraints(price, 4, 0);
+        GridPane.setConstraints(categories, 5, 0);
+        GridPane.setConstraints(statusTimeWrapper, 6, 0);
+    }
+
+    public void setColumnConstraints() {
+        this.getColumnConstraints().addAll(
+                new ColumnConstraints(100),
+                new ColumnConstraints(250),
+                new ColumnConstraints(100),
+                new ColumnConstraints(100),
+                new ColumnConstraints(80),
+                new ColumnConstraints(200)
+        );
     }
 
     public Product getProduct() {

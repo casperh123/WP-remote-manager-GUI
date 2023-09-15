@@ -3,6 +3,7 @@ package GUI.Panes.ListPaneComponents;
 import Components.Interfaces.ID;
 import Exceptions.BadHTTPResponseException;
 import GUI.Components.StateButton;
+import GUI.Enums.State;
 import Lists.QueryList;
 import javafx.application.Platform;
 import javafx.beans.property.IntegerProperty;
@@ -152,14 +153,14 @@ public class PaginationControl extends HBox {
 
         Platform.runLater(() -> {
             if (currentPage == 1) {
-                previousPage.setInactive();
-                nextPage.setActive();
+                previousPage.setBackgroundState(State.INACTIVE);
+                nextPage.setBackgroundState(State.ACTIVE);
             } else if (currentPage == totalPages) {
-                previousPage.setActive();
-                nextPage.setInactive();
+                previousPage.setBackgroundState(State.ACTIVE);
+                nextPage.setBackgroundState(State.INACTIVE);
             } else {
-                previousPage.setActive();
-                nextPage.setActive();
+                previousPage.setBackgroundState(State.ACTIVE);
+                nextPage.setBackgroundState(State.ACTIVE);
             }
         });
     }

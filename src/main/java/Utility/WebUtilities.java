@@ -6,7 +6,11 @@ import javafx.scene.image.ImageView;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 
-public class GetWebImage {
+public class WebUtilities {
+    public static String sanitizeHtml(String html) {
+        return (html == null || html.isEmpty()) ? "-" : html.replaceAll("<[^>]*>", "");
+    }
+
     public static ImageView getImageView(String imageUrl, double width, double height) {
 
         if(imageUrl == null) {

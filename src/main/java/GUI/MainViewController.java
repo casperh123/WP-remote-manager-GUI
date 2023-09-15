@@ -1,7 +1,6 @@
 package GUI;
 
-import GUI.Components.StateButton;
-import GUI.GlobalState.GlobalState;
+import GUI.GlobalState.GlobalComponents;
 import GUI.PaneHistory.PaneHistory;
 import GUI.Panes.MissingDescriptionPane;
 import GUI.Panes.MissingProductsPane;
@@ -15,12 +14,10 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
-import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
 
 import java.net.URL;
 import java.util.HashMap;
@@ -47,7 +44,7 @@ public class MainViewController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
 
-        mainWrapper.setCenter(GlobalState.getMainScrollPane());
+        mainWrapper.setCenter(GlobalComponents.getInstance().getMainScrollPane());
 
         cachedPanes = new HashMap<>();
         websiteList = new WebsiteList(cachedPanes);
@@ -61,7 +58,7 @@ public class MainViewController implements Initializable {
         topBar.getChildren().add(backButton);
         topBar.getChildren().add(forwardButton);
 
-        for(Button button : GlobalState.getGlobalButtons()) {
+        for(Button button : GlobalComponents.getInstance().getGlobalButtons()) {
             topBar.getChildren().add(button);
         }
 
@@ -81,11 +78,11 @@ public class MainViewController implements Initializable {
         toolBar.getMenus().add(toolDropdown);
 
         missingProductsTool.setOnAction(e -> {
-            GlobalState.setMainContent(new MissingProductsPane(websiteList.getWebsites()));
+            GlobalComponents.getInstance().setMainContent(new MissingProductsPane(websiteList.getWebsites()));
         });
 
         missingDescriptionsTool.setOnAction(e -> {
-            GlobalState.setMainContent(new MissingDescriptionPane(websiteList.getWebsites()));
+            GlobalComponents.getInstance().setMainContent(new MissingDescriptionPane(websiteList.getWebsites()));
         });
 
     }

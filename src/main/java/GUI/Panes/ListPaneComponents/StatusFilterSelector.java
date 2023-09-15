@@ -1,6 +1,7 @@
 package GUI.Panes.ListPaneComponents;
 
 import GUI.Components.StateButton;
+import GUI.Enums.State;
 import Lists.QueryList.StatusFilter;
 
 public class StatusFilterSelector extends StateButton {
@@ -12,9 +13,9 @@ public class StatusFilterSelector extends StateButton {
         this.status = status;
         this.setUnderline(true);
         if(amount == 0) {
-            this.setInactive();
+            setBackgroundState(State.INACTIVE);
         } else {
-            this.setActive();
+            setBackgroundState(State.ACTIVE);
         }
     }
 

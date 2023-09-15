@@ -1,8 +1,8 @@
 package Components.Product;
 
 import Components.AbstractComponent;
-import Components.WPImage;
 import Components.Product.ProductComponents.*;
+import Components.WPImage;
 import com.jsoniter.annotation.JsonCreator;
 import com.jsoniter.annotation.JsonProperty;
 import com.jsoniter.fuzzy.MaybeStringIntDecoder;
@@ -230,6 +230,13 @@ public class Product extends AbstractComponent {
         return images;
     }
 
+    public WPImage getFeaturedImage() {
+        if(!(images.size() > 0)) {
+            return new WPImage();
+        }
+        return images.get(0);
+    }
+
     public String getUrl() {
         return permalink;
     }
@@ -303,5 +310,4 @@ public class Product extends AbstractComponent {
         }
         return "Published";
     }
-
 }

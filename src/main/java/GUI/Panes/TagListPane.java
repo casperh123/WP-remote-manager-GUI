@@ -2,7 +2,6 @@ package GUI.Panes;
 
 import Components.Interfaces.ID;
 import Components.Product.ProductComponents.Tag;
-import GUI.Cards.ListCard;
 import GUI.Cards.TagCard;
 import Lists.QueryList;
 import javafx.geometry.Insets;

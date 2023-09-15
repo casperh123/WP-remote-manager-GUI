@@ -1,7 +1,8 @@
 package GUI.PaneHistory;
 
-import GUI.GlobalState.GlobalState;
 import GUI.Components.StateButton;
+import GUI.Enums.State;
+import GUI.GlobalState.GlobalComponents;
 import javafx.scene.control.Button;
 import javafx.scene.layout.Pane;
 
@@ -33,12 +34,12 @@ public class PaneHistory {
             nodepane = pane;
         } else {
             backStack.push(nodepane);
-            backButton.setActive();
+            backButton.setBackgroundState(State.ACTIVE);
             nodepane = pane;
         }
 
         if(forwardStack.size() > 0) {
-            forwardButton.setInactive();
+            forwardButton.setBackgroundState(State.INACTIVE);
             forwardStack.clear();
         }
     }
@@ -52,7 +53,7 @@ public class PaneHistory {
             getPreviousPane();
 
             if(backStack.size() == 0) {
-                backButton.setInactive();
+                backButton.setBackgroundState(State.INACTIVE);
             }
         });
 
@@ -64,7 +65,7 @@ public class PaneHistory {
             getNextPane();
 
             if(forwardStack.size() == 0) {
-                forwardButton.setInactive();
+                forwardButton.setBackgroundState(State.INACTIVE);
             }
         });
     }
@@ -72,22 +73,22 @@ public class PaneHistory {
     private void getPreviousPane() {
 
         forwardStack.push(nodepane);
-        forwardButton.setActive();
+        forwardButton.setBackgroundState(State.ACTIVE);
 
         nodepane = backStack.pop();
 
-        GlobalState.setMainContentNoCache(nodepane);
+        GlobalComponents.getInstance().setMainContentNoCache(nodepane);
 
     }
 
     private void getNextPane() {
 
         backStack.push(nodepane);
-        backButton.setActive();
+        backButton.setBackgroundState(State.ACTIVE);
 
         nodepane = forwardStack.pop();
 
-        GlobalState.setMainContentNoCache(nodepane);
+        GlobalComponents.getInstance().setMainContentNoCache(nodepane);
     }
 
 
@@ -102,9 +103,7 @@ public class PaneHistory {
     public static PaneHistory getInstance() {
         if(paneHistory == null) {
             paneHistory = new PaneHistory();
-            return paneHistory;
-        } else {
-            return paneHistory;
         }
+        return paneHistory;
     }
 }

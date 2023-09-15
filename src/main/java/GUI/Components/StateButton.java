@@ -1,6 +1,6 @@
 package GUI.Components;
 
-import javafx.event.EventHandler;
+import GUI.Enums.State;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.input.MouseEvent;
@@ -10,12 +10,8 @@ import javafx.scene.layout.CornerRadii;
 import javafx.scene.paint.Color;
 
 import java.util.function.Consumer;
-import java.util.function.Function;
 
 public class StateButton extends Button {
-
-    private Background activeBackground;
-    private Background inactiveBackGround;
 
     public StateButton() {
         super();
@@ -23,36 +19,33 @@ public class StateButton extends Button {
 
     public StateButton(String var1) {
         super(var1);
-        this.activeBackground = new Background(new BackgroundFill(Color.rgb(0, 0, 0, 0.2), new CornerRadii(5), new Insets(0)));
-        this.inactiveBackGround = new Background(new BackgroundFill(Color.rgb(0, 0, 0, 0.05), new CornerRadii(5), new Insets(0)));
-        this.setBackground(inactiveBackGround);
-    }
-
-    public void setInactive() {
-        this.setBackground(inactiveBackGround);
-    }
-
-    public void setActive() {
-        this.setBackground(activeBackground);
-    }
-
-    public void setLoading() {
-        this.setBackground(new Background(new BackgroundFill(Color.rgb(0, 0, 0, 0.13), new CornerRadii(5), new Insets(0))));
+        setBackgroundState(State.INACTIVE);
     }
 
     public void loadSetOnMouseClicked(Consumer<MouseEvent> onClickFunction, boolean automaticallyUpdate) {
 
         this.setOnMousePressed(e -> {
-            this.setLoading();
+            setBackgroundState(State.LOADING);
         });
 
         this.setOnMouseReleased(e -> {
             onClickFunction.accept(e);
-            if(automaticallyUpdate) setActive();
+            if(automaticallyUpdate) setBackgroundState(State.ACTIVE);
         });
     }
 
     public void loadSetOnMouseClicked(Consumer<MouseEvent> onClickFunction) {
         loadSetOnMouseClicked(onClickFunction, true);
+    }
+
+    public void setBackgroundState(State state) {
+        switch (state) {
+            case ACTIVE ->
+                    this.setBackground(new Background(new BackgroundFill(Color.rgb(0, 0, 0, 0.3), new CornerRadii(5), new Insets(0))));
+            case INACTIVE ->
+                    this.setBackground(new Background(new BackgroundFill(Color.rgb(0, 0, 0, 0.1), new CornerRadii(5), new Insets(0))));
+            case LOADING ->
+                    this.setBackground(new Background(new BackgroundFill(Color.rgb(0, 0, 0, 0.2), new CornerRadii(5), new Insets(0))));
+        }
     }
 }

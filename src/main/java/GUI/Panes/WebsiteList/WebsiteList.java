@@ -4,6 +4,7 @@ import Exceptions.BadHTTPResponseException;
 import Exceptions.FetchException;
 import GUI.Cards.WebsiteCard;
 import GUI.Components.PrimaryButton;
+import GUI.Enums.State;
 import GUI.GlobalState.GlobalState;
 import GUI.Panes.WebsiteList.AddWebsite.AddWebsiteView;
 import Utility.FileManager;
@@ -130,15 +131,13 @@ public class WebsiteList extends VBox {
 
             try {
                 GlobalState.setActiveWebsite(websiteCard.getWebsite());
-            } catch (BadHTTPResponseException ex) {
-                throw new RuntimeException(ex);
-            } catch (FetchException ex) {
+            } catch (BadHTTPResponseException | FetchException ex) {
                 throw new RuntimeException(ex);
             }
 
             for(Node childNode : websiteList.getChildren()) {
                 if(childNode instanceof WebsiteCard inactiveCard) {
-                    inactiveCard.setInactive();
+                    inactiveCard.setBackgroundState(State.INACTIVE);
                 }
             }
         });

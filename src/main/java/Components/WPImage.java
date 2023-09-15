@@ -79,8 +79,9 @@ public class WPImage extends AbstractComponent {
     public String getImageUrl() {
         return src;
     }
+
     public Image getImage() {
-        if(image == null) {
+        if(image == null && src != null) {
             image = new Image(src, 300, 300, true, true, true);
         }
         return image;

@@ -5,7 +5,7 @@ import Components.WPImage;
 import GUI.Components.InputFieldH;
 import GUI.Components.StateButton;
 import GUI.Utility.QuillHTMLEditor;
-import Utility.GetWebImage;
+import Utility.WebUtilities;
 import javafx.geometry.Insets;
 import javafx.scene.control.ComboBox;
 import javafx.scene.image.ImageView;
@@ -40,7 +40,7 @@ public class CategoryPage extends VBox {
         initializeComboBoxes();
         description = new QuillHTMLEditor(category.getDescription());
         thumbnailContainer = new HBox();
-        thumbnail = GetWebImage.getImageView(wpThumbnail.getImageUrl(), 100, 100);
+        thumbnail = WebUtilities.getImageView(wpThumbnail.getImageUrl(), 100, 100);
         updateButton = new StateButton("Update");
 
         thumbnailContainer.getChildren().add(thumbnail);

@@ -5,7 +5,7 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 
-public class TagCard extends ListCard {
+public class TagCard extends BaseCard {
 
     private Tag tag;
     private Label name;
@@ -14,7 +14,6 @@ public class TagCard extends ListCard {
     private Label timesUsed;
     public TagCard(Tag tag) {
         this.tag = tag;
-
         setContent();
         setStyle();
         setEventListeners();
@@ -30,17 +29,26 @@ public class TagCard extends ListCard {
 
     @Override
     protected void setStyle() {
+        setGridConstraints();
+        setColumnConstraints();
+
+        this.getChildren().addAll(name, description, slug, timesUsed);
+    }
+
+    public void setGridConstraints() {
         GridPane.setConstraints(name, 0, 0);
         GridPane.setConstraints(description, 1, 0);
         GridPane.setConstraints(slug, 2, 0);
         GridPane.setConstraints(timesUsed, 3, 0);
+    }
 
-        this.getColumnConstraints().add(new ColumnConstraints(150));
-        this.getColumnConstraints().add(new ColumnConstraints(250));
-        this.getColumnConstraints().add(new ColumnConstraints(150));
-        this.getColumnConstraints().add(new ColumnConstraints(100));
-
-        this.getChildren().addAll(name, description, slug, timesUsed);
+    public void setColumnConstraints() {
+        this.getColumnConstraints().addAll(
+                new ColumnConstraints(150),
+                new ColumnConstraints(250),
+                new ColumnConstraints(150),
+                new ColumnConstraints(100)
+        );
     }
 
     @Override

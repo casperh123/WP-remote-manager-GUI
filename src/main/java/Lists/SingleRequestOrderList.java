@@ -14,51 +14,47 @@ public class SingleRequestOrderList extends SingleRequestList<Order> {
 
     public SingleRequestOrderList(RESTConnection connection, String restEndpoint) throws BadHTTPResponseException {
         super(connection, restEndpoint, Order.class);
-        initStatusCounts();
+        initializeStatusCounts();
     }
 
-    private void initStatusCounts() throws BadHTTPResponseException {
+    private void initializeStatusCounts() throws BadHTTPResponseException {
         List<CompletableFuture<Void>> futures = new ArrayList<>();
 
-        for (StatusFilter filter : getStatuses()) {
-            CompletableFuture<Void> future = getElementsAmount(getQueryParamForStatus(filter))
-                    .thenAccept(headers -> {
-                        int count = Integer.parseInt(
-                                headers.getOrDefault("x-wp-total", Collections.singletonList("0")).get(0)
-                        );
-                        synchronized (statusCounts) { // Ensure thread safety
-                            statusCounts.put(filter, count);
-                        }
-                    });
-            futures.add(future);
+        for (StatusFilter filter : StatusFilter.values()) {
+            futures.add(fetchAndStoreStatusCount(filter));
         }
 
-        CompletableFuture<Void> allOf = CompletableFuture.allOf(futures.toArray(new CompletableFuture[0]));
-        allOf.join(); // This will wait for all futures to complete, but won't block each individual future.
+        CompletableFuture<Void> combinedFuture = CompletableFuture.allOf(futures.toArray(new CompletableFuture[0]));
+        combinedFuture.join();
+    }
+
+    private CompletableFuture<Void> fetchAndStoreStatusCount(StatusFilter filter) {
+        return fetchElementsCountForStatus(filter)
+                .thenAccept(count -> {
+                    synchronized (statusCounts) {
+                        statusCounts.put(filter, count);
+                    }
+                });
+    }
+
+    private CompletableFuture<Integer> fetchElementsCountForStatus(StatusFilter status) {
+        String parameter = getQueryParamForStatus(status);
+        return getElementsAmount(parameter)
+                .thenApply(headers -> Integer.parseInt(headers.getOrDefault("x-wp-total", Collections.singletonList("0")).get(0)));
     }
 
     private String getQueryParamForStatus(StatusFilter status) {
-        switch (status) {
-            case PENDING:
-                return "status=pending";
-            case PROCESSING:
-                return "status=processing";
-            case ON_HOLD:
-                return "status=on-hold";
-            case COMPLETED:
-                return "status=completed";
-            case CANCELLED:
-                return "status=cancelled";
-            case REFUNDED:
-                return "status=refunded";
-            case FAILED:
-                return "status=failed";
-            case TRASH:
-                return "status=trash";
-            case ALL:
-            default:
-                return "";
-        }
+        return switch (status) {
+            case PENDING -> "status=pending";
+            case PROCESSING -> "status=processing";
+            case ON_HOLD -> "status=on-hold";
+            case COMPLETED -> "status=completed";
+            case CANCELLED -> "status=cancelled";
+            case REFUNDED -> "status=refunded";
+            case FAILED -> "status=failed";
+            case TRASH -> "status=trash";
+            default -> "";
+        };
     }
 
     @Override
@@ -68,20 +64,7 @@ public class SingleRequestOrderList extends SingleRequestList<Order> {
 
     @Override
     public StatusFilter[] getStatuses() {
-
-        StatusFilter[] filters = new StatusFilter[9];
-
-        filters[0] = StatusFilter.ALL;
-        filters[1] = StatusFilter.PENDING;
-        filters[2] = StatusFilter.PROCESSING;
-        filters[3] = StatusFilter.ON_HOLD;
-        filters[4] = StatusFilter.COMPLETED;
-        filters[5] = StatusFilter.CANCELLED;
-        filters[6] = StatusFilter.REFUNDED;
-        filters[7] = StatusFilter.FAILED;
-        filters[8] = StatusFilter.TRASH;
-
-        return filters;
+        return StatusFilter.values();
     }
 
     @Override
@@ -89,17 +72,13 @@ public class SingleRequestOrderList extends SingleRequestList<Order> {
         return statusCounts.getOrDefault(status, 0);
     }
 
-    public CompletableFuture<Map<String, List<String>>> getElementsAmount(String parameter) throws BadHTTPResponseException {
+    public CompletableFuture<Map<String, List<String>>> getElementsAmount(String parameter) {
         return CompletableFuture.supplyAsync(() -> {
             try {
-                Map<String, List<String>> headers = connection.GETRequestHeaders(RESTEndpoints.getOrdersEndpoint(), parameter).toMultimap();
-                System.out.println("Fetched for parameter: " + parameter + ", Result: " + headers);
-                return headers;
+                return connection.GETRequestHeaders(RESTEndpoints.getOrdersEndpoint(), parameter).toMultimap();
             } catch (BadHTTPResponseException e) {
                 return new HashMap<>();
             }
         });
     }
-
 }
-
