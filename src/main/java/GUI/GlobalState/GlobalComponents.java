@@ -50,6 +50,11 @@ public class GlobalComponents {
         return mainScrollPane;
     }
 
+    public void getComponentList() throws BadHTTPResponseException, FetchException {
+        mainContent = getList(GlobalState.getState());
+        setMainContent(mainContent);
+    }
+
     public void setMainContent(Pane mainContent) {
         this.mainContent = mainContent;
         mainScrollPane.setContent(mainContent);
@@ -67,44 +72,29 @@ public class GlobalComponents {
 
     private void setEventListeners() {
         productsButton.loadSetOnMouseClicked(e -> {
-            GlobalState.setState(GlobalStates.PRODUCTS);
-            try {
-                Pane newMainContent = getListPane(GlobalState.getState());
-                setMainContent(newMainContent);
-            } catch (BadHTTPResponseException | FetchException ex) {
-                throw new RuntimeException(ex);
-            }
+            updateFromState(GlobalStates.PRODUCTS);
         });
 
         ordersButton.loadSetOnMouseClicked(e -> {
-            GlobalState.setState(GlobalStates.ORDERS);
-            try {
-                Pane newMainContent = getListPane(GlobalState.getState());
-                setMainContent(newMainContent);
-            } catch (BadHTTPResponseException | FetchException ex) {
-                throw new RuntimeException(ex);
-            }
+            updateFromState(GlobalStates.ORDERS);
         });
 
         categoriesButton.loadSetOnMouseClicked(e -> {
-            GlobalState.setState(GlobalStates.CATEGORIES);
-            try {
-                Pane newMainContent = getListPane(GlobalState.getState());
-                setMainContent(newMainContent);
-            } catch (BadHTTPResponseException | FetchException ex) {
-                throw new RuntimeException(ex);
-            }
+            updateFromState(GlobalStates.CATEGORIES);
         });
 
         tagsButton.loadSetOnMouseClicked(e -> {
-            GlobalState.setState(GlobalStates.TAGS);
-            try {
-                Pane newMainContent = getListPane(GlobalState.getState());
-                setMainContent(newMainContent);
-            } catch (BadHTTPResponseException | FetchException ex) {
-                throw new RuntimeException(ex);
-            }
+            updateFromState(GlobalStates.TAGS);
         });
+    }
+
+    private void updateFromState(GlobalStates state) {
+        GlobalState.setState(state);
+        try {
+            getComponentList();
+        } catch (BadHTTPResponseException | FetchException ex) {
+            throw new RuntimeException(ex);
+        }
     }
 
     public List<Button> getGlobalButtons() {
@@ -125,29 +115,16 @@ public class GlobalComponents {
         return instance;
     }
 
-    public void getComponentList() throws BadHTTPResponseException, FetchException {
-        mainContent = getListPane(GlobalState.getState());
-        setMainContent(mainContent);
-    }
-
-    public static Pane getListPane(GlobalStates state) throws BadHTTPResponseException, FetchException {
+    public static Pane getList(GlobalStates state) throws BadHTTPResponseException, FetchException {
 
         Website activeWebsite = GlobalState.getActiveWebsite();
 
-        switch(state) {
-            case PRODUCTS -> {
-                return new ProductListPane(activeWebsite.getAllProducts(), activeWebsite.getCurrency());
-            }
-            case ORDERS -> {
-                return new OrderListPane(activeWebsite.getOrders());
-            }
-            case CATEGORIES -> {
-                return new CategoryListPane(activeWebsite.getCategories());
-            }
-            case TAGS -> {
-                return new TagListPane(activeWebsite.getTags());
-            }
-        }
-        return new Pane(new Text("No Website Selected"));
+        return switch (state) {
+            case PRODUCTS -> new ProductListPane(activeWebsite.getAllProducts(), activeWebsite.getCurrency());
+            case ORDERS -> new OrderListPane(activeWebsite.getOrders());
+            case CATEGORIES -> new CategoryListPane(activeWebsite.getCategories());
+            case TAGS -> new TagListPane(activeWebsite.getTags());
+            default -> new Pane(new Text("No Website Selected"));
+        };
     }
 }
