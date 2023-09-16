@@ -37,12 +37,12 @@ public class RESTConnection implements Serializable {
         }
     }
 
-    public List<byte[]> GETRequest(String endpoint, List<Parameter> parameters, int pages) throws BadHTTPResponseException {
+    public List<byte[]> GETRequest(String endpoint, int pages, Parameter... parameters) throws BadHTTPResponseException {
 
         List<CompletableFuture<byte[]>> futures = new ArrayList<>();
 
         for (int i = 1; i <= pages; i++) {
-            List<Parameter> paginationAddedParameters = new ArrayList<>(parameters);
+            List<Parameter> paginationAddedParameters = new ArrayList<>(Arrays.asList(parameters));
             paginationAddedParameters.add(new Parameter("page", Integer.toString(i)));
             futures.add(sendAsyncRequest(buildRequest(endpoint, paginationAddedParameters)));
         }

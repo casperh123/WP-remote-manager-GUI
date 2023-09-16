@@ -11,7 +11,6 @@ import com.jsoniter.any.Any;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -80,16 +79,9 @@ public class CompleteComponentList<E extends ID> extends QueryList<E> {
 
         this.clear();
 
-        List<Parameter> parameters = new ArrayList<>(Arrays.asList(
-                parameter,
-                new Parameter("per_page", "100")
-        ));
-
         List<byte[]> responseBodies;
 
-        long start = System.nanoTime();
-
-        responseBodies = connection.GETRequest(restEndpoint, parameters, totalPages);
+        responseBodies = connection.GETRequest(restEndpoint, totalPages, parameter, new Parameter("per_page", "100"));
 
         for(byte[] responseBody : responseBodies) {
 
@@ -97,8 +89,6 @@ public class CompleteComponentList<E extends ID> extends QueryList<E> {
 
             json.forEach(item -> this.add(item.as(containedClass)));
         }
-
-        System.out.println("Request timing: " + ((System.nanoTime() - start) / 1000000) + " ms");
     }
 
     @Override
