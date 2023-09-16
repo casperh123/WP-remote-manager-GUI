@@ -14,6 +14,7 @@ import Lists.SingleRequestList;
 import Lists.QueryList;
 import Lists.CompleteProductList;
 import Lists.SingleRequestOrderList;
+import REST.Parameter;
 import REST.RESTConnection;
 import REST.RESTEndpoints;
 import com.jsoniter.JsonIterator;
@@ -49,7 +50,7 @@ public class Website {
         RESTConnection connection = new RESTConnection(apiCredentials.getUrl(), apiCredentials);
 
         try {
-            byte[] getResponse = connection.GETRequest(RESTEndpoints.getCurrentCurrencyEndpoint(), "");
+            byte[] getResponse = connection.GETRequest(RESTEndpoints.getCurrentCurrencyEndpoint());
 
             Any json = JsonIterator.deserialize(getResponse);
 

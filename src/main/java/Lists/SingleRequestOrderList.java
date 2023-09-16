@@ -2,6 +2,7 @@ package Lists;
 
 import Components.Order.Order;
 import Exceptions.BadHTTPResponseException;
+import REST.Parameter;
 import REST.RESTConnection;
 import REST.RESTEndpoints;
 
@@ -38,22 +39,23 @@ public class SingleRequestOrderList extends SingleRequestList<Order> {
     }
 
     private CompletableFuture<Integer> fetchElementsCountForStatus(StatusFilter status) {
-        String parameter = getQueryParamForStatus(status);
+        Parameter parameter = getQueryParamForStatus(status);
+
         return getElementsAmount(parameter)
                 .thenApply(headers -> Integer.parseInt(headers.getOrDefault("x-wp-total", Collections.singletonList("0")).get(0)));
     }
 
-    private String getQueryParamForStatus(StatusFilter status) {
+    private Parameter getQueryParamForStatus(StatusFilter status) {
         return switch (status) {
-            case PENDING -> "status=pending";
-            case PROCESSING -> "status=processing";
-            case ON_HOLD -> "status=on-hold";
-            case COMPLETED -> "status=completed";
-            case CANCELLED -> "status=cancelled";
-            case REFUNDED -> "status=refunded";
-            case FAILED -> "status=failed";
-            case TRASH -> "status=trash";
-            default -> "";
+            case PENDING -> new Parameter("status", "pending");
+            case PROCESSING -> new Parameter("status", "processing");
+            case ON_HOLD -> new Parameter("status", "on-hold");
+            case COMPLETED -> new Parameter("status", "completed");
+            case CANCELLED -> new Parameter("status", "cancelled");
+            case REFUNDED -> new Parameter("status", "refunded");
+            case FAILED -> new Parameter("status", "failed");
+            case TRASH -> new Parameter("status", "trash");
+            default -> new Parameter("", ""); // TODO "=" in request doesnt break it, but not very nice
         };
     }
 
@@ -72,7 +74,7 @@ public class SingleRequestOrderList extends SingleRequestList<Order> {
         return statusCounts.getOrDefault(status, 0);
     }
 
-    public CompletableFuture<Map<String, List<String>>> getElementsAmount(String parameter) {
+    public CompletableFuture<Map<String, List<String>>> getElementsAmount(Parameter parameter) {
         return CompletableFuture.supplyAsync(() -> {
             try {
                 return connection.GETRequestHeaders(RESTEndpoints.getOrdersEndpoint(), parameter).toMultimap();

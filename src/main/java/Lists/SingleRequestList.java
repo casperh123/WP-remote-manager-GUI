@@ -5,11 +5,13 @@ import Exceptions.BadHTTPResponseException;
 import Exceptions.ElementNotInArrayException;
 import Exceptions.FirstPageException;
 import Exceptions.LastPageException;
+import REST.Parameter;
 import REST.RESTConnection;
 import com.jsoniter.JsonIterator;
 import com.jsoniter.any.Any;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -27,7 +29,7 @@ public class SingleRequestList<E extends ID> extends QueryList<E> {
 
         updateList();
 
-        Map<String, List<String>> httpHeaders = connection.getLatestHeaders().toMultimap();
+        Map<String, List<String>> httpHeaders = connection.GETRequestHeaders(restEndpoint).toMultimap();
         System.out.println(httpHeaders);
 
         if(httpHeaders.containsKey("x-wp-total")) {
@@ -44,14 +46,23 @@ public class SingleRequestList<E extends ID> extends QueryList<E> {
     }
 
     protected void updateList() throws BadHTTPResponseException {
-        updateList("");
+        updateList(null);
     }
 
-    protected void updateList(String parameter) throws BadHTTPResponseException {
+    protected void updateList(Parameter parameter) throws BadHTTPResponseException {
 
         this.clear();
 
-        byte[] getResponse = connection.GETRequest(restEndpoint,  parameter + "&per_page= + " + perPage + "&page=" + currentPage);
+        List<Parameter> parameters = new ArrayList<>(Arrays.asList(
+                new Parameter("per_page", Integer.toString(perPage)),
+                new Parameter("page", Integer.toString(currentPage))
+        ));
+
+        if(parameter != null) {
+            parameters.add(parameter);
+        }
+
+        byte[] getResponse = connection.GETRequest(restEndpoint,  parameters);
 
         Any json = JsonIterator.deserialize(getResponse);
 
@@ -113,6 +124,7 @@ public class SingleRequestList<E extends ID> extends QueryList<E> {
         return 0;
     }
 
+    /*
     public void primeUpdatedList(int page) throws BadHTTPResponseException {
 
         primerList = new ArrayList<>();
@@ -124,7 +136,7 @@ public class SingleRequestList<E extends ID> extends QueryList<E> {
         json.forEach(item -> primerList.add(item.as(containedClass)));
 
         System.out.println("Primed");
-    }
+    }*/
 
     public boolean swapUpdatedList() {
         if(primerList != null) {
@@ -133,6 +145,7 @@ public class SingleRequestList<E extends ID> extends QueryList<E> {
         return false;
     }
 
+    /*
     public void loadIds(List<Integer> ids) throws BadHTTPResponseException {
 
         List<E> newElements = new ArrayList<>();
@@ -156,7 +169,9 @@ public class SingleRequestList<E extends ID> extends QueryList<E> {
         json.forEach(item -> newElements.add(item.as(containedClass)));
 
         internalList = newElements;
-    }
+    }*/
+
+    /*
 
     public void loadElementById(String endpoint, int id) throws BadHTTPResponseException {
 
@@ -169,7 +184,7 @@ public class SingleRequestList<E extends ID> extends QueryList<E> {
         json.forEach(item -> newElements.add(item.as(containedClass)));
 
         internalList = newElements;
-    }
+    }*/
 
     public ID getElementById(int id) throws ElementNotInArrayException {
 

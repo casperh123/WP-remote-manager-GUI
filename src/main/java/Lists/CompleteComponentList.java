@@ -4,14 +4,12 @@ import Components.Interfaces.ID;
 import Exceptions.BadHTTPResponseException;
 import Exceptions.FirstPageException;
 import Exceptions.LastPageException;
+import REST.Parameter;
 import REST.RESTConnection;
 import com.jsoniter.JsonIterator;
 import com.jsoniter.any.Any;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class CompleteComponentList<E extends ID> extends QueryList<E> {
 
@@ -27,7 +25,7 @@ public class CompleteComponentList<E extends ID> extends QueryList<E> {
 
         long start = System.nanoTime();
 
-        Map<String, List<String>> httpHeaders = connection.GETRequestHeaders(restEndpoint, "&per_page=1").toMultimap();
+        Map<String, List<String>> httpHeaders = connection.GETRequestHeaders(restEndpoint,new Parameter("per_page", "1")).toMultimap();
 
         System.out.println("Header Request timing: " + (System.nanoTime() - start) / 1000000 + " ms");
 
@@ -89,23 +87,23 @@ public class CompleteComponentList<E extends ID> extends QueryList<E> {
     }
 
     private void updateList() throws BadHTTPResponseException {
-        updateList("");
+        updateList(new Parameter("", ""));
     }
 
-    private void updateList(String parameter) throws BadHTTPResponseException {
+    private void updateList(Parameter parameter) throws BadHTTPResponseException {
 
         this.clear();
 
-        List<String> parameters = new ArrayList<>();
-        List<byte[]> getResponses;
+        List<Parameter> parameters = new ArrayList<>(Arrays.asList(
+                parameter,
+                new Parameter("per_page", "100")
+        ));
 
-        for(int i = 1; i <= totalPages; i++) {
-            parameters.add("&per_page=100&page=" + i + parameter);
-        }
+        List<byte[]> getResponses;
 
         long start = System.nanoTime();
 
-        getResponses = connection.GETRequest(restEndpoint, parameters);
+        getResponses = connection.GETRequest(restEndpoint, parameters, totalPages);
 
         for(byte[] getResponse : getResponses) {
 

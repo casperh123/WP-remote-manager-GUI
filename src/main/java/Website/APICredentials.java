@@ -18,7 +18,7 @@ public class APICredentials implements Serializable {
         this.websiteName = websiteName;
 
         if(url.matches("^(https|http)://[a-zA-Z]+(.[a-zA-Z]+)+$")) {
-            this.stringUrl = url + "/";
+            this.stringUrl = url;
         } else {
             throw new URISyntaxException(url, "URL has to start with http:// or https:// and end with .xxx");
         }

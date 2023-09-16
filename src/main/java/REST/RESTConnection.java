@@ -9,54 +9,60 @@ import org.jetbrains.annotations.NotNull;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 public class RESTConnection implements Serializable {
 
+    private OkHttpClient httpClient;
     private String websiteRootUrl;
     private String credentials;
-    private Headers latestHeaders;
 
     public RESTConnection(String websiteRootUrl, APICredentials user) {
         this.websiteRootUrl = websiteRootUrl;
         this.credentials = Credentials.basic(user.getApiKey(), user.getApiSecret());
+        this.httpClient = HTTPClient.getHTTPClient();
     }
 
-    public byte[] GETRequest(String endpoint, String parameters) throws BadHTTPResponseException {
+    public byte[] GETRequest(String endpoint) throws BadHTTPResponseException {
+        return GETRequest(endpoint, new ArrayList<>());
+    }
+
+    public byte[] GETRequest(String endpoint, Parameter parameter) throws BadHTTPResponseException {
+        return GETRequest(endpoint, Collections.singletonList(parameter));
+    }
+
+    public byte[] GETRequest(String endpoint, List<Parameter> parameters) throws BadHTTPResponseException {
 
         long start = System.nanoTime();
 
         OkHttpClient client = HTTPClient.getHTTPClient();
 
-        Request request = new Request.Builder()
-                .url(websiteRootUrl + endpoint + parameters)
-                .header("Authorization", credentials)
-                .build();
-
-        try (Response response = client.newCall(request).execute()) {
-            if(!response.isSuccessful()) throw new BadHTTPResponseException(response.code());
-            this.latestHeaders = response.headers();
-            System.out.println("Request timing: " + ((System.nanoTime() - start) / 1000000) + " ms");
+        //TODO lol exception much
+        try (Response response = executeRequest(buildRequest(endpoint, parameters))) {
+            if(!response.isSuccessful()) { throw new BadHTTPResponseException(response.code()); }
             return response.body().bytes();
         } catch (IOException e) {
-            throw new BadHTTPResponseException(e.getMessage());
+            throw new RuntimeException(e);
         }
     }
 
-    public List<byte[]> GETRequest(String endpoint, List<String> parameters) throws BadHTTPResponseException {
+    public List<byte[]> GETRequest(String endpoint, List<Parameter> parameters, int pages) throws BadHTTPResponseException {
 
         OkHttpClient client = HTTPClient.getHTTPClient();
         List<CompletableFuture<byte[]>> futures = new ArrayList<>();
 
-        for (String parameter : parameters) {
+        for (int i = 1; i <= pages; i++) {
+
             CompletableFuture<byte[]> future = new CompletableFuture<>();
 
-            client.newCall(new Request.Builder()
-                            .url(websiteRootUrl + endpoint + parameter)
-                            .header("Authorization", credentials)
-                            .build())
+            List<Parameter> paginationAddedParameters = new ArrayList<>(parameters);
+
+            paginationAddedParameters.add(new Parameter("page", Integer.toString(i)));
+
+            client.newCall(buildRequest(endpoint, paginationAddedParameters))
                     .enqueue(new Callback() {
                         public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                             if (!response.isSuccessful()) {
@@ -91,27 +97,52 @@ public class RESTConnection implements Serializable {
                 .collect(Collectors.toList());
     }
 
-    public Headers GETRequestHeaders(String endpoint, String parameters) throws BadHTTPResponseException {
+    public Headers GETRequestHeaders(String endpoint, Parameter parameters) throws BadHTTPResponseException {
+        return executeRequest(buildRequest(endpoint, parameters)).headers();
+    }
 
-        OkHttpClient client = HTTPClient.getHTTPClient();
-        Request request = new Request.Builder()
-                .url(websiteRootUrl + endpoint + parameters)
-                .header("Authorization", credentials)
-                .build();
+    public Headers GETRequestHeaders(String endpoint) throws BadHTTPResponseException {
+        return executeRequest(buildRequest(endpoint)).headers();
+    }
 
-        System.out.println(request.url());
+    private Response executeRequest(Request request) throws BadHTTPResponseException {
 
-        try (Response response = client.newCall(request).execute()) {
-            if(!response.isSuccessful()) throw new BadHTTPResponseException(response.code());
-            this.latestHeaders = response.headers();
-            return response.headers();
+        long start = System.nanoTime();
+
+        Response response;
+
+        try {
+            response = httpClient.newCall(request).execute();
+            if (!response.isSuccessful()) throw new BadHTTPResponseException(response.code());
+            System.out.println("Request timing: " + ((System.nanoTime() - start) / 1000000) + " ms, URL:" + request.url());
+            return response;
         } catch (IOException e) {
             throw new BadHTTPResponseException(e.getMessage());
         }
+
     }
 
-    public Headers getLatestHeaders() {
-        return latestHeaders;
+    private Request buildRequest(String endpoint, List<Parameter> parameters) {
+
+        HttpUrl.Builder urlBuilder = HttpUrl.parse(websiteRootUrl)
+                .newBuilder()
+                .addPathSegments(endpoint);
+
+        parameters.forEach(parameter -> urlBuilder.addQueryParameter(parameter.getParameter(), parameter.getValue()));
+
+        HttpUrl url = urlBuilder.build();
+
+        return new Request.Builder()
+                .url(url)
+                .header("Authorization", credentials)
+                .build();
     }
 
+    private Request buildRequest(String endpoint, Parameter parameter) {
+        return buildRequest(endpoint, Collections.singletonList(parameter));
+    }
+
+    private Request buildRequest(String endpoint) {
+        return buildRequest(endpoint, new ArrayList<>());
+    }
 }
