@@ -9,37 +9,23 @@ import REST.RESTConnection;
 import com.jsoniter.JsonIterator;
 import com.jsoniter.any.Any;
 
-import java.util.*;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
 
 public class CompleteComponentList<E extends ID> extends QueryList<E> {
 
     protected int perPage;
     protected int currentPage;
 
-    public CompleteComponentList(RESTConnection connection, String restEndpoint, Class<E> containedClass) throws BadHTTPResponseException {
+    public CompleteComponentList(RESTConnection connection, String restEndpoint, Class<E> containedClass) throws IOException {
 
         super(connection, restEndpoint, containedClass);
 
         this.perPage = 100;
         this.currentPage = 1;
-
-        long start = System.nanoTime();
-
-        Map<String, List<String>> httpHeaders = connection.GETRequestHeaders(restEndpoint,new Parameter("per_page", "1")).toMultimap();
-
-        System.out.println("Header Request timing: " + (System.nanoTime() - start) / 1000000 + " ms");
-
-        if(httpHeaders.containsKey("x-wp-total")) {
-            this.totalItems = Integer.parseInt(httpHeaders.get("x-wp-total").get(0));
-        } else {
-            this.totalItems = 0;
-        }
-
-        if (httpHeaders.containsKey("x-wp-totalpages")) {
-            this.totalPages = (int) Math.ceil(Double.parseDouble(httpHeaders.get("x-wp-total").get(0)) / 100.0);
-        } else {
-            this.totalPages = 0;
-        }
 
         if(this.size() < totalItems) {
             updateList();
@@ -65,7 +51,7 @@ public class CompleteComponentList<E extends ID> extends QueryList<E> {
     }
 
     @Override
-    public void refresh() throws BadHTTPResponseException {
+    public void refresh() throws IOException {
         updateList();
     }
 
@@ -86,11 +72,11 @@ public class CompleteComponentList<E extends ID> extends QueryList<E> {
         return totalPages;
     }
 
-    private void updateList() throws BadHTTPResponseException {
+    private void updateList() throws IOException {
         updateList(new Parameter("", ""));
     }
 
-    private void updateList(Parameter parameter) throws BadHTTPResponseException {
+    private void updateList(Parameter parameter) throws IOException {
 
         this.clear();
 
@@ -99,15 +85,15 @@ public class CompleteComponentList<E extends ID> extends QueryList<E> {
                 new Parameter("per_page", "100")
         ));
 
-        List<byte[]> getResponses;
+        List<byte[]> responseBodies;
 
         long start = System.nanoTime();
 
-        getResponses = connection.GETRequest(restEndpoint, parameters, totalPages);
+        responseBodies = connection.GETRequest(restEndpoint, parameters, totalPages);
 
-        for(byte[] getResponse : getResponses) {
+        for(byte[] responseBody : responseBodies) {
 
-            Any json = JsonIterator.deserialize(getResponse);
+            Any json = JsonIterator.deserialize(responseBody);
 
             json.forEach(item -> this.add(item.as(containedClass)));
         }

@@ -1,7 +1,6 @@
 package GUI.Panes.ListPaneComponents;
 
 import Components.Interfaces.ID;
-import Exceptions.BadHTTPResponseException;
 import GUI.Components.StateButton;
 import GUI.Enums.State;
 import Lists.QueryList;
@@ -15,6 +14,8 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
+
+import java.io.IOException;
 
 public class PaginationControl extends HBox {
 
@@ -122,7 +123,7 @@ public class PaginationControl extends HBox {
             try {
                 queryList.refresh();
                 currentPageProperty.set(queryList.getPage());
-            } catch (BadHTTPResponseException ex) {
+            } catch (IOException ex) {
                 throw new RuntimeException(ex); // TODO Exception Handling
             }
         });

@@ -6,6 +6,7 @@ import REST.Parameter;
 import REST.RESTConnection;
 import REST.RESTEndpoints;
 
+import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
@@ -13,7 +14,7 @@ public class SingleRequestOrderList extends SingleRequestList<Order> {
 
     private final Map<StatusFilter, Integer> statusCounts = new HashMap<>();
 
-    public SingleRequestOrderList(RESTConnection connection, String restEndpoint) throws BadHTTPResponseException {
+    public SingleRequestOrderList(RESTConnection connection, String restEndpoint) throws IOException {
         super(connection, restEndpoint, Order.class);
         initializeStatusCounts();
     }
@@ -60,7 +61,7 @@ public class SingleRequestOrderList extends SingleRequestList<Order> {
     }
 
     @Override
-    public void filterByStatus(StatusFilter filter) throws BadHTTPResponseException {
+    public void filterByStatus(StatusFilter filter) throws IOException {
         updateList(getQueryParamForStatus(filter));
     }
 

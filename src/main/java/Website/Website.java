@@ -10,16 +10,16 @@ import Components.Product.ProductComponents.Tag;
 import Components.ProductAttribute.ProductAttribute;
 import Exceptions.BadHTTPResponseException;
 import Exceptions.FetchException;
-import Lists.SingleRequestList;
-import Lists.QueryList;
 import Lists.CompleteProductList;
+import Lists.QueryList;
+import Lists.SingleRequestList;
 import Lists.SingleRequestOrderList;
-import REST.Parameter;
 import REST.RESTConnection;
 import REST.RESTEndpoints;
 import com.jsoniter.JsonIterator;
 import com.jsoniter.any.Any;
 
+import java.io.IOException;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
@@ -50,9 +50,9 @@ public class Website {
         RESTConnection connection = new RESTConnection(apiCredentials.getUrl(), apiCredentials);
 
         try {
-            byte[] getResponse = connection.GETRequest(RESTEndpoints.getCurrentCurrencyEndpoint());
+            byte[] responseBody = connection.GETRequest(RESTEndpoints.getCurrentCurrencyEndpoint());
 
-            Any json = JsonIterator.deserialize(getResponse);
+            Any json = JsonIterator.deserialize(responseBody);
 
             currency = json.as(Currency.class);
         } catch (BadHTTPResponseException e) {
@@ -73,7 +73,7 @@ public class Website {
         return apiCredentials;
     }
 
-    public QueryList<Product> getPaginatedProducts() throws BadHTTPResponseException {
+    public QueryList<Product> getPaginatedProducts() throws IOException {
 
         if(paginatedProducts == null) {
             RESTConnection connection = new RESTConnection(apiCredentials.getUrl(), apiCredentials);
@@ -83,7 +83,7 @@ public class Website {
         return paginatedProducts;
     }
 
-    public QueryList<Product> getAllProducts() throws BadHTTPResponseException {
+    public QueryList<Product> getAllProducts() throws IOException {
         if(paginatedProducts == null) {
             RESTConnection connection = new RESTConnection(apiCredentials.getUrl(), apiCredentials);
 
@@ -92,7 +92,7 @@ public class Website {
         return paginatedProducts;
     }
 
-    public QueryList<Coupon> getCoupons() throws BadHTTPResponseException {
+    public QueryList<Coupon> getCoupons() throws IOException {
 
         if(coupons == null) {
             RESTConnection connection = new RESTConnection(apiCredentials.getUrl(), apiCredentials);
@@ -102,7 +102,7 @@ public class Website {
         return coupons;
     }
 
-    public QueryList<Customer> getCustomers() throws BadHTTPResponseException {
+    public QueryList<Customer> getCustomers() throws IOException {
 
         if(currency == null) {
             RESTConnection connection = new RESTConnection(apiCredentials.getUrl(), apiCredentials);
@@ -112,7 +112,7 @@ public class Website {
         return customers;
     }
 
-    public QueryList<Order> getOrders() throws BadHTTPResponseException {
+    public QueryList<Order> getOrders() throws IOException {
 
         if(orders == null) {
             RESTConnection connection = new RESTConnection(apiCredentials.getUrl(), apiCredentials);
@@ -122,7 +122,7 @@ public class Website {
         return orders;
     }
 
-    public QueryList<Tag> getTags() throws BadHTTPResponseException {
+    public QueryList<Tag> getTags() throws IOException {
 
         if(tags == null) {
             RESTConnection connection = new RESTConnection(apiCredentials.getUrl(), apiCredentials);
@@ -132,7 +132,7 @@ public class Website {
         return tags;
     }
 
-    public QueryList<Category> getCategories() throws BadHTTPResponseException {
+    public QueryList<Category> getCategories() throws IOException {
 
         if(categories == null) {
             RESTConnection connection = new RESTConnection(apiCredentials.getUrl(), apiCredentials);
@@ -153,6 +153,8 @@ public class Website {
             } catch (BadHTTPResponseException e) {
                 System.out.println("Fuck"); //TODO Exception
                 return null;
+            } catch (IOException e) {
+                throw new RuntimeException(e);
             }
         });
 

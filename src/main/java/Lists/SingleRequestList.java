@@ -1,7 +1,6 @@
 package Lists;
 
 import Components.Interfaces.ID;
-import Exceptions.BadHTTPResponseException;
 import Exceptions.ElementNotInArrayException;
 import Exceptions.FirstPageException;
 import Exceptions.LastPageException;
@@ -10,10 +9,10 @@ import REST.RESTConnection;
 import com.jsoniter.JsonIterator;
 import com.jsoniter.any.Any;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 public class SingleRequestList<E extends ID> extends QueryList<E> {
 
@@ -22,34 +21,19 @@ public class SingleRequestList<E extends ID> extends QueryList<E> {
     private int perPage;
     private int currentPage;
 
-    public SingleRequestList(RESTConnection connection, String restEndpoint, Class<E> containedClass) throws BadHTTPResponseException {
+    public SingleRequestList(RESTConnection connection, String restEndpoint, Class<E> containedClass) throws IOException {
         super(connection, restEndpoint, containedClass);
         this.currentPage = 1;
         this.perPage = 100;
 
         updateList();
-
-        Map<String, List<String>> httpHeaders = connection.GETRequestHeaders(restEndpoint).toMultimap();
-        System.out.println(httpHeaders);
-
-        if(httpHeaders.containsKey("x-wp-total")) {
-            this.totalItems = Integer.parseInt(httpHeaders.get("x-wp-total").get(0));
-        } else {
-            this.totalItems = 0;
-        }
-
-        if (httpHeaders.containsKey("x-wp-totalpages")) {
-            this.totalPages = Integer.parseInt(httpHeaders.get("x-wp-totalpages").get(0));
-        } else {
-            this.totalPages = 0;
-        }
     }
 
-    protected void updateList() throws BadHTTPResponseException {
+    protected void updateList() throws IOException {
         updateList(null);
     }
 
-    protected void updateList(Parameter parameter) throws BadHTTPResponseException {
+    protected void updateList(Parameter parameter) throws IOException {
 
         this.clear();
 
@@ -62,14 +46,12 @@ public class SingleRequestList<E extends ID> extends QueryList<E> {
             parameters.add(parameter);
         }
 
-        byte[] getResponse = connection.GETRequest(restEndpoint,  parameters);
-
-        Any json = JsonIterator.deserialize(getResponse);
+        Any json = JsonIterator.deserialize(connection.GETRequest(restEndpoint, parameters.toArray(new Parameter[0])));
 
         json.forEach(item -> this.add(item.as(containedClass)));
     }
 
-    public void nextPage() throws LastPageException, BadHTTPResponseException {
+    public void nextPage() throws LastPageException, IOException {
         if(currentPage == totalPages) {
             throw new LastPageException("Cannot display next page: Already on the last page");
         } else {
@@ -78,7 +60,7 @@ public class SingleRequestList<E extends ID> extends QueryList<E> {
         }
     }
 
-    public void previousPage() throws FirstPageException, BadHTTPResponseException {
+    public void previousPage() throws FirstPageException, IOException {
         if(currentPage == 1) {
             throw new FirstPageException("Cannot display previous page: Already on the first page");
         } else {
@@ -88,11 +70,11 @@ public class SingleRequestList<E extends ID> extends QueryList<E> {
     }
 
     @Override
-    public void refresh() throws BadHTTPResponseException {
+    public void refresh() throws IOException {
         updateList();
     }
 
-    public void setPage(int page) throws BadHTTPResponseException {
+    public void setPage(int page) throws IOException {
         currentPage = page;
         updateList();
     }
@@ -110,7 +92,7 @@ public class SingleRequestList<E extends ID> extends QueryList<E> {
     }
 
     @Override
-    public void filterByStatus(StatusFilter filter) throws BadHTTPResponseException {
+    public void filterByStatus(StatusFilter filter) throws IOException {
 
     }
 

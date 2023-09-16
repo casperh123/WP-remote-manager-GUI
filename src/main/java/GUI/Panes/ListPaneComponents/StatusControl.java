@@ -1,7 +1,6 @@
 package GUI.Panes.ListPaneComponents;
 
 import Components.Interfaces.ID;
-import Exceptions.BadHTTPResponseException;
 import Lists.QueryList;
 import Lists.QueryList.StatusFilter;
 import javafx.beans.property.ObjectProperty;
@@ -9,6 +8,8 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.layout.HBox;
+
+import java.io.IOException;
 
 public class StatusControl extends HBox {
 
@@ -32,7 +33,7 @@ public class StatusControl extends HBox {
                 currentStatusProperty.set(statusControl.getStatus());
                 try {
                     componentList.filterByStatus(statusControl.getStatus());
-                } catch (BadHTTPResponseException ex) {
+                } catch (IOException ex) {
                     throw new RuntimeException(ex); //TODO Exception lol
                 }
             });

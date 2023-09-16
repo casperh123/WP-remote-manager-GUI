@@ -1,8 +1,9 @@
 package GUI.GlobalState;
 
-import Exceptions.BadHTTPResponseException;
 import Exceptions.FetchException;
 import Website.Website;
+
+import java.io.IOException;
 
 public class GlobalState {
 
@@ -25,7 +26,7 @@ public class GlobalState {
         return activeWebsite;
     }
 
-    public static void setActiveWebsite(Website website) throws BadHTTPResponseException, FetchException {
+    public static void setActiveWebsite(Website website) throws IOException, FetchException {
         activeWebsite = website;
         GlobalComponents.getInstance().getComponentList();
     }

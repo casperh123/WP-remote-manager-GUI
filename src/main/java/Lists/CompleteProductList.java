@@ -4,6 +4,7 @@ import Components.Product.Product;
 import Exceptions.BadHTTPResponseException;
 import REST.RESTConnection;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,8 +16,9 @@ public class CompleteProductList extends CompleteComponentList<Product> {
     private int elementsDraft;
     private int elementsPending;
 
-    public CompleteProductList(RESTConnection connection, String restEndpoint) throws BadHTTPResponseException {
+    public CompleteProductList(RESTConnection connection, String restEndpoint) throws IOException {
         super(connection, restEndpoint, Product.class);
+
         unalteredList = null;
 
         for(Product product : internalList) {

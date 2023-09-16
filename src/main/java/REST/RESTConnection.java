@@ -9,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
@@ -26,69 +26,32 @@ public class RESTConnection implements Serializable {
         this.httpClient = HTTPClient.getHTTPClient();
     }
 
-    public byte[] GETRequest(String endpoint) throws BadHTTPResponseException {
-        return GETRequest(endpoint, new ArrayList<>());
-    }
-
-    public byte[] GETRequest(String endpoint, Parameter parameter) throws BadHTTPResponseException {
-        return GETRequest(endpoint, Collections.singletonList(parameter));
-    }
-
-    public byte[] GETRequest(String endpoint, List<Parameter> parameters) throws BadHTTPResponseException {
-
-        long start = System.nanoTime();
-
-        OkHttpClient client = HTTPClient.getHTTPClient();
-
-        //TODO lol exception much
+    public byte[] GETRequest(String endpoint, Parameter... parameters) throws BadHTTPResponseException {
         try (Response response = executeRequest(buildRequest(endpoint, parameters))) {
-            if(!response.isSuccessful()) { throw new BadHTTPResponseException(response.code()); }
+            if (!response.isSuccessful()) {
+                throw new BadHTTPResponseException(response.code());
+            }
             return response.body().bytes();
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException(e); // Consider a custom exception here
         }
     }
 
     public List<byte[]> GETRequest(String endpoint, List<Parameter> parameters, int pages) throws BadHTTPResponseException {
 
-        OkHttpClient client = HTTPClient.getHTTPClient();
         List<CompletableFuture<byte[]>> futures = new ArrayList<>();
 
         for (int i = 1; i <= pages; i++) {
-
-            CompletableFuture<byte[]> future = new CompletableFuture<>();
-
             List<Parameter> paginationAddedParameters = new ArrayList<>(parameters);
-
             paginationAddedParameters.add(new Parameter("page", Integer.toString(i)));
-
-            client.newCall(buildRequest(endpoint, paginationAddedParameters))
-                    .enqueue(new Callback() {
-                        public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                            if (!response.isSuccessful()) {
-                                future.completeExceptionally(new BadHTTPResponseException(response.code()));
-                                return;
-                            }
-
-                            try (ResponseBody responseBody = response.body()) {
-                                future.complete(responseBody.bytes());
-                            }
-                        }
-
-                        @Override
-                        public void onFailure(Call call, IOException e) {
-                            System.out.println("Request failed: " + e.getMessage());
-                            future.completeExceptionally(e);
-                        }
-                    });
-
-            futures.add(future);
+            futures.add(sendAsyncRequest(buildRequest(endpoint, paginationAddedParameters)));
         }
 
-        return futures.stream()
+        System.out.println("Done sending requests");
+
+        return futures.parallelStream()
                 .map(future -> {
                     try {
-
                         return future.get(); // Waits for this future to complete
                     } catch (Exception e) {
                         throw new RuntimeException(e); // or handle exception
@@ -97,12 +60,33 @@ public class RESTConnection implements Serializable {
                 .collect(Collectors.toList());
     }
 
-    public Headers GETRequestHeaders(String endpoint, Parameter parameters) throws BadHTTPResponseException {
-        return executeRequest(buildRequest(endpoint, parameters)).headers();
+    private CompletableFuture<byte[]> sendAsyncRequest(Request request) {
+        CompletableFuture<byte[]> future = new CompletableFuture<>();
+        httpClient.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                if (!response.isSuccessful()) {
+                    future.completeExceptionally(new BadHTTPResponseException(response.code()));
+                } else {
+                    // Read the bytes from the response before it's closed
+                    byte[] responseBodyBytes = response.body().bytes();
+                    response.close(); // Close the response
+                    future.complete(responseBodyBytes);
+                }
+            }
+
+            @Override
+            public void onFailure(Call call, IOException e) {
+                future.completeExceptionally(e);
+            }
+        });
+        return future;
     }
 
-    public Headers GETRequestHeaders(String endpoint) throws BadHTTPResponseException {
-        return executeRequest(buildRequest(endpoint)).headers();
+    public Headers GETRequestHeaders(String endpoint, Parameter... parameters) throws BadHTTPResponseException {
+        try (Response response = executeRequest(buildRequest(endpoint, parameters))) {
+            return response.headers();
+        }
     }
 
     private Response executeRequest(Request request) throws BadHTTPResponseException {
@@ -138,11 +122,7 @@ public class RESTConnection implements Serializable {
                 .build();
     }
 
-    private Request buildRequest(String endpoint, Parameter parameter) {
-        return buildRequest(endpoint, Collections.singletonList(parameter));
-    }
-
-    private Request buildRequest(String endpoint) {
-        return buildRequest(endpoint, new ArrayList<>());
+    private Request buildRequest(String endpoint, Parameter... parameters) {
+        return buildRequest(endpoint, Arrays.asList(parameters));
     }
 }

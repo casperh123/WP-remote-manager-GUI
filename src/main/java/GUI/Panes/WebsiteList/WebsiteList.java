@@ -1,6 +1,5 @@
 package GUI.Panes.WebsiteList;
 
-import Exceptions.BadHTTPResponseException;
 import Exceptions.FetchException;
 import GUI.Cards.WebsiteCard;
 import GUI.Components.PrimaryButton;
@@ -8,8 +7,8 @@ import GUI.Enums.State;
 import GUI.GlobalState.GlobalState;
 import GUI.Panes.WebsiteList.AddWebsite.AddWebsiteView;
 import Utility.FileManager;
-import Website.Website;
 import Website.APICredentials;
+import Website.Website;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -65,7 +64,7 @@ public class WebsiteList extends VBox {
             //TODO Exception handling lol
             try {
                 GlobalState.setActiveWebsite( websites.get(0));
-            } catch (BadHTTPResponseException e) {
+            } catch (IOException e) {
                 throw new RuntimeException(e);
             } catch (FetchException e) {
                 throw new RuntimeException(e);
@@ -131,7 +130,7 @@ public class WebsiteList extends VBox {
 
             try {
                 GlobalState.setActiveWebsite(websiteCard.getWebsite());
-            } catch (BadHTTPResponseException | FetchException ex) {
+            } catch (IOException | FetchException ex) {
                 throw new RuntimeException(ex);
             }
 

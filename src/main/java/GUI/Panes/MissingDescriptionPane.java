@@ -1,14 +1,13 @@
 package GUI.Panes;
 
 import Components.Product.Product;
-import Exceptions.BadHTTPResponseException;
-import Exceptions.FetchException;
 import GUI.Components.PrimaryButton;
 import Website.Website;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.text.Text;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -58,7 +57,7 @@ public class MissingDescriptionPane extends DualWebsiteSelect {
         try {
             mainProducts = new HashSet<>(mainWebsite.getAllProducts());
             comparingProducts = new HashSet<>(comparingWebsite.getAllProducts());
-        } catch (BadHTTPResponseException e) {
+        } catch (IOException e) {
             throw new RuntimeException(e); // TODO EXCEPTION
         }
 

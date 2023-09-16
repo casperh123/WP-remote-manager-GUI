@@ -1,6 +1,5 @@
 package GUI.GlobalState;
 
-import Exceptions.BadHTTPResponseException;
 import Exceptions.FetchException;
 import GUI.Components.StateButton;
 import GUI.Enums.State;
@@ -15,6 +14,7 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,7 +50,7 @@ public class GlobalComponents {
         return mainScrollPane;
     }
 
-    public void getComponentList() throws BadHTTPResponseException, FetchException {
+    public void getComponentList() throws IOException, FetchException {
         mainContent = getList(GlobalState.getState());
         setMainContent(mainContent);
     }
@@ -92,7 +92,7 @@ public class GlobalComponents {
         GlobalState.setState(state);
         try {
             getComponentList();
-        } catch (BadHTTPResponseException | FetchException ex) {
+        } catch (IOException | FetchException ex) {
             throw new RuntimeException(ex);
         }
     }
@@ -115,7 +115,7 @@ public class GlobalComponents {
         return instance;
     }
 
-    public static Pane getList(GlobalStates state) throws BadHTTPResponseException, FetchException {
+    public static Pane getList(GlobalStates state) throws IOException, FetchException {
 
         Website activeWebsite = GlobalState.getActiveWebsite();
 
