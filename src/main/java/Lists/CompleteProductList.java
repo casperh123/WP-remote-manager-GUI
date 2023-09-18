@@ -2,6 +2,7 @@ package Lists;
 
 import Components.Product.Product;
 import Exceptions.BadHTTPResponseException;
+import Lists.StatusFilter.StatusFilter;
 import REST.RESTConnection;
 
 import java.io.IOException;
@@ -100,16 +101,13 @@ public class CompleteProductList extends CompleteComponentList<Product> {
     }
 
     public StatusFilter[] getStatuses() {
-
-        StatusFilter[] statuses = new StatusFilter[5];
-
-        statuses[0] = StatusFilter.ALL;
-        statuses[1] = StatusFilter.PUBLISHED;
-        statuses[2] = StatusFilter.PRIVATE;
-        statuses[3] = StatusFilter.DRAFT;
-        statuses[4] = StatusFilter.PENDING;
-
-        return statuses;
+        return new StatusFilter[] {
+                StatusFilter.ALL,
+                StatusFilter.PUBLISHED,
+                StatusFilter.PRIVATE,
+                StatusFilter.DRAFT,
+                StatusFilter.PENDING
+        };
     }
 
     @Override

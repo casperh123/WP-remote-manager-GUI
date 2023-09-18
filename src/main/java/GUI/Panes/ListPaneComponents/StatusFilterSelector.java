@@ -2,7 +2,7 @@ package GUI.Panes.ListPaneComponents;
 
 import GUI.Components.StateButton;
 import GUI.Enums.State;
-import Lists.QueryList.StatusFilter;
+import Lists.StatusFilter.StatusFilter;
 
 public class StatusFilterSelector extends StateButton {
 

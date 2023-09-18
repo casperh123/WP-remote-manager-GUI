@@ -2,7 +2,7 @@ package GUI.Panes.ListPaneComponents;
 
 import Components.Interfaces.ID;
 import Lists.QueryList;
-import Lists.QueryList.StatusFilter;
+import Lists.StatusFilter.StatusFilter;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.geometry.Insets;

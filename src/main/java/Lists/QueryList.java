@@ -4,6 +4,7 @@ import Components.Interfaces.ID;
 import Exceptions.BadHTTPResponseException;
 import Exceptions.FirstPageException;
 import Exceptions.LastPageException;
+import Lists.StatusFilter.StatusFilter;
 import REST.Parameter;
 import REST.RESTConnection;
 import okhttp3.Headers;
@@ -19,20 +20,6 @@ public abstract class QueryList<E extends ID> extends AbstractComponentList<E> {
     protected StatusFilter componentStatus;
     protected Class<E> containedClass;
 
-    public enum StatusFilter {
-        ALL,
-        PUBLISHED,
-        PRIVATE,
-        DRAFT,
-        PENDING,
-        PROCESSING,
-        ON_HOLD,
-        COMPLETED,
-        CANCELLED,
-        REFUNDED,
-        FAILED,
-        TRASH
-    }
 
     public QueryList(RESTConnection connection, String restEndpoint, Class<E> containedClass) throws BadHTTPResponseException {
         super();

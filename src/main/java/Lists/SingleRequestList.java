@@ -4,6 +4,7 @@ import Components.Interfaces.ID;
 import Exceptions.ElementNotInArrayException;
 import Exceptions.FirstPageException;
 import Exceptions.LastPageException;
+import Lists.StatusFilter.StatusFilter;
 import REST.Parameter;
 import REST.RESTConnection;
 import com.jsoniter.JsonIterator;
