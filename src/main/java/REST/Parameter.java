@@ -11,4 +11,6 @@ public class Parameter {
 
     public String getParameter() { return parameter; }
     public String getValue() { return value; }
+
+    public String toString() { return parameter + ": " + value; }
 }

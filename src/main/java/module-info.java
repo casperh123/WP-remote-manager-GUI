@@ -8,6 +8,7 @@ module GUI {
     requires kotlin.stdlib;
     requires java.desktop;
     requires javafx.web;
+    requires java.logging;
 
     opens Components.Product.ProductComponents;
     opens Components;

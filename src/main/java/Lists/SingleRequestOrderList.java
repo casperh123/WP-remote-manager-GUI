@@ -77,11 +77,7 @@ public class SingleRequestOrderList extends SingleRequestList<Order> {
 
     public CompletableFuture<Map<String, List<String>>> getElementsAmount(Parameter parameter) {
         return CompletableFuture.supplyAsync(() -> {
-            try {
-                return connection.GETRequestHeaders(RESTEndpoints.getOrdersEndpoint(), parameter).toMultimap();
-            } catch (BadHTTPResponseException e) {
-                return new HashMap<>();
-            }
+            return connection.GETRequestHeaders(RESTEndpoints.getOrdersEndpoint(), parameter).toMultimap();
         });
     }
 }

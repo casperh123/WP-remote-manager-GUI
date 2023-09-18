@@ -9,19 +9,19 @@ import Components.Product.Product;
 import Components.Product.ProductComponents.Tag;
 import Components.ProductAttribute.ProductAttribute;
 import Exceptions.BadHTTPResponseException;
-import Exceptions.FetchException;
 import Lists.CompleteProductList;
 import Lists.QueryList;
 import Lists.SingleRequestList;
 import Lists.SingleRequestOrderList;
 import REST.RESTConnection;
 import REST.RESTEndpoints;
+import REST.RequestBuilder;
 import com.jsoniter.JsonIterator;
 import com.jsoniter.any.Any;
 
 import java.io.IOException;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Website {
 
@@ -34,32 +34,27 @@ public class Website {
     private QueryList<Category> categories;
     private QueryList<Coupon> coupons;
     private QueryList<Customer> customers;
+    private final RESTConnection connection;
+    private static final Logger logger = Logger.getLogger(Website.class.getName());
+
 
     public Website(APICredentials apiCredentials) {
-
         this.apiCredentials = apiCredentials;
-        this.currency = null;
-        this.paginatedProducts= null;
-        this.allProducts = null;
-        this.orders = null;
-        this.tags = null;
-        this.categories = null;
-        this.coupons = null;
-        customers = null;
+        this.connection = new RESTConnection(new RequestBuilder(apiCredentials.getUrl(), apiCredentials));
+        logger.info("Initializing currency for: " + apiCredentials.getUrl());
+        initializeCurrency();
+    }
 
-        RESTConnection connection = new RESTConnection(apiCredentials.getUrl(), apiCredentials);
-
+    private void initializeCurrency() {
         try {
             byte[] responseBody = connection.GETRequest(RESTEndpoints.getCurrentCurrencyEndpoint());
-
             Any json = JsonIterator.deserialize(responseBody);
-
             currency = json.as(Currency.class);
+            logger.info("Successfully initialized currency for: " + apiCredentials.getUrl());
         } catch (BadHTTPResponseException e) {
             currency = new Currency("NaN", "NaN", "NaN");
+            logger.log(Level.SEVERE, "Failed to fetch currency data from: " + apiCredentials.getUrl(), e);
         }
-
-        System.out.println("done");
     }
 
     public String getName() {
@@ -73,103 +68,70 @@ public class Website {
         return apiCredentials;
     }
 
+    public Currency getCurrency() {
+        return currency;
+    }
+
     public QueryList<Product> getPaginatedProducts() throws IOException {
-
-        if(paginatedProducts == null) {
-            RESTConnection connection = new RESTConnection(apiCredentials.getUrl(), apiCredentials);
-
+        if (paginatedProducts == null) {
             paginatedProducts = new SingleRequestList<>(connection, RESTEndpoints.getProductsEndpoint(), Product.class);
+            logger.info("Fetched paginated products for website: " + getUrl());
         }
         return paginatedProducts;
     }
 
     public QueryList<Product> getAllProducts() throws IOException {
-        if(paginatedProducts == null) {
-            RESTConnection connection = new RESTConnection(apiCredentials.getUrl(), apiCredentials);
-
-            paginatedProducts = new CompleteProductList(connection, RESTEndpoints.getProductsEndpoint());
+        if (allProducts == null) {
+            allProducts = new CompleteProductList(connection, RESTEndpoints.getProductsEndpoint());
+            logger.info("Fetched all products for website: " + getUrl());
         }
-        return paginatedProducts;
+        return allProducts;
     }
 
     public QueryList<Coupon> getCoupons() throws IOException {
-
-        if(coupons == null) {
-            RESTConnection connection = new RESTConnection(apiCredentials.getUrl(), apiCredentials);
-
+        if (coupons == null) {
             coupons = new SingleRequestList<>(connection, RESTEndpoints.getCouponsEndpoint(), Coupon.class);
+            logger.info("Fetched coupons for website: " + getUrl());
         }
         return coupons;
     }
 
     public QueryList<Customer> getCustomers() throws IOException {
-
-        if(currency == null) {
-            RESTConnection connection = new RESTConnection(apiCredentials.getUrl(), apiCredentials);
-
+        if (customers == null) {
             customers = new SingleRequestList<>(connection, RESTEndpoints.getCustomersEndpoint(), Customer.class);
+            logger.info("Fetched customers for website: " + getUrl());
         }
         return customers;
     }
 
     public QueryList<Order> getOrders() throws IOException {
-
-        if(orders == null) {
-            RESTConnection connection = new RESTConnection(apiCredentials.getUrl(), apiCredentials);
-
+        if (orders == null) {
             orders = new SingleRequestOrderList(connection, RESTEndpoints.getOrdersEndpoint());
+            logger.info("Fetched orders for website: " + getUrl());
         }
         return orders;
     }
 
     public QueryList<Tag> getTags() throws IOException {
-
-        if(tags == null) {
-            RESTConnection connection = new RESTConnection(apiCredentials.getUrl(), apiCredentials);
-
+        if (tags == null) {
             tags = new SingleRequestList<>(connection, RESTEndpoints.getProductTagsEndpoint(), Tag.class);
+            logger.info("Fetched product tags for website: " + getUrl());
         }
         return tags;
     }
 
     public QueryList<Category> getCategories() throws IOException {
-
-        if(categories == null) {
-            RESTConnection connection = new RESTConnection(apiCredentials.getUrl(), apiCredentials);
-
+        if (categories == null) {
             categories = new SingleRequestList<>(connection, RESTEndpoints.getProductCategoriesEndpoint(), Category.class);
+            logger.info("Fetched product categories for website: " + getUrl());
         }
         return categories;
     }
 
-    public QueryList<ProductAttribute> getProductAttributes() throws FetchException {
-
-        RESTConnection connection = new RESTConnection(apiCredentials.getUrl(), apiCredentials);
-
-        CompletableFuture<SingleRequestList<ProductAttribute>> listFuture = CompletableFuture.supplyAsync(() -> {
-            try {
-                return new SingleRequestList<>(connection, RESTEndpoints.getProductAttributesEndpoint(), ProductAttribute.class) {
-                };
-            } catch (BadHTTPResponseException e) {
-                System.out.println("Fuck"); //TODO Exception
-                return null;
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        });
-
-        try {
-            if(listFuture.get() == null) {
-                throw new FetchException("Could not complete request");
-            }
-            return listFuture.get();
-        } catch (InterruptedException | ExecutionException e) {
-            throw new FetchException(e.getMessage());
-        }
-    }
-
-    public Currency getCurrency() {
-        return currency;
+    public QueryList<ProductAttribute> getProductAttributes() throws IOException {
+        QueryList<ProductAttribute> attributes = new SingleRequestList<>(connection, RESTEndpoints.getProductAttributesEndpoint(), ProductAttribute.class);
+        logger.info("Fetched product attributes for website: " + getUrl());
+        return attributes;
     }
 
     //TODO implement endpoint
